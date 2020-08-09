@@ -17,9 +17,10 @@
 script_name = "Clip Size"
 script_description = "Measures distances in a vectorial clip"
 script_author = "petzku"
-script_version = "1.2.0"
+script_version = "1.2.1"
+script_namespace = "petzku.ClipSize"
 
-local DependencyControl = require("line0.DependencyControl")
+local DependencyControl = require("l0.DependencyControl")
 local depctrl = DependencyControl{feed = "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/master/DependencyControl.json"}
 
 function clipsize(subs, sel)
@@ -52,4 +53,4 @@ function align_number(n, width)
     return string.format("%"..width.."d", n):gsub(' ', ' ')
 end
 
-depctrl:register_macro(clipsize)
+depctrl:registerMacro(clipsize)
