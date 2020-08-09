@@ -1,0 +1,41 @@
+{
+    "dependencyControlFeedFormatVersion": "0.2.0",
+    "name": "petzku's Automation Scripts",
+    "description": "Main repository for all of petzku's automation scripts.",
+    "baseUrl": "https://github.com/petzku/Aegisub-Scripts",
+    "fileBaseUrl": "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/",
+    "url": "@{baseUrl}",
+    "maintainer": "petzku",
+    "knownFeeds": {
+      "SubInspector": "https://raw.githubusercontent.com/TypesettingTools/SubInspector/master/DependencyControl.json",
+      "ASSFoundation": "https://raw.githubusercontent.com/TypesettingTools/ASSFoundation/master/DependencyControl.json",
+      "Functional": "https://raw.githubusercontent.com/TypesettingTools/Functional/master/DependencyControl.json"
+    },
+    "macros": {
+      "petzku.ClipSize": {
+        "url": "@{baseUrl}#@{namespace}",
+        "author": "petzku",
+        "name": "Clip Size",
+        "description": "Measures distances in a vectorial clip",
+        "channels": {
+          "master": {
+            "version": "1.2.0",
+            "released": "2020-08-09",
+            "default": true,
+            "files": [
+              {
+                "name": ".lua",
+                "url": "@{fileBaseUrl}@{fileName}",
+                "sha1": "2a42ac6746da23c03456b1b8fd5970e02e6cbca9"
+              }
+            ]
+          }
+        },
+        "changelog": {
+          "1.2.0": [
+            "Added DependencyControl"
+          ]
+        }
+      }
+    }
+  }
