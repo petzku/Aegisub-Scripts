@@ -76,12 +76,15 @@
               {
                 "name": ".lua",
                 "url": "@{fileBaseUrl}@{fileName}",
-                "sha1": "70dbec06a9c2f1426c9f25a9b33675f59b99ed8a"
+                "sha1": "6fd5ae241a08833ea8f180335759d3fb3c1d1671"
               }
             ]
           }
         },
         "changelog": {
+          "0.1.4": [
+            "Added jumping by end time to the menu"
+          ],
           "0.1.3": [
             "Added jumping by end time"
           ],

@@ -59,5 +59,7 @@ function prevEnd(subs, sel) sel = prevsel(subs, sel, "end") return sel end
 
 depctrl:registerMacros({
     {"Jump to Next/Start Time", script_description, nextStart},
-    {"Jump to Previous/Start Time", script_description2, prevStart}
+    {"Jump to Next/End Time", script_description, nextEnd},
+    {"Jump to Previous/Start Time", script_description2, prevStart},
+    {"Jump to Previous/End Time", script_description2, prevEnd},
 }, false)
