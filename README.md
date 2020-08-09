@@ -21,3 +21,9 @@ Takes a line with a partial-duration move and extends it to the line's full dura
 ### Jump to Next++
 
 Adds a mode to unanimated's [Jump to Next](https://github.com/unanimated/luaegisub/blob/master/ua.JumpToNext.lua) script, allowing you to jump by lines' start and end times. The script should work standalone too, if these are the only features you want out of it.
+
+### Typewriter
+
+Takes a line and "writes" it character by character, making the characters appear one by one (using alphas) either frame-by-frame or evenly spaced over the line's duration. My first script, initially made before I even knew what the hell alpha-timing was and actually deleted characters from the string to make this work. Obviously this has been changed since.
+
+Currently does not play well with `\move` or `\t` tags. There's a good chance another script does what this one does already, except better. Might also eventually implement right-to-left and/or bottom-to-top writing.
