@@ -15,7 +15,7 @@
 script_name = "Accenter"
 script_description = "Automatically create accents for lines"
 script_author = "petzku"
-script_version = "0.2.2"
+script_version = "0.2.3"
 script_namespace = "petzku.Accenter"
 
 EFFECT = 'accent'
@@ -133,7 +133,7 @@ function process_lines(subs, sel)
         if line.text and not line.comment and line.text:find("{!.*}") then
             -- god why does lua not have `continue`
             karaskel.preproc_line(subs, meta, styles, line)
-            to_add[#to_add+1] = {location=i+1, lines=generate_accents(line)}
+            to_add[#to_add+1] = {location=i, lines=generate_accents(line)}
         end
     end
 
@@ -141,8 +141,8 @@ function process_lines(subs, sel)
     for i = #to_add, 1, -1 do
         loc = to_add[i].location
         lines = to_add[i].lines
-        for _, line in ipairs(lines) do
-            subs.insert(loc, line)
+        for j, line in ipairs(lines) do
+            subs.insert(loc+j, line)
         end
     end
 end

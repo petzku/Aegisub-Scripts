@@ -24,11 +24,11 @@ turns into this (with ASS garbage stripped out):
 
 ```ass
 Te{!aˇ}st li{\c&H6C42F7&}{!amacron}{!a+10grave}ne as{!b`}d{\c&H1C9C3A&\3c&HEBEBEB&}f{!b+5˘}h
-{\pos(1160.18,1046.72)\an5\c&H6C42F7&\c&H1C9C3A&\3c&HEBEBEB&}˘
-{\pos(1101.05,1051.72)\an5\c&H6C42F7&}`
-{\pos(940.85,985.00)\an5\c&H6C42F7&}`
-{\pos(940.85,995.00)\an5\c&H6C42F7&}ˉ
-{\pos(831.22,995.00)\an5}ˇ
+{\pos(826.02,995.00)\an5}ˇ
+{\pos(940.20,995.00)\an5\c&H6C42F7&}ˉ
+{\pos(940.20,985.00)\an5\c&H6C42F7&}`
+{\pos(1091.08,1051.52)\an5\c&H6C42F7&}`
+{\pos(1154.54,1046.52)\an5\c&H6C42F7&\c&H1C9C3A&\3c&HEBEBEB&}˘
 ```
 
 And here's how it looks:
@@ -36,7 +36,7 @@ And here's how it looks:
 
 The script creates the lines with `accent` in the effect field, so they're easy to remove, and get automatically cleaned up when running it again. The marker tag blocks are also left intact.
 
-The full syntax for this can be found in the script's README comments.
+The full syntax for this can be found in the script's README comments. I do not guarantee backwards compatibility before 1.0, in fact I'm currently considering alternatives for the `a`/`b` labels for above/below.
 
 ### Clip Size
 
