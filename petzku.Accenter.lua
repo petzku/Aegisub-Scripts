@@ -15,7 +15,7 @@
 script_name = "Accenter"
 script_description = "Automatically create accents for lines"
 script_author = "petzku"
-script_version = "0.2.1"
+script_version = "0.2.2"
 script_namespace = "petzku.Accenter"
 
 EFFECT = 'accent'
@@ -108,7 +108,7 @@ function generate_accents(line)
             aegisub.log(5, "pos: %.2f, %.2f\n", x_pos, y_pos)
 
             -- copy any saved tags to the new line, except positioning
-            t = curr_tags:gsub("\\pos%b()",""):gsub("\\an?%d+", "")
+            t = curr_tags:gsub("\\pos%b()",""):gsub("\\an?%d+",""):gsub("\\move%b()","")
             acc_line.text = string.format("{\\pos(%.2f,%.2f)\\an5%s}%s", x_pos, y_pos, t, accent)
             acc_line.effect = acc_line.effect .. EFFECT
             aegisub.log(5, "Generated line: %s\n", acc_line.text)
