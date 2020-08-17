@@ -1,17 +1,21 @@
 -- Automatically add accent characters to lines
--- To use: add a tag block immediately before the character with "instructions"
+
+-- To use: add a tag block immediately before the character with "instructions":
 -- Syntax (regex): `!(a|b)([+-]\d+)?(.+)` above/below -- vertical correction in pixels (positive = up) -- accent character or alias
--- note: one tag should specify only one accent character
--- sample: {!a^} to place a caret above the character
--- sample: {!b+20˘} to place a breve below the character, then move up 20 pixels to correct position
+-- Note: one tag should specify only one accent character
+-- Sample: `{!a^}s` to place a caret above the character
+-- Sample: `{!b+5˘}h` to place a breve below the character, then move up 5 pixels to correct position
+-- Sample: `{!amacron}{!a+10grave}n` to place a macron above the character, then a grave above that
+
 -- Creates lines with an effect of "accent", automatically cleans all lines with this effect when running
 
--- Probably only works with lines that don't have a linebreak. May want to work on that...
+-- Note: Only works with lines that don't have a linebreak.
+-- TODO: Fix that.
 
 script_name = "Accenter"
 script_description = "Automatically create accents for lines"
 script_author = "petzku"
-script_version = "0.2.0"
+script_version = "0.2.1"
 script_namespace = "petzku.Accenter"
 
 EFFECT = 'accent'
@@ -87,7 +91,9 @@ function generate_accents(line)
         if tag == nil then break end
         tags_len = tags_len + tag:len()
         if tag:sub(2,2) == "!" then
+            -- if it's an accenter block, process it
             aegisub.log(5, "tag: '%s'\n", tag)
+            -- note: this is slightly different from the described syntax, because lua patterns don't allow optional groups
             ab, corr, accent = tag:sub(2, -2):match("!([ab])([+-]?%d*)(.+)")
             if ALIASES[accent] then accent = ALIASES[accent] end
             aegisub.log(5, "ab: '%s', corr: '%s', accent: '%s'\n", ab, corr, accent)
@@ -101,12 +107,14 @@ function generate_accents(line)
             if corr ~= "" and tonumber(corr) then y_pos = y_pos - tonumber(corr) end
             aegisub.log(5, "pos: %.2f, %.2f\n", x_pos, y_pos)
 
+            -- copy any saved tags to the new line, except positioning
             t = curr_tags:gsub("\\pos%b()",""):gsub("\\an?%d+", "")
             acc_line.text = string.format("{\\pos(%.2f,%.2f)\\an5%s}%s", x_pos, y_pos, t, accent)
             acc_line.effect = acc_line.effect .. EFFECT
             aegisub.log(5, "Generated line: %s\n", acc_line.text)
             table.insert(accents, acc_line)
         else
+            -- ... and save tags if not
             curr_tags = curr_tags .. tag:sub(2,-2)
             aegisub.log(5, "curr_tags: %s\n", curr_tags)
         end
@@ -129,6 +137,7 @@ function process_lines(subs, sel)
         end
     end
 
+    -- bottom-to-top for easy insertion at correct index
     for i = #to_add, 1, -1 do
         loc = to_add[i].location
         lines = to_add[i].lines
