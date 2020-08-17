@@ -1,6 +1,6 @@
 -- Automatically add accent characters to lines
 -- To use: add a tag block immediately before the character with "instructions"
--- syntax (regex): `!(a|b)([+-]\d+)?(.)` above/below -- vertical correction (positive = up) -- accent character
+-- Syntax (regex): `!(a|b)([+-]\d+)?(.+)` above/below -- vertical correction in pixels (positive = up) -- accent character or alias
 -- note: one tag should specify only one accent character
 -- sample: {!a^} to place a caret above the character
 -- sample: {!b+20˘} to place a breve below the character, then move up 20 pixels to correct position
@@ -11,10 +11,29 @@
 script_name = "Accenter"
 script_description = "Automatically create accents for lines"
 script_author = "petzku"
-script_version = "0.1.0"
+script_version = "0.2.0"
 script_namespace = "petzku.Accenter"
 
 EFFECT = 'accent'
+ALIASES = {
+    acute = '´',
+    grave = '`',
+    circumflex = 'ˆ',
+    caret = 'ˆ',
+    caron = 'ˇ',
+    umlaut = '¨',
+    macron = 'ˉ',
+    breve = '˘',
+    overring = '˚',
+    oring = '˚',
+    o = '˚',
+    underring = '˳',
+    uring = '˳',
+    tilde = '˜',
+    ['..'] = '¨',
+    ['^'] = 'ˆ',
+    ['~'] = '˜',
+}
 
 local DependencyControl = require("l0.DependencyControl")
 local depctrl = DependencyControl{
@@ -70,15 +89,17 @@ function generate_accents(line)
         if tag:sub(2,2) == "!" then
             aegisub.log(5, "tag: '%s'\n", tag)
             ab, corr, accent = tag:sub(2, -2):match("!([ab])([+-]?%d*)(.+)")
+            if ALIASES[accent] then accent = ALIASES[accent] end
+            aegisub.log(5, "ab: '%s', corr: '%s', accent: '%s'\n", ab, corr, accent)
+
             char = chars[e - tags_len + 1]
             acc_line = util.deep_copy(line)
 
-            aegisub.log(5, "ab: '%s', corr: '%s', accent: '%s'\n", ab, corr, accent)
             x_pos = char.center
             y_pos = line.middle
-            aegisub.log(5, "pos: %.2f, %.2f\n", x_pos, y_pos)
             if ab == 'b' then y_pos = y_pos + char.height - char.descent end
             if corr ~= "" and tonumber(corr) then y_pos = y_pos - tonumber(corr) end
+            aegisub.log(5, "pos: %.2f, %.2f\n", x_pos, y_pos)
 
             t = curr_tags:gsub("\\pos%b()",""):gsub("\\an?%d+", "")
             acc_line.text = string.format("{\\pos(%.2f,%.2f)\\an5%s}%s", x_pos, y_pos, t, accent)
