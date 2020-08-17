@@ -10,6 +10,34 @@ Scripts I make will use [DependencyControl](https://github.com/TypesettingTools/
 
 ## Scripts
 
+### Accenter
+
+Adds diacritics (accents) to lines based on inline comments. Sometimes you want to use glyphs that don't exist in a font, but don't want to or can't edit the font. So you add lines with the shapes you want. But maybe you don't want to position them manually, or maybe the script isn't final yet so you can't. Enter Accenter. Fairly simple instructions given before a character get turned into a line with a diacritic at the character's position.
+
+For example, the line
+
+```ass
+Te{!aˇ}st li{\c&H6C42F7&}{!amacron}{!a+10grave}ne as{!b`}d{\c&H1C9C3A&\3c&HEBEBEB&}f{!b+5˘}h
+```
+
+turns into this (with ASS garbage stripped out):
+
+```ass
+Te{!aˇ}st li{\c&H6C42F7&}{!amacron}{!a+10grave}ne as{!b`}d{\c&H1C9C3A&\3c&HEBEBEB&}f{!b+5˘}h
+{\pos(1160.18,1046.72)\an5\c&H6C42F7&\c&H1C9C3A&\3c&HEBEBEB&}˘
+{\pos(1101.05,1051.72)\an5\c&H6C42F7&}`
+{\pos(940.85,985.00)\an5\c&H6C42F7&}`
+{\pos(940.85,995.00)\an5\c&H6C42F7&}ˉ
+{\pos(831.22,995.00)\an5}ˇ
+```
+
+And here's how it looks:
+![accenter.png](accenter.png)
+
+The script creates the lines with `accent` in the effect field, so they're easy to remove, and get automatically cleaned up when running it again. The marker tag blocks are also left intact.
+
+The full syntax for this can be found in the script's README comments.
+
 ### Clip Size
 
 Tells you the distances between points in a vector clip on the selected line. The utility of this is debatable, but I find it useful to quickly compare sizes of similar signs or text in different parts of the video.

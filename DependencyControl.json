@@ -12,6 +12,31 @@
       "Functional": "https://raw.githubusercontent.com/TypesettingTools/Functional/master/DependencyControl.json"
     },
     "macros": {
+      "petzku.Accenter": {
+        "url": "@{baseUrl}#@{namespace}",
+        "author": "petzku",
+        "name": "Accenter",
+        "description": "Automatically create accents for lines",
+        "channels": {
+          "master": {
+            "version": "0.2.2",
+            "released": "2020-08-17",
+            "default": true,
+            "files": [
+              {
+                "name": ".lua",
+                "url": "@{fileBaseUrl}@{fileName}",
+                "sha1": "4D22B8C965CEAA9E474F7AD7BD38BBACE4DDE748"
+              }
+            ]
+          }
+        },
+        "changelog": {
+          "0.2.2": [
+            "Initial published version"
+          ]
+        }
+      },
       "petzku.ClipSize": {
         "url": "@{baseUrl}#@{namespace}",
         "author": "petzku",
