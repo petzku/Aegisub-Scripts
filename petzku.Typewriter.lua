@@ -27,23 +27,21 @@ TODO: consider behaving nicely with \move and \t
 
 script_name = "Typewriter"
 script_description = "Makes text appear one character at a time"
-script_version = "0.3.1"
+script_version = "0.3.2"
 script_author = "petzku"
 script_namespace = "petzku.Typewriter"
 
 local DependencyControl = require("l0.DependencyControl")
 local depctrl = DependencyControl{
     feed = "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/master/DependencyControl.json",
-    {"aegisub.util", "karaskel", "unicode"}
+    {"aegisub.util", "unicode"}
 }
-local util, kara, unicode = depctrl:requireModules()
+local util, unicode = depctrl:requireModules()
 
 function typewrite_by_duration(subs, sel)
-    local meta, styles = karaskel.collect_head(subs, false)
     groups_to_add = {}
     for si, li in ipairs(sel) do
         local line = subs[li]
-        karaskel.preproc_line(subs, meta, styles, line)
 
         local duration = line.end_time - line.start_time * 1.0
         local trimmed = util.trim(line.text:gsub("{.-}", ""))
@@ -67,11 +65,9 @@ function typewrite_by_duration(subs, sel)
 end
 
 function typewrite_by_frame(subs, sel)
-    local meta, styles = karaskel.collect_head(subs, false)
     local groups_to_add = {}
     for si, li in ipairs(sel) do
         local line = subs[li]
-        karaskel.preproc_line(subs, meta, styles, line)
         -- NOTE: assumes 23.976 fps, which usually matches for anime. query video data?
         groups_to_add[#groups_to_add+1] = typewrite_line(line, (1001.0 / 24), li+1)    
         -- comment the original line out
