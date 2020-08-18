@@ -19,19 +19,22 @@
         "description": "Automatically create accents for lines",
         "channels": {
           "master": {
-            "version": "0.2.3",
+            "version": "0.2.4",
             "released": "2020-08-17",
             "default": true,
             "files": [
               {
                 "name": ".lua",
                 "url": "@{fileBaseUrl}@{fileName}",
-                "sha1": "77D72905F2957D9B803F38D9A21827230A9CEB7D"
+                "sha1": "A8F51D8616A10F70E36881D1BB59E7345339CC48"
               }
             ]
           }
         },
         "changelog": {
+          "0.2.4": [
+            "Fixed handling of multibyte characters in line"
+          ],
           "0.2.3": [
             "Reversed output line order when one line has multiple accents"
           ],

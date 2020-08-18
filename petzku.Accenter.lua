@@ -15,7 +15,7 @@
 script_name = "Accenter"
 script_description = "Automatically create accents for lines"
 script_author = "petzku"
-script_version = "0.2.3"
+script_version = "0.2.4"
 script_namespace = "petzku.Accenter"
 
 EFFECT = 'accent'
@@ -69,8 +69,10 @@ function preproc_chars(line)
         char.width, char.height, char.descent, _ = aegisub.text_extents(line.styleref, ch)
         char.left = left
         char.center = left + char.width/2
-        table.insert(chars, char)
-
+        
+        -- to handle multibyte characters correctly. just remember it's not a normal array
+        chars[i] = char
+        i = i + ch:len()
         left = left + char.width
     end
     return chars
@@ -108,6 +110,7 @@ function generate_accents(line)
             aegisub.log(5, "pos: %.2f, %.2f\n", x_pos, y_pos)
 
             -- copy any saved tags to the new line, except positioning
+            -- TODO: do something to wipe duplicate tags? won't affect rendering, but would be cleaner.
             t = curr_tags:gsub("\\pos%b()",""):gsub("\\an?%d+",""):gsub("\\move%b()","")
             acc_line.text = string.format("{\\pos(%.2f,%.2f)\\an5%s}%s", x_pos, y_pos, t, accent)
             acc_line.effect = acc_line.effect .. EFFECT
@@ -138,6 +141,8 @@ function process_lines(subs, sel)
     end
 
     -- bottom-to-top for easy insertion at correct index
+    -- TODO: consider layering differently: accents above on a lower layer, below on a higher one
+    -- this would handle normal shadows more neatly
     for i = #to_add, 1, -1 do
         loc = to_add[i].location
         lines = to_add[i].lines
