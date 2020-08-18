@@ -32,6 +32,7 @@ Te{!aˇ}st li{\c&H6C42F7&}{!amacron}{!a+10grave}ne as{!b`}d{\c&H1C9C3A&\3c&HEBEB
 ```
 
 And here's how it looks:
+
 ![accenter.png](accenter.png)
 
 The script creates the lines with `accent` in the effect field, so they're easy to remove, and get automatically cleaned up when running it again. The marker tag blocks are also left intact.
