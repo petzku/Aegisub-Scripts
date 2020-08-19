@@ -17,7 +17,7 @@
 script_name = "Clip Size"
 script_description = "Measures distances in a vectorial clip"
 script_author = "petzku"
-script_version = "1.2.1"
+script_version = "1.3.0"
 script_namespace = "petzku.ClipSize"
 
 local DependencyControl = require("l0.DependencyControl")
@@ -25,22 +25,33 @@ local depctrl = DependencyControl{feed = "https://raw.githubusercontent.com/petz
 
 function clipsize(subs, sel)
     -- consider only first active line; clip tools usually deselect all others anyway
-    line = subs[sel[1]]
+    local line = subs[sel[1]]
     local clip = line.text:match("\\i?clip(%b())")
     aegisub.log(5, "clip match: `%s`\n", clip)
-    coords = {}
-    for x,y in clip:gmatch("(%d+) (%d+)") do 
+    local coords = {}
+    -- at least some builds of aegi have subpixel precision clip tools
+    local is_subpixel = false
+    for xs,ys in clip:gmatch("([%d.]+) ([%d.]+)") do
+        local x = tonumber(xs)
+        local y = tonumber(ys)
         table.insert(coords, {tonumber(x), tonumber(y)})
+        if not (x == math.floor(x) and y == math.floor(y)) then is_subpixel = true end
     end
     aegisub.log(5, "coords size: %d\n", #coords)
 
     dialog = {{class='label', x=0, y=0, label="Clip sizes:"}}
     for i = 1, #coords-1 do
         aegisub.log(5, "current coords: %d %d\n", coords[i][1], coords[i][2])
-        dx = coords[i+1][1] - coords[i][1]
-        dy = coords[i+1][2] - coords[i][2]
-        dx_string = align_number(dx, 5)
-        dy_string = align_number(dy, 5)
+        local dx = coords[i+1][1] - coords[i][1]
+        local dy = coords[i+1][2] - coords[i][2]
+        local dx_string, dy_string
+        if is_subpixel then
+            dx_string = align_number(dx, 7, 1)
+            dy_string = align_number(dy, 7, 1)
+        else
+            dx_string = align_number(dx, 5, 0)
+            dy_string = align_number(dy, 5, 0)
+        end
         -- aegisub.log(3, "delta: %s, %s\n", dx_string, dy_string)
         table.insert(dialog, {class='label', x=1, y=i, label=dx_string})
         table.insert(dialog, {class='label', x=3, y=i, label=dy_string})
@@ -48,9 +59,9 @@ function clipsize(subs, sel)
     aegisub.dialog.display(dialog)
 end
 
-function align_number(n, width)
+function align_number(n, width, precision)
     -- https://en.wikipedia.org/wiki/Figure_space, thanks bucket3432
-    return string.format("%"..width.."d", n):gsub(' ', ' ')
+    return string.format("%"..width.."."..precision.."f", n):gsub(' ', ' ')
 end
 
 depctrl:registerMacro(clipsize)
