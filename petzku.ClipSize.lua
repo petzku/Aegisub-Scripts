@@ -31,11 +31,21 @@ function clipsize(subs, sel)
     local coords = {}
     -- at least some builds of aegi have subpixel precision clip tools
     local is_subpixel = false
-    for xs,ys in clip:gmatch("([%d.]+) ([%d.]+)") do
-        local x = tonumber(xs)
-        local y = tonumber(ys)
-        table.insert(coords, {tonumber(x), tonumber(y)})
-        if not (x == math.floor(x) and y == math.floor(y)) then is_subpixel = true end
+    if clip:find(',') then
+        -- rect clip
+        local xs1,ys1,xs2,ys2 = clip:match("([%d.]+),([%d.]+),([%d.]+),([%d.]+)")
+        local x1,y1,x2,y2 = tonumber(xs1), tonumber(ys1), tonumber(xs2), tonumber(ys2)
+        coords = {{x1, y1}, {x2, y2}}
+        if not (isint(x1) and isint(x2) and isint(y1) and isint(y2)) then
+            is_subpixel = true
+        end
+    else
+        for xs,ys in clip:gmatch("([%d.]+) ([%d.]+)") do
+            local x = tonumber(xs)
+            local y = tonumber(ys)
+            table.insert(coords, {x, y})
+            if not (isint(x) and isint(y)) then is_subpixel = true end
+        end
     end
     aegisub.log(5, "coords size: %d\n", #coords)
 
@@ -62,6 +72,10 @@ end
 function align_number(n, width, precision)
     -- https://en.wikipedia.org/wiki/Figure_space, thanks bucket3432
     return string.format("%"..width.."."..precision.."f", n):gsub(' ', ' ')
+end
+
+function isint(x)
+    return x == math.floor(x)
 end
 
 depctrl:registerMacro(clipsize)
