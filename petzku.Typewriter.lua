@@ -27,13 +27,13 @@ TODO: consider behaving nicely with \move and \t
 
 script_name = "Typewriter"
 script_description = "Makes text appear one character at a time"
-script_version = "0.3.2"
+script_version = "0.3.3"
 script_author = "petzku"
 script_namespace = "petzku.Typewriter"
 
 local DependencyControl = require("l0.DependencyControl")
 local depctrl = DependencyControl{
-    feed = "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/master/DependencyControl.json",
+    feed = "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json",
     {"aegisub.util", "unicode"}
 }
 local util, unicode = depctrl:requireModules()

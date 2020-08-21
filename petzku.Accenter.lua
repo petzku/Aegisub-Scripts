@@ -15,7 +15,7 @@
 script_name = "Accenter"
 script_description = "Automatically create accents for lines"
 script_author = "petzku"
-script_version = "0.2.4"
+script_version = "0.2.5"
 script_namespace = "petzku.Accenter"
 
 EFFECT = 'accent'
@@ -42,7 +42,7 @@ ALIASES = {
 local DependencyControl = require("l0.DependencyControl")
 local depctrl = DependencyControl{
     { "karaskel", "aegisub.util" },
-    feed = "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/master/DependencyControl.json"}
+    feed = "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json"}
 
 kara, util = depctrl:requireModules()
 

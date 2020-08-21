@@ -9,11 +9,11 @@ script_name = "Jump to Next++"
 script_description = "Jumps to next 'sign' in the subtitle grid"
 script_description2 = "Jumps to previous 'sign' in the subtitle grid"
 script_author = "petzku"
-script_version = "0.1.3"
+script_version = "0.1.5"
 script_namespace = "petzku.JumpToNextPlus"
 
 local DependencyControl = require "l0.DependencyControl"
-depctrl = DependencyControl{feed="https://raw.githubusercontent.com/petzku/Aegisub-Scripts/master/DependencyControl.json"}
+depctrl = DependencyControl{feed="https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json"}
 
 function nextsel(subs, sel, marker)
     local start = sel[1]

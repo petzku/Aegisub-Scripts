@@ -25,13 +25,13 @@ to the line's time bounds.
 
 script_name = "Extrapolate Move"
 script_description = "Extrapolates a \\move tag to the line's full duration"
-script_version = "0.1.3"
+script_version = "0.1.4"
 script_author = "petzku"
 script_namespace = "petzku.ExtrapolateMove"
 
 local DependencyControl = require("l0.DependencyControl")
 local depctrl = DependencyControl{
-    feed = "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/master/DependencyControl.json",
+    feed = "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json",
     {"aegisub.util", "karaskel"}
 }
 local util, kara = depctrl:requireModules()

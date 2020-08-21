@@ -21,7 +21,7 @@ script_version = "1.3.0"
 script_namespace = "petzku.ClipSize"
 
 local DependencyControl = require("l0.DependencyControl")
-local depctrl = DependencyControl{feed = "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/master/DependencyControl.json"}
+local depctrl = DependencyControl{feed = "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json"}
 
 function clipsize(subs, sel)
     -- consider only first active line; clip tools usually deselect all others anyway
