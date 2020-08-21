@@ -3,7 +3,7 @@
     "name": "petzku's Automation Scripts",
     "description": "Main repository for all of petzku's automation scripts.",
     "baseUrl": "https://github.com/petzku/Aegisub-Scripts",
-    "fileBaseUrl": "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/@{channel}/",
+    "fileBaseUrl": "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/@{channel}/macros/@{namespace}",
     "url": "@{baseUrl}",
     "maintainer": "petzku",
     "knownFeeds": {
