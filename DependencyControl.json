@@ -143,8 +143,8 @@
       "petzku.Typewriter": {
         "url": "@{baseUrl}#@{namespace}",
         "author": "petzku",
-        "name": "Jump to Next++",
-        "description": "Jumps to next 'sign' in the subtitle grid",
+        "name": "Typewriter",
+        "description": "Makes text appear one character at a time",
         "channels": {
           "stable": {
             "version": "0.3.3",
