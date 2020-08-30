@@ -15,7 +15,7 @@
 
 local tr = aegisub.gettext
 
-script_name = tr'Make clip'
+script_name = tr'Encode Clip'
 script_description = tr'Encode a hardsubbed clip encompassing the current selection'
 script_author = 'petzku'
 script_namespace = "petzku.EncodeClip"
