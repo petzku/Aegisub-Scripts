@@ -18,10 +18,11 @@ local tr = aegisub.gettext
 script_name = tr'Make clip'
 script_description = tr'Encode a hardsubbed clip encompassing the current selection'
 script_author = 'petzku'
+script_namespace = "petzku.EncodeClip"
 script_version = '0.2.0'
 
 local DependencyControl = require("l0.DependencyControl")
-local depctrl = DependencyControl{feed = "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/master/DependencyControl.json"}
+local depctrl = DependencyControl{feed = "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json"}
 
 -- "\" on windows, "/" on any other system
 local pathsep = package.config:sub(1,1)
