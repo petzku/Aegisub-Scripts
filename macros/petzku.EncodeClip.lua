@@ -30,26 +30,26 @@ local is_windows = pathsep == "\\"
 
 function make_clip(subs, sel, hardsub)
     local t1, t2 = math.huge, 0
-	for _, i in ipairs(sel) do
-		t1 = math.min(t1, subs[i].start_time)
-		t2 = math.max(t2, subs[i].end_time)
-	end
-	local t1, t2 = t1/1000, t2/1000
+    for _, i in ipairs(sel) do
+        t1 = math.min(t1, subs[i].start_time)
+        t2 = math.max(t2, subs[i].end_time)
+    end
+    local t1, t2 = t1/1000, t2/1000
 
-	local props = aegisub.project_properties()
-	local vidfile = props.video_file
-	local subfile = aegisub.decode_path("?script") .. pathsep .. aegisub.file_name()
-	--local outfile = vidfile:gsub('.m[kp][v4]$', '') .. ('_%.3f-%.3f'):format(t1, t2) .. '.mp4'
+    local props = aegisub.project_properties()
+    local vidfile = props.video_file
+    local subfile = aegisub.decode_path("?script") .. pathsep .. aegisub.file_name()
+    --local outfile = vidfile:gsub('.m[kp][v4]$', '') .. ('_%.3f-%.3f'):format(t1, t2) .. '.mp4'
     local outfile = subfile:sub(1, -5) .. ('_%.3f-%.3f'):format(t1, t2) .. '.mp4'
 
     -- TODO: allow arbitrary command line parameters from user
     local commands = {
-		'mpv', -- TODO: let user specify mpv location if not on PATH
-		'--sub-font-provider=auto',
-		'--start=%.3f',
-		'--end=%.3f',
-		'"%s"',
-		'--vf=format=yuv420p',
+        'mpv', -- TODO: let user specify mpv location if not on PATH
+        '--sub-font-provider=auto',
+        '--start=%.3f',
+        '--end=%.3f',
+        '"%s"',
+        '--vf=format=yuv420p',
         '--o="%s"'
     }
 
@@ -65,7 +65,7 @@ function make_clip(subs, sel, hardsub)
 end
 
 function run_cmd(cmd)
-	aegisub.log('running: ' .. cmd .. '\n')
+    aegisub.log('running: ' .. cmd .. '\n')
 
     if is_windows then
         -- command lines over 256 bytes don't get run correctly, make a temporary file as a workaround
