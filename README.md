@@ -43,6 +43,14 @@ The full syntax for this can be found in the script's README comments. I do not 
 
 Tells you the distances between points in a vector clip on the selected line. The utility of this is debatable, but I find it useful to quickly compare sizes of similar signs or text in different parts of the video.
 
+### Encode Clip
+
+**Requires `mpv` to work**. The executable must be on your PATH. (May allow configuration at a later date. You can manually edit the script file though)
+
+Encodes a clip of the currently open video, and optionally subtitles. Start and end time are determined from subtitle selection (even when encoding without subs).
+
+Thanks to The0x539 for the original version.
+
 ### Extrapolate Move
 
 Takes a line with a partial-duration move and extends it to the line's full duration. For instance, a line with duration of 3000 ms and a movement of `\move(320,200,520,100,1000,2000)` would end up with `\move(120,300,720,0)`. Useful for doing linear movements when you can't align the start and/or end points with traditional means (maybe because they're offscreen).
