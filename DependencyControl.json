@@ -172,19 +172,24 @@
         "description": "Makes text appear one character at a time",
         "channels": {
           "stable": {
-            "version": "0.3.3",
-            "released": "2020-08-21",
+            "version": "0.4.0",
+            "released": "2020-10-03",
             "default": true,
             "files": [
               {
                 "name": ".lua",
                 "url": "@{fileBaseUrl}@{fileName}",
-                "sha1": "E19AD1DD68204F093074D1FBD84D46A8BF1418CB"
+                "sha1": "7AD5316FDCD4B172FCC848A70D5E6F4E4176CC40"
               }
             ]
           }
         },
         "changelog": {
+          "0.4.0": [
+            "Add Unscramble mode",
+            "Restructure code to support Unscramble",
+            "Minor cleanup"
+          ],
           "0.3.3": [
             "Moved to 'stable' Git branch for DependencyControl"
           ],

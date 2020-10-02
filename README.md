@@ -63,4 +63,6 @@ Adds a mode to unanimated's [Jump to Next](https://github.com/unanimated/luaegis
 
 Takes a line and "writes" it character by character, making the characters appear one by one (using alphas) either frame-by-frame or evenly spaced over the line's duration. My first script, initially made before I even knew what the hell alpha-timing was and actually deleted characters from the string to make this work. Obviously this has been changed since.
 
-Currently does not play well with `\move` or `\t` tags. There's a good chance another script does what this one does already, except better. Might also eventually implement right-to-left and/or bottom-to-top writing.
+Also has a mode to unscramble the text one letter at a time as it is being written out. The most recent character gets randomized each frame, with matching upper/lowercase for letters, numbers for numbers, and keeping any other characters untouched. You should probably either use a monospaced font, or use one of `\an1 \an4 \an7` with this, since the text width will not stay constant. Nothing I can do about that, sorry. Also note that this uses lua's `string.upper` and `string.lower`, so it might not handle non-ASCII letters correctly, depending on your locale settings.
+
+Currently does not play well with `\move` or `\t` tags.
