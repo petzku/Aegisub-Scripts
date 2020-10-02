@@ -27,7 +27,7 @@ TODO: consider behaving nicely with \move and \t
 
 script_name = "Typewriter"
 script_description = "Makes text appear one character at a time"
-script_version = "0.3.3"
+script_version = "0.4.0"
 script_author = "petzku"
 script_namespace = "petzku.Typewriter"
 
@@ -37,6 +37,23 @@ local depctrl = DependencyControl{
     {"aegisub.util", "unicode"}
 }
 local util, unicode = depctrl:requireModules()
+
+function randomchar(ch, time)
+    -- use time for deterministic random shuffle thing
+    if ch == ch:lower() and ch ~= ch:upper() then
+        local rand = math.pow((time + string.byte(ch:sub(1,1))) % 26, 10) % 26
+        return string.char(97 + rand)
+    elseif ch == ch:upper() and ch ~= ch:lower() then
+        local rand = math.pow((time + string.byte(ch:sub(1,1))) % 26, 10) % 26
+        return string.char(65 + rand)
+    elseif tonumber(ch) ~= nil then --number
+        local rand = math.pow((time + string.byte(ch:sub(1,1))) % 26, 10) % 10
+        return string.char(48 + rand)
+    else
+        return ch
+    end
+end
+
 
 function typewrite_by_duration(subs, sel)
     groups_to_add = {}
@@ -48,7 +65,7 @@ function typewrite_by_duration(subs, sel)
         local line_len = unicode.len(trimmed)
         -- for some reason, this errors but the above works
         -- local line_len = unicode.len(util.trim(line.text:gsub("{.-}", "")))
-        groups_to_add[#groups_to_add+1] = typewrite_line(line, duration/line_len, li+1)
+        groups_to_add[#groups_to_add+1] = typewrite_line(line, duration/line_len, li+1, generate_line)
         -- comment the original line out
         line.comment = true
         subs[li] = line
@@ -61,7 +78,7 @@ function typewrite_by_duration(subs, sel)
             subs.insert(index, line)
         end
     end
-    aegisub.set_undo_point("Typewrite line length")
+    aegisub.set_undo_point("typewrite line length")
 end
 
 function typewrite_by_frame(subs, sel)
@@ -69,7 +86,7 @@ function typewrite_by_frame(subs, sel)
     for si, li in ipairs(sel) do
         local line = subs[li]
         -- NOTE: assumes 23.976 fps, which usually matches for anime. query video data?
-        groups_to_add[#groups_to_add+1] = typewrite_line(line, (1001.0 / 24), li+1)    
+        groups_to_add[#groups_to_add+1] = typewrite_line(line, (1001.0 / 24), li+1, generate_line)
         -- comment the original line out
         line.comment = true
         subs[li] = line
@@ -82,25 +99,53 @@ function typewrite_by_frame(subs, sel)
             subs.insert(index, line)
         end
     end
-    aegisub.set_undo_point("Typewrite frame-by-frame")
+    aegisub.set_undo_point("typewrite frame-by-frame")
 end
 
-function typewrite_line(line, frametime, index)
+function unscramble_by_duration(subs, sel)
+    groups_to_add = {}
+    for si, li in ipairs(sel) do
+        local line = subs[li]
+
+        local duration = line.end_time - line.start_time * 1.0
+        local trimmed = util.trim(line.text:gsub("{.-}", ""))
+        local line_len = unicode.len(trimmed)
+        groups_to_add[#groups_to_add+1] = typewrite_line(line, duration/line_len, li+1, generate_unscramble_lines)
+        -- comment the original line out
+        line.comment = true
+        subs[li] = line
+    end
+    for j=#groups_to_add, 1, -1 do
+        local group = groups_to_add[j]
+        for i=#group, 1, -1 do
+            local index = group[i][1]
+            local line = group[i][2]
+            subs.insert(index, line)
+        end
+    end
+    aegisub.set_undo_point("unscramble line length")
+end
+
+
+function typewrite_line(line, frametime, index, linefun)
     -- text with tags removed
     local raw_text = util.trim(line.text:gsub("{.-}", ""))
     local to_add = {}
-    local SEPARATOR = "{\\alpha&HFF&}"
+    local start_tags = line.text:match("^{.-}") or ""
+    local text = line.text:sub(start_tags:len()+1)
 
     for i=1,unicode.len(raw_text) do
-        new = util.deep_copy(line)
-
-        local start = ""
+        local start = start_tags
         local rest = ""
         local n = 1
         local in_tags = false
-        for char in unicode.chars(line.text) do            
-            if n <= i then
+        local active_char = ''
+
+        for char in unicode.chars(text) do
+            if n < i then
                 start = start .. char
+            elseif n == i then
+                active_char = char
             else
                 rest = rest .. char
             end
@@ -115,25 +160,73 @@ function typewrite_line(line, frametime, index)
                 n = n + 1
             end
         end
-        -- hackfix for \N newline
-        if start:sub(-1) == '\\' and rest:sub(1,1) == 'N' then
-            new.text = start:sub(1, -2) .. SEPARATOR .. '\\' .. rest
-            -- new.text = start
-        elseif rest ~= "" then
-            new.text = start .. SEPARATOR .. rest
+
+        local st = line.start_time + ((i - 1) * frametime)
+        local et = line.start_time + (i * frametime)
+
+        lines = linefun(st, et, line, start, active_char, rest)
+
+        for i,new_line in ipairs(lines) do
+            to_add[#to_add+1] = {index, new_line}
         end
-
-        new.start_time = line.start_time + ((i - 1) * frametime)
-        new.end_time = line.start_time + (i * frametime)
-
-        to_add[#to_add+1] = {index, new}
     end
     -- continue the finished one until original line end
     to_add[#to_add][2].end_time = line.end_time
     return to_add
 end
 
+function generate_line(st, et, orig_line, start, char, rest)
+    local SEPARATOR = "{\\alpha&HFF&}"
+
+    local new = util.deep_copy(orig_line)
+    new.start_time = st
+    new.end_time = et
+
+    -- hackfix for \N newline
+    if start:sub(-1) == '\\' and rest:sub(1,1) == 'N' then
+        new.text = start:sub(1, -2) .. SEPARATOR .. '\\' .. rest
+        -- new.text = start
+    elseif rest ~= "" then
+        new.text = start .. SEPARATOR .. rest
+    end
+
+    return {new}
+end
+
+function generate_unscramble_lines(st, et, orig_line, start, char, rest)
+    local SEPARATOR = "{\\alpha&HFF&}"
+    local lines = {}
+    -- dumb assumption of 24/1.001 fps because lazy
+    local dur_frames = math.ceil((et - st) * (24/1001))
+
+    for j = 1,dur_frames do
+        local new = util.deep_copy(orig_line)
+        new.start_time = st + ((j - 1) * 1001/24)
+        new.end_time = math.min(st + (j * 1001/24), et)
+
+        local newchar
+        if j == dur_frames then
+            newchar = char
+        else
+            newchar = randomchar(char, new.start_time)
+        end
+        -- hackfix for \N newline
+        if start:sub(-1) == '\\' and char == "N" then
+            new.text = start .. 'N' .. SEPARATOR .. rest
+        elseif char == '\\' and rest:sub(1,1) == 'N' then
+            new.text = start .. SEPARATOR .. '\\' .. rest
+        elseif rest ~= "" then
+            new.text = start .. newchar .. SEPARATOR .. rest
+        else
+            new.text = start .. newchar
+        end
+        lines[#lines+1] = new
+    end
+    return lines
+end
+
 depctrl:registerMacros{
     {"fbf", "Applies effect one char per frame", typewrite_by_frame},
-    {"line", "Apllies effect over duration of entire line", typewrite_by_duration}
+    {"line", "Applies effect over duration of entire line", typewrite_by_duration},
+    {"unscramble", "Applies unscrambling effect over duration of line", unscramble_by_duration}
 }
