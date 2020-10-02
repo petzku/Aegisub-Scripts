@@ -60,12 +60,12 @@ function typewrite_by_duration(subs, sel)
     for si, li in ipairs(sel) do
         local line = subs[li]
 
-        local duration = line.end_time - line.start_time * 1.0
+        local duration_frames = aegisub.frame_from_ms(line.end_time) - aegisub.frame_from_ms(line.start_time)
         local trimmed = util.trim(line.text:gsub("{.-}", ""))
         local line_len = unicode.len(trimmed)
         -- for some reason, this errors but the above works
         -- local line_len = unicode.len(util.trim(line.text:gsub("{.-}", "")))
-        groups_to_add[#groups_to_add+1] = typewrite_line(line, duration/line_len, li+1, generate_line)
+        groups_to_add[#groups_to_add+1] = typewrite_line(line, duration_frames/line_len, li+1, generate_line)
         -- comment the original line out
         line.comment = true
         subs[li] = line
@@ -85,8 +85,7 @@ function typewrite_by_frame(subs, sel)
     local groups_to_add = {}
     for si, li in ipairs(sel) do
         local line = subs[li]
-        -- NOTE: assumes 23.976 fps, which usually matches for anime. query video data?
-        groups_to_add[#groups_to_add+1] = typewrite_line(line, (1001.0 / 24), li+1, generate_line)
+        groups_to_add[#groups_to_add+1] = typewrite_line(line, 1, li+1, generate_line)
         -- comment the original line out
         line.comment = true
         subs[li] = line
@@ -107,10 +106,10 @@ function unscramble_by_duration(subs, sel)
     for si, li in ipairs(sel) do
         local line = subs[li]
 
-        local duration = line.end_time - line.start_time * 1.0
+        local duration_frames = aegisub.frame_from_ms(line.end_time) - aegisub.frame_from_ms(line.start_time)
         local trimmed = util.trim(line.text:gsub("{.-}", ""))
         local line_len = unicode.len(trimmed)
-        groups_to_add[#groups_to_add+1] = typewrite_line(line, duration/line_len, li+1, generate_unscramble_lines)
+        groups_to_add[#groups_to_add+1] = typewrite_line(line, duration_frames/line_len, li+1, generate_unscramble_lines)
         -- comment the original line out
         line.comment = true
         subs[li] = line
@@ -127,12 +126,17 @@ function unscramble_by_duration(subs, sel)
 end
 
 
-function typewrite_line(line, frametime, index, linefun)
+function typewrite_line(line, framedur, index, linefun)
+    -- framedur: duration of single letter in frames, non-integer values will result in durations
+    --           of floor(framedur) or ceil(framedur) creating a decent approximation over the line
+
     -- text with tags removed
     local raw_text = util.trim(line.text:gsub("{.-}", ""))
     local to_add = {}
     local start_tags = line.text:match("^{.-}") or ""
     local text = line.text:sub(start_tags:len()+1)
+
+    local start_frame = aegisub.frame_from_ms(line.start_time)
 
     for i=1,unicode.len(raw_text) do
         local start = start_tags
@@ -161,12 +165,12 @@ function typewrite_line(line, frametime, index, linefun)
             end
         end
 
-        local st = line.start_time + ((i - 1) * frametime)
-        local et = line.start_time + (i * frametime)
+        local st = aegisub.ms_from_frame(start_frame + ((i-1) * framedur))
+        local et = aegisub.ms_from_frame(start_frame + (i * framedur))
 
         lines = linefun(st, et, line, start, active_char, rest)
 
-        for i,new_line in ipairs(lines) do
+        for ii,new_line in ipairs(lines) do
             to_add[#to_add+1] = {index, new_line}
         end
     end
