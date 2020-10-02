@@ -172,19 +172,22 @@
         "description": "Makes text appear one character at a time",
         "channels": {
           "stable": {
-            "version": "0.4.1",
+            "version": "0.5.0",
             "released": "2020-10-03",
             "default": true,
             "files": [
               {
                 "name": ".lua",
                 "url": "@{fileBaseUrl}@{fileName}",
-                "sha1": "EABEAC99989EFB1C6CDA9C2440CC379218B0DE2C"
+                "sha1": "E553329F7E2BEB43727FD7985EFD53AC2C74C99D"
               }
             ]
           }
         },
         "changelog": {
+          "0.5.0": [
+            "Rework interals, letting aegi handle frame-ms conversion"
+          ],
           "0.4.1": [
             "Fix bug causing letters to disappear (whoops)"
           ],

@@ -27,7 +27,7 @@ TODO: consider behaving nicely with \move and \t
 
 script_name = "Typewriter"
 script_description = "Makes text appear one character at a time"
-script_version = "0.4.0"
+script_version = "0.5.0"
 script_author = "petzku"
 script_namespace = "petzku.Typewriter"
 
@@ -201,16 +201,18 @@ end
 function generate_unscramble_lines(st, et, orig_line, start, char, rest)
     local SEPARATOR = "{\\alpha&HFF&}"
     local lines = {}
-    -- dumb assumption of 24/1.001 fps because lazy
-    local dur_frames = math.ceil((et - st) * (24/1001))
 
-    for j = 1,dur_frames do
+    local first_frame = aegisub.frame_from_ms(st)
+    local last_frame = aegisub.frame_from_ms(et) - 1
+    -- frame_from_ms gives the frame that contains the timestamp = the frame where the line shouldn't show up anymore
+
+    for f = first_frame, last_frame do
         local new = util.deep_copy(orig_line)
-        new.start_time = st + ((j - 1) * 1001/24)
-        new.end_time = math.min(st + (j * 1001/24), et)
+        new.start_time = aegisub.ms_from_frame(f)
+        new.end_time = aegisub.ms_from_frame(f+1)
 
         local newchar
-        if j == dur_frames then
+        if f == last_frame then
             newchar = char
         else
             newchar = randomchar(char, new.start_time)
