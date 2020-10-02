@@ -181,6 +181,7 @@ function generate_line(st, et, orig_line, start, char, rest)
     local new = util.deep_copy(orig_line)
     new.start_time = st
     new.end_time = et
+    start = start .. char
 
     -- hackfix for \N newline
     if start:sub(-1) == '\\' and rest:sub(1,1) == 'N' then
