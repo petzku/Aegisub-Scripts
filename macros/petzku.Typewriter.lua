@@ -27,7 +27,7 @@ TODO: consider behaving nicely with \move and \t
 
 script_name = "Typewriter"
 script_description = "Makes text appear one character at a time"
-script_version = "0.5.0"
+script_version = "0.5.1"
 script_author = "petzku"
 script_namespace = "petzku.Typewriter"
 
@@ -55,7 +55,18 @@ function randomchar(ch, time)
 end
 
 
-function typewrite_by_duration(subs, sel)
+function write_groups(subs, groups)
+    for j=#groups, 1, -1 do
+        local group = groups[j]
+        for i=#group, 1, -1 do
+            local index = group[i][1]
+            local line = group[i][2]
+            subs.insert(index, line)
+        end
+    end
+end
+
+function apply_by_duration(subs, sel, linefun)
     groups_to_add = {}
     for si, li in ipairs(sel) do
         local line = subs[li]
@@ -65,63 +76,39 @@ function typewrite_by_duration(subs, sel)
         local line_len = unicode.len(trimmed)
         -- for some reason, this errors but the above works
         -- local line_len = unicode.len(util.trim(line.text:gsub("{.-}", "")))
-        groups_to_add[#groups_to_add+1] = typewrite_line(line, duration_frames/line_len, li+1, generate_line)
+        groups_to_add[#groups_to_add+1] = typewrite_line(line, duration_frames/line_len, li+1, linefun)
         -- comment the original line out
         line.comment = true
         subs[li] = line
     end
-    for j=#groups_to_add, 1, -1 do
-        local group = groups_to_add[j]
-        for i=#group, 1, -1 do
-            local index = group[i][1]
-            local line = group[i][2]
-            subs.insert(index, line)
-        end
+    write_groups(subs, groups_to_add)
+end
+
+function apply_by_frame(subs, sel, linefun)
+    local groups_to_add = {}
+    for si, li in ipairs(sel) do
+        local line = subs[li]
+        groups_to_add[#groups_to_add+1] = typewrite_line(line, 1, li+1, linefun)
+        -- comment the original line out
+        line.comment = true
+        subs[li] = line
     end
+    write_groups(subs, groups_to_add)
+end
+
+
+function typewrite_by_duration(subs, sel)
+    apply_by_duration(subs, sel, generate_line)
     aegisub.set_undo_point("typewrite line length")
 end
 
 function typewrite_by_frame(subs, sel)
-    local groups_to_add = {}
-    for si, li in ipairs(sel) do
-        local line = subs[li]
-        groups_to_add[#groups_to_add+1] = typewrite_line(line, 1, li+1, generate_line)
-        -- comment the original line out
-        line.comment = true
-        subs[li] = line
-    end
-    for j=#groups_to_add, 1, -1 do
-        local group = groups_to_add[j]
-        for i=#group, 1, -1 do
-            local index = group[i][1]
-            local line = group[i][2]
-            subs.insert(index, line)
-        end
-    end
+    apply_by_frame(subs, sel, generate_line)
     aegisub.set_undo_point("typewrite frame-by-frame")
 end
 
 function unscramble_by_duration(subs, sel)
-    groups_to_add = {}
-    for si, li in ipairs(sel) do
-        local line = subs[li]
-
-        local duration_frames = aegisub.frame_from_ms(line.end_time) - aegisub.frame_from_ms(line.start_time)
-        local trimmed = util.trim(line.text:gsub("{.-}", ""))
-        local line_len = unicode.len(trimmed)
-        groups_to_add[#groups_to_add+1] = typewrite_line(line, duration_frames/line_len, li+1, generate_unscramble_lines)
-        -- comment the original line out
-        line.comment = true
-        subs[li] = line
-    end
-    for j=#groups_to_add, 1, -1 do
-        local group = groups_to_add[j]
-        for i=#group, 1, -1 do
-            local index = group[i][1]
-            local line = group[i][2]
-            subs.insert(index, line)
-        end
-    end
+    apply_by_duration(subs, sel, generate_unscramble_lines)
     aegisub.set_undo_point("unscramble line length")
 end
 
