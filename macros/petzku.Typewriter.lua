@@ -112,6 +112,10 @@ function unscramble_by_duration(subs, sel)
     aegisub.set_undo_point("unscramble line length")
 end
 
+function unscramble_static_halfway(subs, sel)
+    apply_by_duration(subs, sel, generate_unscramble_halfway)
+    aegisub.set_undo_point("unscramble first half of each letter")
+end
 
 function typewrite_line(line, framedur, index, linefun)
     -- framedur: duration of single letter in frames, non-integer values will result in durations
@@ -229,5 +233,6 @@ end
 depctrl:registerMacros{
     {"fbf", "Applies effect one char per frame", typewrite_by_frame},
     {"line", "Applies effect over duration of entire line", typewrite_by_duration},
-    {"unscramble", "Applies unscrambling effect over duration of line", unscramble_by_duration}
+    {"unscramble", "Applies unscrambling effect over duration of line", unscramble_by_duration},
+    {"unscramble half", "Applies unscrambling effect, finishing halfway before next letter", unscramble_static_halfway}
 }
