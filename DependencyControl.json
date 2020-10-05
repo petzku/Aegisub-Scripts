@@ -172,19 +172,26 @@
         "description": "Makes text appear one character at a time",
         "channels": {
           "stable": {
-            "version": "0.5.0",
-            "released": "2020-10-03",
+            "version": "0.5.2",
+            "released": "2020-10-05",
             "default": true,
             "files": [
               {
                 "name": ".lua",
                 "url": "@{fileBaseUrl}@{fileName}",
-                "sha1": "E553329F7E2BEB43727FD7985EFD53AC2C74C99D"
+                "sha1": "6BF5B82B5FB776B8036469CC01DCAE4214917930"
               }
             ]
           }
         },
         "changelog": {
+          "0.5.2": [
+            "Added unscramble mode allowing user to specify 'static duration' (i.e. how many frames letter should display as final before next letter appears)"
+          ],
+          "0.5.1": [
+            "Added unscramble mode 'halfway': letters become static after halfway point to next letter",
+            "Internal cleanup, code deduplication"
+          ],
           "0.5.0": [
             "Rework interals, letting aegi handle frame-ms conversion"
           ],

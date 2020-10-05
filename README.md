@@ -65,4 +65,6 @@ Takes a line and "writes" it character by character, making the characters appea
 
 Also has a mode to unscramble the text one letter at a time as it is being written out. The most recent character gets randomized each frame, with matching upper/lowercase for letters, numbers for numbers, and keeping any other characters untouched. You should probably either use a monospaced font, or use one of `\an1 \an4 \an7` with this, since the text width will not stay constant. Nothing I can do about that, sorry. Also note that this uses lua's `string.upper` and `string.lower`, so it might not handle non-ASCII letters correctly, depending on your locale settings.
 
-Currently does not play well with `\move` or `\t` tags.
+The unscrambling mode allows users to optionally specify how many frames a letter should stay static (i.e. displaying as itself instead of a random letter) before the next letter appears. This is one frame for the normal `unscramble` macro, half of the letter's "duration" for `unscramble half` (rounded down), and `unscramble N static` allows the user to specify a number of frames.
+
+Currently does not play well with `\move` or `\t` tags. Unlikely it ever will, but consider using lyger's FbfTransform if you need something like this.
