@@ -27,7 +27,7 @@ TODO: consider behaving nicely with \move and \t
 
 script_name = "Typewriter"
 script_description = "Makes text appear one character at a time"
-script_version = "0.5.1"
+script_version = "0.5.2"
 script_author = "petzku"
 script_namespace = "petzku.Typewriter"
 
@@ -115,6 +115,24 @@ end
 function unscramble_static_halfway(subs, sel)
     apply_by_duration(subs, sel, generate_unscramble_halfway)
     aegisub.set_undo_point("unscramble first half of each letter")
+end
+
+function unscramble_given_static(subs, sel)
+    -- dialog to ask user for number of frames for staticness
+    local pressed, result = aegisub.dialog.display({
+            { class = "label", label = "Enter number of frames letters should stay static: ",
+            x = 0, y = 0, width = 1, height = 1 },
+            { class = "intedit", name = "static_frames", value = 1,
+            x = 1, y = 0, width = 1, height = 1 }
+        }, {"Apply", "Cancel"}, {ok = "Apply", cancel = "Cancel"})
+    if pressed ~= "Apply" then return end
+    local static_frames = result["static_frames"]
+
+    function linefun(st, et, line, start, char, rest)
+        return generate_unscramble_lines(st, et, line, start, char, rest, static_frames)
+    end
+
+    apply_by_duration(subs, sel, linefun)
 end
 
 function typewrite_line(line, framedur, index, linefun)
@@ -234,5 +252,6 @@ depctrl:registerMacros{
     {"fbf", "Applies effect one char per frame", typewrite_by_frame},
     {"line", "Applies effect over duration of entire line", typewrite_by_duration},
     {"unscramble", "Applies unscrambling effect over duration of line", unscramble_by_duration},
-    {"unscramble half", "Applies unscrambling effect, finishing halfway before next letter", unscramble_static_halfway}
+    {"unscramble half", "Applies unscrambling effect, finishing halfway before next letter", unscramble_static_halfway},
+    {"unscramble N static", "Applies unscrambling effect with N static frames between letters", unscramble_given_static}
 }
