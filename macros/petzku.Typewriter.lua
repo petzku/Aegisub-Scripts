@@ -198,7 +198,14 @@ function generate_line(st, et, orig_line, start, char, rest)
     return {new}
 end
 
-function generate_unscramble_lines(st, et, orig_line, start, char, rest)
+function generate_unscramble_halfway(st, et, orig_line, start, char, rest)
+    local framedur = aegisub.frame_from_ms(et) - aegisub.frame_from_ms(st)
+
+    return generate_unscramble_lines(st, et, orig_line, start, char, rest, math.floor(framedur/2))
+end
+
+function generate_unscramble_lines(st, et, orig_line, start, char, rest, staticframes)
+    if not staticframes then staticframes = 1 end
     local SEPARATOR = "{\\alpha&HFF&}"
     local lines = {}
 
@@ -212,7 +219,7 @@ function generate_unscramble_lines(st, et, orig_line, start, char, rest)
         new.end_time = aegisub.ms_from_frame(f+1)
 
         local newchar
-        if f == last_frame then
+        if (last_frame - f) < staticframes then
             newchar = char
         else
             newchar = randomchar(char, new.start_time)
