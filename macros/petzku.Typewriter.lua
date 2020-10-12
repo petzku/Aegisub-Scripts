@@ -27,7 +27,7 @@ TODO: consider behaving nicely with \move and \t
 
 script_name = "Typewriter"
 script_description = "Makes text appear one character at a time"
-script_version = "0.5.2"
+script_version = "0.5.3"
 script_author = "petzku"
 script_namespace = "petzku.Typewriter"
 
@@ -134,6 +134,25 @@ function unscramble_given_static(subs, sel)
 
     apply_by_duration(subs, sel, linefun)
 end
+
+function unscramble_given_fade(subs, sel)
+    -- dialog to ask user for number of frames for staticness
+    local pressed, result = aegisub.dialog.display({
+            { class = "label", label = "Enter number of frames letters should stay fade in: ",
+            x = 0, y = 0, width = 1, height = 1 },
+            { class = "intedit", name = "fade_frames", value = 1,
+            x = 1, y = 0, width = 1, height = 1 }
+        }, {"Apply", "Cancel"}, {ok = "Apply", cancel = "Cancel"})
+    if pressed ~= "Apply" then return end
+    local fade_frames = result["fade_frames"]
+
+    function linefun(st, et, line, start, char, rest)
+        return generate_unscramble_lines_fading(st, et, line, start, char, rest, fade_frames)
+    end
+
+    apply_by_duration(subs, sel, linefun)
+end
+
 
 function typewrite_line(line, framedur, index, linefun)
     -- framedur: duration of single letter in frames, non-integer values will result in durations
@@ -248,10 +267,55 @@ function generate_unscramble_lines(st, et, orig_line, start, char, rest, staticf
     return lines
 end
 
+function make_alpha(t)
+    -- clamp and transform
+    t = math.min(math.max(t * 256, 0), 255)
+    return string.format("{\\alpha&H%2x&", t)
+end
+
+function generate_unscramble_lines_fading(st, et, orig_line, start, char, rest, fadedur)
+    if not fadedur then fadedur = 3 end
+    local staticframes = 1
+    local SEPARATOR = "{\\alpha&HFF&}"
+    local lines = {}
+
+    local first_frame = aegisub.frame_from_ms(st)
+    local last_frame = aegisub.frame_from_ms(et) - 1
+    -- frame_from_ms gives the frame that contains the timestamp = the frame where the line shouldn't show up anymore
+
+    if last_frame - first_frame < fadedur then fadedur = last_frame - first_frame end
+
+    for f = first_frame, last_frame do
+        local new = util.deep_copy(orig_line)
+        new.start_time = aegisub.ms_from_frame(f)
+        new.end_time = aegisub.ms_from_frame(f+1)
+
+        local newchar
+        if (last_frame - f) < staticframes then
+            newchar = char
+        else
+            newchar = make_alpha((first_frame-f+fadedur) / fadedur) .. randomchar(char, new.start_time)
+        end
+        -- hackfix for \N newline
+        if start:sub(-1) == '\\' and char == "N" then
+            new.text = start .. 'N' .. SEPARATOR .. rest
+        elseif char == '\\' and rest:sub(1,1) == 'N' then
+            new.text = start .. SEPARATOR .. '\\' .. rest
+        elseif rest ~= "" then
+            new.text = start .. newchar .. SEPARATOR .. rest
+        else
+            new.text = start .. newchar
+        end
+        lines[#lines+1] = new
+    end
+    return lines
+end
+
 depctrl:registerMacros{
     {"fbf", "Applies effect one char per frame", typewrite_by_frame},
     {"line", "Applies effect over duration of entire line", typewrite_by_duration},
     {"unscramble", "Applies unscrambling effect over duration of line", unscramble_by_duration},
     {"unscramble half", "Applies unscrambling effect, finishing halfway before next letter", unscramble_static_halfway},
-    {"unscramble N static", "Applies unscrambling effect with N static frames between letters", unscramble_given_static}
+    {"unscramble N static", "Applies unscrambling effect with N static frames between letters", unscramble_given_static},
+    {"unscramble N fade", "Applies unscrambling effect with letters fading in during first N frames", unscramble_given_fade}
 }
