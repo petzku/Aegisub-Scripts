@@ -138,7 +138,7 @@ end
 function unscramble_given_fade(subs, sel)
     -- dialog to ask user for number of frames for staticness
     local pressed, result = aegisub.dialog.display({
-            { class = "label", label = "Enter number of frames letters should stay fade in: ",
+            { class = "label", label = "Enter number of frames letters should fade in over: ",
             x = 0, y = 0, width = 1, height = 1 },
             { class = "intedit", name = "fade_frames", value = 1,
             x = 1, y = 0, width = 1, height = 1 }
