@@ -267,10 +267,15 @@ function generate_unscramble_lines(st, et, orig_line, start, char, rest, staticf
     return lines
 end
 
-function make_alpha(t)
+function make_alpha(f, dur)
+    local t = (dur - f) / (dur + 1)
     -- clamp and transform
     t = math.min(math.max(t * 256, 0), 255)
-    return string.format("{\\alpha&H%2x&", t)
+    if t > 0 then
+        return string.format("{\\alpha&H%02X&}", t)
+    else
+        return ""
+    end
 end
 
 function generate_unscramble_lines_fading(st, et, orig_line, start, char, rest, fadedur)
@@ -294,7 +299,7 @@ function generate_unscramble_lines_fading(st, et, orig_line, start, char, rest, 
         if (last_frame - f) < staticframes then
             newchar = char
         else
-            newchar = make_alpha((first_frame-f+fadedur) / fadedur) .. randomchar(char, new.start_time)
+            newchar = make_alpha(f - first_frame, fadedur) .. randomchar(char, new.start_time)
         end
         -- hackfix for \N newline
         if start:sub(-1) == '\\' and char == "N" then
