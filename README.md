@@ -43,6 +43,19 @@ The full syntax for this can be found in the script's README comments. I do not 
 
 Tells you the distances between points in a vector clip on the selected line. The utility of this is debatable, but I find it useful to quickly compare sizes of similar signs or text in different parts of the video.
 
+### Combine Gradient Lines
+
+Combines consecutive identical stripes of a rectangular clip gradient. Say you create a 5px-wide stripe gradient on a 1200 px wide shape, going from a color of `&H4C4CFF&` (soft pink-red color) to `&H2020FF&` (fairly bright red):
+
+```ass
+Comment: 0,0:00:00.00,0:00:05.00,Default,,0,0,0,,{\pos(799,613)\c&H4C4CFF&\p1}m 448 402 l 384 834 1520 786 1666 250
+Comment: 0,0:00:00.00,0:00:05.00,Default,,0,0,0,,{\pos(799,613)\c&H2020FF&\p1}m 448 402 l 384 834 1520 786 1666 250
+```
+
+This results in lots of lines that have adjacent clips but are otherwise identical. The macro goes through these, and combines two consecutive lines iff they both have a rectangular clip, the two lines are identical except for the clip, and the rectangles share one edge.
+
+Should work on any properly formed rect-clip-using gradients. Probably produces weird results if ran on anything else.
+
 ### Encode Clip
 
 **Requires `mpv` to work**. The executable must be on your PATH. (May allow configuration at a later date. You can manually edit the script file though)
