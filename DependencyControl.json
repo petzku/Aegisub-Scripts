@@ -77,6 +77,36 @@
             "Added DependencyControl"
           ]
         }
+      },"petzku.CombineGradientLines": {
+        "url": "@{baseUrl}#@{namespace}",
+        "author": "petzku",
+        "name": "Combine Gradient Lines",
+        "description": "Combines identical rect-clip gradient lines",
+        "channels": {
+          "stable": {
+            "version": "0.2.1",
+            "released": "2020-10-24",
+            "default": true,
+            "files": [
+              {
+                "name": ".lua",
+                "url": "@{fileBaseUrl}@{fileName}",
+                "sha1": "EF74A24DA384CEE52C99269A8083F07B65F675BF"
+              }
+            ]
+          }
+        },
+        "changelog": {
+          "0.2.1": [
+            "Added DependencyControl"
+          ],
+          "0.2.0": [
+            "Clean up code a bunch"
+          ],
+          "0.1.0": [
+            "Created"
+          ]
+        }
       },
       "petzku.EncodeClip": {
         "url": "@{baseUrl}#@{namespace}",
