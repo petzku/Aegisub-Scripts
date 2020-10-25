@@ -21,8 +21,11 @@ script_author = 'petzku'
 script_namespace = "petzku.EncodeClip"
 script_version = '0.3.1'
 
-local DependencyControl = require("l0.DependencyControl")
-local depctrl = DependencyControl{feed = "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json"}
+
+local haveDepCtrl, DependencyControl, depctrl = pcall(require, "l0.DependencyControl")
+if haveDepCtrl then
+    depctrl = DependencyControl{feed = "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json"}
+end
 
 -- "\" on windows, "/" on any other system
 local pathsep = package.config:sub(1,1)
@@ -98,7 +101,14 @@ function make_raw_clip(subs, sel, _)
     make_clip(subs, sel, false)
 end
 
-depctrl:registerMacros{
+local macros = {
     {tr'Clip with subtitles', script_description, make_clip},
     {tr'Clip raw video', tr'Encode a clip encompassing the current selection, but without subtitles', make_raw_clip}
 }
+if haveDepCtrl then
+    depctrl:registerMacros(macros)
+else
+    for i,macro in ipairs(macros) do
+        aegisub.register_macro(unpack(macro))
+    end
+end
