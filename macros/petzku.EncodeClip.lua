@@ -19,7 +19,7 @@ script_name = tr'Encode Clip'
 script_description = tr'Encode a hardsubbed clip encompassing the current selection'
 script_author = 'petzku'
 script_namespace = "petzku.EncodeClip"
-script_version = '0.3.0'
+script_version = '0.3.1'
 
 local DependencyControl = require("l0.DependencyControl")
 local depctrl = DependencyControl{feed = "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json"}
@@ -58,6 +58,7 @@ function make_clip(subs, sel, hardsub)
         table.insert(commands, '--sub-file="%s"')
         cmd = table.concat(commands, ' '):format(t1, t2, vidfile, outfile, subfile)
     else
+        table.insert(commands, '--sid=no')
         outfile = outfile:sub(1, -5) .. "_raw.mp4"
         cmd = table.concat(commands, ' '):format(t1, t2, vidfile, outfile)
     end
