@@ -109,6 +109,7 @@ if haveDepCtrl then
     depctrl:registerMacros(macros)
 else
     for i,macro in ipairs(macros) do
-        aegisub.register_macro(unpack(macro))
+        local name, desc, fun = unpack(macro)
+        aegisub.register_macro(script_name .. '/' .. name, desc, fun)
     end
 end
