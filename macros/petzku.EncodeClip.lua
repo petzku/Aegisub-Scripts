@@ -19,7 +19,7 @@ script_name = tr'Encode Clip'
 script_description = tr'Encode a hardsubbed clip encompassing the current selection'
 script_author = 'petzku'
 script_namespace = "petzku.EncodeClip"
-script_version = '0.3.1'
+script_version = '0.3.2'
 
 
 local haveDepCtrl, DependencyControl, depctrl = pcall(require, "l0.DependencyControl")
@@ -42,8 +42,15 @@ function make_clip(subs, sel, hardsub)
     local props = aegisub.project_properties()
     local vidfile = props.video_file
     local subfile = aegisub.decode_path("?script") .. pathsep .. aegisub.file_name()
-    --local outfile = vidfile:gsub('.m[kp][v4]$', '') .. ('_%.3f-%.3f'):format(t1, t2) .. '.mp4'
-    local outfile = subfile:sub(1, -5) .. ('_%.3f-%.3f'):format(t1, t2) .. '.mp4'
+
+    local outfile
+    if aegisub.decode_path("?script") == "?script" then
+        -- no script file to work with, save next to source video instead
+        outfile = vidfile:gsub('\\.[^.]$', '') .. ('_%.3f-%.3f'):format(t1, t2) .. '.mp4'
+        hardsub = false
+    else
+        outfile = subfile:gsub('\\.[^.]$', '') .. ('_%.3f-%.3f'):format(t1, t2) .. '.mp4'
+    end
 
     -- TODO: allow arbitrary command line parameters from user
     local commands = {
