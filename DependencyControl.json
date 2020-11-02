@@ -115,19 +115,22 @@
         "description": "Encode a hardsubbed clip encompassing the current selection",
         "channels": {
           "stable": {
-            "version": "0.3.2",
-            "released": "2020-11-01",
+            "version": "0.3.3",
+            "released": "2020-11-02",
             "default": true,
             "files": [
               {
                 "name": ".lua",
                 "url": "@{fileBaseUrl}@{fileName}",
-                "sha1": "A3E1CEAE3188FECFACB2529A70C257C20FD5688E"
+                "sha1": "5EBECF1524D1E698497875681B13C532EBF82472"
               }
             ]
           }
         },
         "changelog": {
+          "0.3.3": [
+            "Fix typo in output file generation"
+          ],
           "0.3.2": [
             "Fallback to video file location if missing subtitle file"
           ],
