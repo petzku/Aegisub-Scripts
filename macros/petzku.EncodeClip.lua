@@ -19,7 +19,7 @@ script_name = tr'Encode Clip'
 script_description = tr'Encode a hardsubbed clip encompassing the current selection'
 script_author = 'petzku'
 script_namespace = "petzku.EncodeClip"
-script_version = '0.3.3'
+script_version = '0.3.4'
 
 
 local haveDepCtrl, DependencyControl, depctrl = pcall(require, "l0.DependencyControl")
@@ -60,7 +60,8 @@ function make_clip(subs, sel, hardsub)
         '--end=%.3f',
         '"%s"',
         '--vf=format=yuv420p',
-        '--o="%s"'
+        '--o="%s"',
+        '--ovcopts="profile=main,level=4.1,crf=23"'
     }
 
     local cmd
