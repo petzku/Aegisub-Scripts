@@ -19,7 +19,7 @@ script_name = tr'Encode Clip'
 script_description = tr'Encode various clips from the current selection'
 script_author = 'petzku'
 script_namespace = "petzku.EncodeClip"
-script_version = '0.4.1'
+script_version = '0.5.0'
 
 
 local haveDepCtrl, DependencyControl, depctrl = pcall(require, "l0.DependencyControl")
@@ -182,6 +182,24 @@ function run_cmd(cmd, quiet)
     return output
 end
 
+function show_dialog(subs, sel)
+    local VIDEO = "Video clip"
+    local AUDIO = "Audio-only clip"
+    local diag = {
+        {class = 'label', x=0, y=0, label = "Settings for video clip: "},
+        {class = 'checkbox', x=1, y=0, label = "Subs", hint = "Enable subtitles in output", name = 'subs', value = true},
+        {class = 'checkbox', x=2, y=0, label = "Audio", hint = "Enable audio in output", name = 'audio', value = true}
+    }
+    local buttons = {AUDIO, VIDEO, "Cancel"}
+    btn, values = aegisub.dialog.display(diag, buttons)
+
+    if btn == AUDIO then
+        make_audio_clip(subs, sel)
+    elseif btn == VIDEO then
+        make_clip(subs, sel, values['subs'], values['audio'])
+    end
+end
+
 function make_hardsub_clip(subs, sel, _)
     make_clip(subs, sel, true, true)
 end
@@ -203,7 +221,8 @@ local macros = {
     {tr'Clip raw video',        tr'Encode a clip encompassing the current selection, but without subtitles', make_raw_clip},
     {tr'Clip with subtitles (no audio)',tr'Encode a hardsubbed clip encompassing the current selection, but without audio', make_hardsub_clip_muted},
     {tr'Clip raw video (no audio)',     tr'Encode a clip encompassing the current selection of the video only', make_raw_clip_muted},
-    {tr'Clip audio only',       tr'Clip just the audio for the selection', make_audio_clip}
+    {tr'Clip audio only',       tr'Clip just the audio for the selection', make_audio_clip},
+    {tr'Clipping GUI',          tr'GUI for all your video/audio clipping needs', show_dialog}
 }
 if haveDepCtrl then
     depctrl:registerMacros(macros)
