@@ -16,10 +16,10 @@
 local tr = aegisub.gettext
 
 script_name = tr'Encode Clip'
-script_description = tr'Encode a hardsubbed clip encompassing the current selection'
+script_description = tr'Encode various clips from the current selection'
 script_author = 'petzku'
 script_namespace = "petzku.EncodeClip"
-script_version = '0.3.4'
+script_version = '0.4.0'
 
 
 local haveDepCtrl, DependencyControl, depctrl = pcall(require, "l0.DependencyControl")
@@ -31,13 +31,19 @@ end
 local pathsep = package.config:sub(1,1)
 local is_windows = pathsep == "\\"
 
-function make_clip(subs, sel, hardsub)
+function calc_start_end(subs, sel)
     local t1, t2 = math.huge, 0
     for _, i in ipairs(sel) do
         t1 = math.min(t1, subs[i].start_time)
         t2 = math.max(t2, subs[i].end_time)
     end
-    local t1, t2 = t1/1000, t2/1000
+    return t1/1000, t2/1000
+end
+
+function make_clip(subs, sel, hardsub, audio)
+    if audio == nil then audio = true end --encode with audio by default
+
+    local t1, t2 = calc_start_end(subs, sel)
 
     local props = aegisub.project_properties()
     local vidfile = props.video_file
@@ -46,35 +52,81 @@ function make_clip(subs, sel, hardsub)
     local outfile
     if aegisub.decode_path("?script") == "?script" then
         -- no script file to work with, save next to source video instead
-        outfile = vidfile:gsub('%.[^.]+$', '') .. ('_%.3f-%.3f'):format(t1, t2) .. '.mp4'
+        outfile = vidfile
         hardsub = false
     else
-        outfile = subfile:gsub('%.[^.]+$', '') .. ('_%.3f-%.3f'):format(t1, t2) .. '.mp4'
+        outfile = subfile
+    end
+    outfile = outfile:gsub('%.[^.]+$', '') .. ('_%.3f-%.3f'):format(t1, t2) .. '%s.mp4'
+
+    local postfix = ""
+
+    local audio_opts
+    if audio then
+        audio_opts = table.concat({
+            '--oac=aac',
+            '--oacopts="b=256k,frame_size=1024"'
+        }, ' ')
+    else
+        audio_opts = '--audio=no'
+        postfix = postfix .. "_noaudio"
+    end
+
+    local sub_opts
+    if hardsub then
+        sub_opts = table.concat({
+            '--sub-font-provider=auto',
+            '--sub-file="%s"'
+        }, ' '):format(subfile)
+    else
+        sub_opts = '--sid=no'
+        postfix = postfix .. "_nosub"
     end
 
     -- TODO: allow arbitrary command line parameters from user
     local commands = {
         'mpv', -- TODO: let user specify mpv location if not on PATH
-        '--sub-font-provider=auto',
         '--start=%.3f',
         '--end=%.3f',
         '"%s"',
         '--vf=format=yuv420p',
         '--o="%s"',
         '--ovcopts="profile=main,level=4.1,crf=23"',
+        audio_opts,
+        sub_opts
+    }
+
+    outfile = outfile:format(postfix)
+    local cmd = table.concat(commands, ' '):format(t1, t2, vidfile, outfile)
+    run_cmd(cmd)
+end
+
+function make_audio_clip(subs, sel)
+    local t1, t2 = calc_start_end(subs, sel)
+
+    local props = aegisub.project_properties()
+    local vidfile = props.video_file
+
+    local outfile
+    if aegisub.decode_path("?script") == "?script" then
+        outfile = vidfile
+    else
+        outfile = aegisub.decode_path("?script") .. pathsep .. aegisub.file_name()
+    end
+    outfile = outfile:gsub('%.[^.]+$', '') .. ('_%.3f-%.3f'):format(t1, t2) .. '.aac'
+
+    local commands = {
+        'mpv',
+        '--start=%.3f',
+        '--end=%.3f',
+        '"%s"',
+        '--video=no',
+        '--o="%s"',
         '--oac=aac',
         '--oacopts="b=256k,frame_size=1024"'
     }
 
-    local cmd
-    if hardsub then
-        table.insert(commands, '--sub-file="%s"')
-        cmd = table.concat(commands, ' '):format(t1, t2, vidfile, outfile, subfile)
-    else
-        table.insert(commands, '--sid=no')
-        outfile = outfile:sub(1, -5) .. "_raw.mp4"
-        cmd = table.concat(commands, ' '):format(t1, t2, vidfile, outfile)
-    end
+    local cmd = table.concat(commands, ' '):format(t1, t2, vidfile, outfile)
     run_cmd(cmd)
 end
 
@@ -104,16 +156,27 @@ function run_cmd(cmd)
 end
 
 function make_hardsub_clip(subs, sel, _)
-    make_clip(subs, sel, true)
+    make_clip(subs, sel, true, true)
 end
 
 function make_raw_clip(subs, sel, _)
-    make_clip(subs, sel, false)
+    make_clip(subs, sel, false, true)
+end
+
+function make_hardsub_clip_muted(subs, sel, _)
+    make_clip(subs, sel, true, false)
+end
+
+function make_raw_clip_muted(subs, sel, _)
+    make_clip(subs, sel, false, false)
 end
 
 local macros = {
-    {tr'Clip with subtitles', script_description, make_clip},
-    {tr'Clip raw video', tr'Encode a clip encompassing the current selection, but without subtitles', make_raw_clip}
+    {tr'Clip with subtitles',   tr'Encode a hardsubbed clip encompassing the current selection', make_hardsub_clip},
+    {tr'Clip raw video',        tr'Encode a clip encompassing the current selection, but without subtitles', make_raw_clip},
+    {tr'Clip with subtitles (no audio)',tr'Encode a hardsubbed clip encompassing the current selection, but without audio', make_hardsub_clip_muted},
+    {tr'Clip raw video (no audio)',     tr'Encode a clip encompassing the current selection of the video only', make_raw_clip_muted},
+    {tr'Clip audio only',       tr'Clip just the audio for the selection', make_audio_clip}
 }
 if haveDepCtrl then
     depctrl:registerMacros(macros)
