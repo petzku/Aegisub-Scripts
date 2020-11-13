@@ -19,7 +19,7 @@ script_name = tr'Encode Clip'
 script_description = tr'Encode various clips from the current selection'
 script_author = 'petzku'
 script_namespace = "petzku.EncodeClip"
-script_version = '0.4.0'
+script_version = '0.4.1'
 
 
 local haveDepCtrl, DependencyControl, depctrl = pcall(require, "l0.DependencyControl")
@@ -31,7 +31,26 @@ end
 local pathsep = package.config:sub(1,1)
 local is_windows = pathsep == "\\"
 
-function calc_start_end(subs, sel)
+-- find the best AAC encoder available to us, since ffmpeg-internal is Bad
+-- mpv *should* support --oac="aac_at,aac_mf,libfdk_aac,aac", but it doesn't so we do this
+local aac_encoder = nil
+local function best_aac_encoder()
+    if aac_encoder ~= nil then
+        return aac_encoder
+    end
+    local priorities = {aac = 0, libfdk_aac = 1, aac_mf = 2, aac_at = 3}
+    local best = "aac"
+    for line in run_cmd("mpv --oac=help", true):gmatch("[^\r\n]+") do
+        local enc = line:match("--oac=(%S*aac%S*)")
+        if enc and priorities[enc] and priorities[enc] > priorities[best] then
+            best = enc
+        end
+    end
+    aac_encoder = best
+    return best
+end
+
+local function calc_start_end(subs, sel)
     local t1, t2 = math.huge, 0
     for _, i in ipairs(sel) do
         t1 = math.min(t1, subs[i].start_time)
@@ -64,7 +83,7 @@ function make_clip(subs, sel, hardsub, audio)
     local audio_opts
     if audio then
         audio_opts = table.concat({
-            '--oac=aac',
+            '--oac=' .. best_aac_encoder(),
             '--oacopts="b=256k,frame_size=1024"'
         }, ' ')
     else
@@ -122,7 +141,7 @@ function make_audio_clip(subs, sel)
         '"%s"',
         '--video=no',
         '--o="%s"',
-        '--oac=aac',
+        '--oac=' .. best_aac_encoder(),
         '--oacopts="b=256k,frame_size=1024"'
     }
 
@@ -130,9 +149,12 @@ function make_audio_clip(subs, sel)
     run_cmd(cmd)
 end
 
-function run_cmd(cmd)
-    aegisub.log('running: ' .. cmd .. '\n')
+function run_cmd(cmd, quiet)
+    if not quiet then
+        aegisub.log('running: ' .. cmd .. '\n')
+    end
 
+    local output
     if is_windows then
         -- command lines over 256 bytes don't get run correctly, make a temporary file as a workaround
         local tmp = aegisub.decode_path('?temp' .. pathsep .. 'tmp.bat')
@@ -141,18 +163,23 @@ function run_cmd(cmd)
         f:close()
 
         local p = io.popen(tmp)
-        local output = p:read('*a')
-        aegisub.log(output)
+        output = p:read('*a')
+        if not quiet then
+            aegisub.log(output)
+        end
         p:close()
 
         os.execute('del ' .. tmp)
     else
         -- on linux, we should be fine to just execute the command directly
         local p = io.popen(cmd)
-        local output = p:read('*a')
-        aegisub.log(output)
+        output = p:read('*a')
+        if not quiet then
+            aegisub.log(output)
+        end
         p:close()
     end
+    return output
 end
 
 function make_hardsub_clip(subs, sel, _)
