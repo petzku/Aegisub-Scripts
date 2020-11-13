@@ -115,19 +115,27 @@
         "description": "Encode a hardsubbed clip encompassing the current selection",
         "channels": {
           "stable": {
-            "version": "0.3.4",
-            "released": "2020-11-11",
+            "version": "0.5.0",
+            "released": "2020-11-13",
             "default": true,
             "files": [
               {
                 "name": ".lua",
                 "url": "@{fileBaseUrl}@{fileName}",
-                "sha1": "D6E608A4D85B2A5A0CB89873ED64959948880A15"
+                "sha1": "2D72A704E62D33CA0E6E250982B04F34B167106C"
               }
             ]
           }
         },
         "changelog": {
+          "0.5.0": [
+            "Add GUI"
+          ],
+          "0.4.1": [
+            "Add macros to clip without audio as well as audio-only",
+            "Use non-ffmpeg AAC encoder if present",
+            "Set default audio bitrate to 256k"
+          ],
           "0.3.4": [
             "Fix artifacting in non-mpv players"
           ],
