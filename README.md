@@ -60,7 +60,9 @@ Should work on any properly formed rect-clip-using gradients. Probably produces 
 
 **Requires `mpv` to work**. The mpv executable must be on your PATH. Some resources for setting PATH on [Windows](https://docs.alfresco.com/4.2/tasks/fot-addpath.html), [macOS](https://apple.stackexchange.com/questions/51677/how-to-set-path-for-finder-launched-applications/51678), [Unix/Linux](https://unix.stackexchange.com/questions/286354/setting-path-environment-variable-for-desktop-launchers). Most Unix- and Unix-like systems will just install mpv on your system PATH anyway, so this shouldn't be a hassle.
 
-Encodes a clip of the currently open video, and optionally subtitles. Start and end time are determined from subtitle selection (even when encoding without subs). The resulting video is saved in the same directory as the subtitle file, with a name based on the subtitle file's name and selection times. For example: `01 Dialogue.ass` -> `01 Dialogue_45.960-62.250.mp4`. In case you have no script file open, it saves in a similar fashion in the video file's directory instead.
+Encodes a clip of the current video, with audio, video, and hardsubs toggleable. Start and end time are determined from subtitle selection. The resulting file is saved in the same directory as the subtitle file, with a name based on the subtitle file's name and selection times. For example: `01 Dialogue.ass` -> `01 Dialogue_45.960-62.250.mp4`. In case you have no subtitle file open, it saves in a similar fashion in the video file's directory instead.
+
+All five encoding modes are available through the GUI, as well as individual non-GUI macros.
 
 Thanks to The0x539 for the original version.
 
