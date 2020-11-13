@@ -61,7 +61,9 @@ function make_clip(subs, sel, hardsub)
         '"%s"',
         '--vf=format=yuv420p',
         '--o="%s"',
-        '--ovcopts="profile=main,level=4.1,crf=23"'
+        '--ovcopts="profile=main,level=4.1,crf=23"',
+        '--oac=aac',
+        '--oacopts="b=256k,frame_size=1024"'
     }
 
     local cmd
