@@ -28,15 +28,11 @@ resample = (src, sub, sel) ->
     oldx, oldy = nil, nil
     newx, newy = nil, nil
     data\modTags {"angle_x"}, (tag) ->
-      aegisub.log "Found frx: %s\n", tostring(tag)
-      for k, v in pairs tag
-        aegisub.log "%s: %s\n", k, v
       oldx = tag.value
       newx = mod_rotation(tag.value, src, target)
       tag.value = newx
       tag
     data\modTags {"angle_y"}, (tag) ->
-      aegisub.log "Found fry: %s\n", tostring(tag)
       oldy = tag.value
       newy = mod_rotation(tag.value, src, target)
       tag.value = newy
@@ -48,10 +44,6 @@ resample = (src, sub, sel) ->
     --       which is probably undesirable. Current workaround is to insert the tags at the start of the section.
     -- TODO: figure out how to automatically split bord/shad if present
     if oldx and oldx != newx
-      -- scale_y, bord_y, shad_y = style.scale_y, style.outline, style.shadow
-      -- data\modTags {"scale_y"}, (tag) -> scale_y = tag.value
-      -- data\modTags {"outline_y"}, (tag) -> bord_y = tag.value
-      -- data\modTags {"shadow_y"}, (tag) -> shad_y = tag.value
       scale = mod_scale(oldx, newx)
       data\insertDefaultTags {"scale_y", "outline_y", "shadow_y"}, 1, 1
       data\modTags {"scale_y", "outline_y", "shadow_y"}, (tag) ->
