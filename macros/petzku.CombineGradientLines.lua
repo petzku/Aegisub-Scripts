@@ -17,7 +17,7 @@
 script_name = "Combine Gradient Lines"
 script_description = "Combines identical rect-clip gradient lines"
 script_author = "petzku"
-script_version = "0.2.1"
+script_version = "0.2.2"
 script_namespace = "petzku.CombineGradientLines"
 
 local DependencyControl = require("l0.DependencyControl")
@@ -45,7 +45,7 @@ function combine_gradient_lines(subs, sel)
     for si, li in ipairs(sel) do
         local line = subs[li]
         aegisub.log(5, "started on line: %s\n", line.text)
-        local s, e, x1,y1, x2,y2 = line.text:find("\\clip%(([%d.]+),([%d.]+),([%d.]+),([%d.]+)%)")
+        local s, e, x1,y1, x2,y2 = line.text:find("\\clip%((-?[%d.]+),(-?[%d.]+),(-?[%d.]+),(-?[%d.]+)%)")
 
         if s then --imagine having a continue statement
             local start, rest = line.text:sub(1, s-1), line.text:sub(e+1, -1)
