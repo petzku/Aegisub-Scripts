@@ -10,6 +10,8 @@ Scripts I make will use [DependencyControl](https://github.com/TypesettingTools/
 
 ## Scripts
 
+Generally, the more useful scripts here will be available to download through DependencyControl. Very minor and very WIP scripts are less likely to be published there.
+
 ### Accenter
 
 Adds diacritics (accents) to lines based on inline comments. Sometimes you want to use glyphs that don't exist in a font, but don't want to or can't edit the font. So you add lines with the shapes you want. But maybe you don't want to position them manually, or maybe the script isn't final yet so you can't. Enter Accenter. Fairly simple instructions given before a character get turned into a line with a diacritic at the character's position.
@@ -73,6 +75,18 @@ Takes a line with a partial-duration move and extends it to the line's full dura
 ### Jump to Next++
 
 Adds a mode to unanimated's [Jump to Next](https://github.com/unanimated/luaegisub/blob/master/ua.JumpToNext.lua) script, allowing you to jump by lines' start and end times. The script should work standalone too, if these are the only features you want out of it.
+
+### Resample
+
+Corrects 3D-rotations (`\frx\fry`) when resampling script resolutions. Uses trigonometry instead of the classic "multiply by the ratio of the resolutions" and also scales subtitle dimensions when necessary, so this handles even extreme rotations correctly, or at least very nearly so.
+
+Very much WIP. Currently only supports resampling from 720p, and does not always handle in-line `bord` and `shad` tags correctly. Also, I've been told the math I've used relies on incorrect assumptions, but it seemed to work correctly in all my testing.
+
+### Shake
+
+"Shakes" each line in the selection, randomizing its position within a given radius. Takes two numbers, one for the amplitude (= shake radius, in pixels) for the first line, the other for the last line. Interpolates the amplitude linearly between these two.
+
+Typically, you would want the lines to be frame-by-frame, but the script doesn't actually enforce this at all. The positions before shaking don't have to be aligned either. So you could split the frames to match a lower-framerate animation, or run the script on an already-motiontracked sign.
 
 ### Typewriter
 
