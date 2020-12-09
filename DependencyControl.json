@@ -84,19 +84,22 @@
         "description": "Combines identical rect-clip gradient lines",
         "channels": {
           "stable": {
-            "version": "0.2.1",
+            "version": "0.2.2",
             "released": "2020-10-24",
             "default": true,
             "files": [
               {
                 "name": ".lua",
                 "url": "@{fileBaseUrl}@{fileName}",
-                "sha1": "EF74A24DA384CEE52C99269A8083F07B65F675BF"
+                "sha1": "B6875A65E1500ABD506E7FD0DD3599C0B07A2146"
               }
             ]
           }
         },
         "changelog": {
+          "0.2.2": [
+            "Fix handling of negative coordinates in clips"
+          ],
           "0.2.1": [
             "Added DependencyControl"
           ],
@@ -115,19 +118,22 @@
         "description": "Encode a hardsubbed clip encompassing the current selection",
         "channels": {
           "stable": {
-            "version": "0.5.0",
+            "version": "0.5.1",
             "released": "2020-11-13",
             "default": true,
             "files": [
               {
                 "name": ".lua",
                 "url": "@{fileBaseUrl}@{fileName}",
-                "sha1": "2D72A704E62D33CA0E6E250982B04F34B167106C"
+                "sha1": "E6071D993AD5C62B00516AD4F96F3379F6FEE4BE"
               }
             ]
           }
         },
         "changelog": {
+          "0.5.1": [
+            "Allow Aegisub to autotranslate GUI text"
+          ],
           "0.5.0": [
             "Add GUI"
           ],
