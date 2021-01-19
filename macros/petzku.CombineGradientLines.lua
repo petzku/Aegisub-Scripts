@@ -69,39 +69,35 @@ function combine_gradient_lines(subs, sel)
                 aegisub.log(5, "combining...\n")
                 -- nothing's changed, try to combine
                 local px1, py1, px2, py2 = unpack(prevclip)
+
+                local function conditional_combine(comp1, comp2)
+                    if comp1 == 0 then
+                        return extend_prev(subs, prev, px1,py1, x2,y2)
+                    elseif comp2 == 0 then
+                        return extend_prev(subs, prev, x1,y1, px2,py2)
+                    else
+                        -- just in case: gap or overlap, do nothing
+                        aegisub.log(5, "skipping (no matching co-ords)\n")
+                        return
+                    end
+                end
+
+                local p
                 if x1 - px1 == 0 and x2 - px2 == 0 then
                     -- x co-ords match -> combine y co-ords
-                    if y1 - py2 == 0 then
-                        prev = extend_prev(subs, prev, x1,py1, x2,y2)
-                        removed = removed + 1
-                    elseif y2 - py1 == 0 then
-                        prev = extend_prev(subs, prev, x1,y1, x2,py2)
-                        removed = removed + 1
-                    else
-                        -- just in case: gap or overlap, do nothing
-                        aegisub.log(5, "skipping (no matching y co-ords)\n")
-                        prev = {li, line, clip, start, rest}
-                        table.insert(new_sel, li-removed)
-                    end
+                    p = conditional_combine(y1-py2, y2-py1)
                 elseif y1 - py1 == 0 and y2 - py2 == 0 then
                     -- combine x co-ords
-                    if x1 - px2 == 0 then
-                        prev = extend_prev(subs, prev, px1,y1, x2,y2)
-                        removed = removed + 1
-                    elseif x2 - px1 == 0 then
-                        prev = extend_prev(subs, prev, x1,y1, px2,y2)
-                        removed = removed + 1
-                    else
-                        -- just in case: gap or overlap, do nothing
-                        aegisub.log(5, "skipping (no matching x co-ords)\n")
-                        prev = {li, line, clip, start, rest}
-                        table.insert(new_sel, li-removed)
-                    end
+                    p = conditional_combine(y1-py2, y2-py1)
+                end
+                if p then
+                    prev = p
+                    removed = removed + 1
                 else
-                    -- neither matches, don't try to combine
                     prev = {li, line, clip, start, rest}
                     table.insert(new_sel, li-removed)
                 end
+
                 table.insert(to_delete, li)
             else
                 prev = {li, line, clip, start, rest}
