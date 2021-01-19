@@ -29,7 +29,7 @@ function generate_clipstr(corners)
 end
 
 function extend_prev(subs, prev, x1, y1, x2, y2)
-    local previ, prevline, prevclip, prevstart, prevrest = unpack(prev)
+    local previ, prevline, _, prevstart, prevrest = unpack(prev)
     local newclip = {x1, y1, x2, y2}
     local clipstr = generate_clipstr(newclip)
     prevline.text = prevstart .. clipstr .. prevrest
@@ -50,69 +50,66 @@ function combine_gradient_lines(subs, sel)
         aegisub.log(5, "started on line: %s\n", line.text)
         local s, e, x1,y1, x2,y2 = line.text:find("\\clip%((-?[%d.]+),(-?[%d.]+),(-?[%d.]+),(-?[%d.]+)%)")
 
-        if not s then --imagine having a continue statement
+        if not s then
             table.insert(new_sel, li-removed)
+            goto continue --based luaJIT
+        end
+        local start, rest = line.text:sub(1, s-1), line.text:sub(e+1, -1)
+
+        local clip = {tonumber(x1), tonumber(y1), tonumber(x2), tonumber(y2)}
+        if not prev then
+            prev = {li, line, clip, start, rest}
+            aegisub.log(5, "No prev entry... (should happen only once)\n")
+            table.insert(new_sel, li)
         else
-            local start, rest = line.text:sub(1, s-1), line.text:sub(e+1, -1)
+            local previ, prevline, prevclip, prevstart, prevrest = unpack(prev)
 
-            local clip = {tonumber(x1), tonumber(y1), tonumber(x2), tonumber(y2)}
-            if not prev then
-                prev = {li, line, clip, start, rest}
-                aegisub.log(5, "No prev entry... (should happen only once)\n")
-                table.insert(new_sel, li)
-            else
-                local previ, prevline, prevclip, prevstart, prevrest = unpack(prev)
-
-                aegisub.log(5, "prev: %d, %s, %s\n", previ, prevstart, prevrest)
-                if start == prevstart and rest == prevrest then
-                    local delete = true
-                    aegisub.log(5, "combining...\n")
-                    -- nothing's changed, try to combine
-                    local px1, py1, px2, py2 = unpack(prevclip)
-                    if x1 - px1 == 0 and x2 - px2 == 0 then
-                        -- x co-ords match -> combine y co-ords
-                        if y1 - py2 == 0 then
-                            prev = extend_prev(subs, prev, x1,py1, x2,y2)
-                            removed = removed + 1
-                        elseif y2 - py1 == 0 then
-                            prev = extend_prev(subs, prev, x1,y1, x2,py2)
-                            removed = removed + 1
-                        else
-                            -- just in case: gap or overlap, do nothing
-                            aegisub.log(5, "skipping (no matching y co-ords)\n")
-                            prev = {li, line, clip, start, rest}
-                            delete = false
-                            table.insert(new_sel, li-removed)
-                        end
-                    elseif y1 - py1 == 0 and y2 - py2 == 0 then
-                        -- combine x co-ords
-                        if x1 - px2 == 0 then
-                            prev = extend_prev(subs, prev, px1,y1, x2,y2)
-                            removed = removed + 1
-                        elseif x2 - px1 == 0 then
-                            prev = extend_prev(subs, prev, x1,y1, px2,y2)
-                            removed = removed + 1
-                        else
-                            -- just in case: gap or overlap, do nothing
-                            aegisub.log(5, "skipping (no matching x co-ords)\n")
-                            prev = {li, line, clip, start, rest}
-                            delete = false
-                            table.insert(new_sel, li-removed)
-                        end
+            aegisub.log(5, "prev: %d, %s, %s\n", previ, prevstart, prevrest)
+            if start == prevstart and rest == prevrest then
+                aegisub.log(5, "combining...\n")
+                -- nothing's changed, try to combine
+                local px1, py1, px2, py2 = unpack(prevclip)
+                if x1 - px1 == 0 and x2 - px2 == 0 then
+                    -- x co-ords match -> combine y co-ords
+                    if y1 - py2 == 0 then
+                        prev = extend_prev(subs, prev, x1,py1, x2,y2)
+                        removed = removed + 1
+                    elseif y2 - py1 == 0 then
+                        prev = extend_prev(subs, prev, x1,y1, x2,py2)
+                        removed = removed + 1
                     else
-                        -- neither matches, don't try to combine
+                        -- just in case: gap or overlap, do nothing
+                        aegisub.log(5, "skipping (no matching y co-ords)\n")
                         prev = {li, line, clip, start, rest}
-                        delete = false
                         table.insert(new_sel, li-removed)
                     end
-                    table.insert(to_delete, li)
+                elseif y1 - py1 == 0 and y2 - py2 == 0 then
+                    -- combine x co-ords
+                    if x1 - px2 == 0 then
+                        prev = extend_prev(subs, prev, px1,y1, x2,y2)
+                        removed = removed + 1
+                    elseif x2 - px1 == 0 then
+                        prev = extend_prev(subs, prev, x1,y1, px2,y2)
+                        removed = removed + 1
+                    else
+                        -- just in case: gap or overlap, do nothing
+                        aegisub.log(5, "skipping (no matching x co-ords)\n")
+                        prev = {li, line, clip, start, rest}
+                        table.insert(new_sel, li-removed)
+                    end
                 else
+                    -- neither matches, don't try to combine
                     prev = {li, line, clip, start, rest}
                     table.insert(new_sel, li-removed)
-                    aegisub.log(5, "mismatch, skipping\n")
                 end
+                table.insert(to_delete, li)
+            else
+                prev = {li, line, clip, start, rest}
+                table.insert(new_sel, li-removed)
+                aegisub.log(5, "mismatch, skipping\n")
             end
         end
+        ::continue::
     end
 
     for i=#to_delete,1,-1 do
