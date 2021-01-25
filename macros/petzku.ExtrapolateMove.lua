@@ -29,12 +29,16 @@ script_version = "0.1.5"
 script_author = "petzku"
 script_namespace = "petzku.ExtrapolateMove"
 
-local DependencyControl = require("l0.DependencyControl")
-local depctrl = DependencyControl{
-    feed = "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json",
-    {"aegisub.util", "karaskel"}
-}
-local util, kara = depctrl:requireModules()
+local haveDepCtrl, DependencyControl, depctrl = pcall(require, "l0.DependencyControl")
+if haveDepCtrl then
+    depctrl = DependencyControl{
+        feed = "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json",
+        {'karaskel'}
+    }
+    depctrl:requireModules()
+else
+    require 'karaskel'
+end
 
 --- Extrapolates movement to full line length from given move
 -- coordinate order is the same as ASS \move tag
@@ -79,4 +83,8 @@ function extrapolate_move_to_full_line(subs, sel)
     end
 end
 
-depctrl:registerMacro(extrapolate_move_to_full_line)
+if haveDepCtrl then
+    depctrl:registerMacro(extrapolate_move_to_full_line)
+else
+    aegisub.register_macro(script_name, script_description, extrapolate_move_to_full_line)
+end
