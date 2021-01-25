@@ -25,7 +25,7 @@ to the line's time bounds.
 
 script_name = "Extrapolate Move"
 script_description = "Extrapolates a \\move tag to the line's full duration"
-script_version = "0.1.4"
+script_version = "0.1.5"
 script_author = "petzku"
 script_namespace = "petzku.ExtrapolateMove"
 
@@ -71,7 +71,7 @@ function extrapolate_move_to_full_line(subs, sel)
             end
             x1, y1, x2, y2 = extrapolate(0, line.duration, t[1], t[2], t[3], t[4], t[5], t[6])
             print(x1, y1, x2, y2)
-            newtag = string.format("\\move(%d,%d,%d,%d)", x1, y1, x2, y2)
+            newtag = string.format("\\move(%.2f,%.2f,%.2f,%.2f)", x1, y1, x2, y2)
             newtext = line.text:gsub(regex_movtag, newtag, 1)
             line.text = newtext
             subs[li] = line
