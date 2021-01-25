@@ -58,23 +58,20 @@ end
 
 function extrapolate_move_to_full_line(subs, sel)
     local meta, styles = karaskel.collect_head(subs, false)
-    print("!!", "starting extrapolate")
     for si, li in ipairs(sel) do
         local line = subs[li]
         karaskel.preproc_line(subs, meta, styles, line)
-        local duration = line.duration
-        
+
         -- kinda evil regex matching, can I avoid this?
-        regex_movtag = "%\\move%(%-?[%d%.]+,%-?[%d%.]+,%-?[%d%.]+,%-?[%d%.]+,%-?[%d%.]+,%-?[%d%.]+%)"
+        regex_movtag = "\\move%(%-?[%d.]+,%-?[%d.]+,%-?[%d.]+,%-?[%d.]+,%-?[%d.]+,%-?[%d.]+%)"
         movtag = line.text:match(regex_movtag)
         if movtag ~= nil then
             -- really ugly :/
             t = {}
-            for num in movtag:gmatch("%-?[%d%.]+") do
+            for num in movtag:gmatch("%-?[%d.]+") do
                 t[#t+1] = tonumber(num)
             end
-            x1, y1, x2, y2 = extrapolate(0, line.duration, t[1], t[2], t[3], t[4], t[5], t[6])
-            print(x1, y1, x2, y2)
+            x1, y1, x2, y2 = extrapolate(0, line.duration, unpack(t))
             newtag = string.format("\\move(%.2f,%.2f,%.2f,%.2f)", x1, y1, x2, y2)
             newtext = line.text:gsub(regex_movtag, newtag, 1)
             line.text = newtext
