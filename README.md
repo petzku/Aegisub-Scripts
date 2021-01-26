@@ -97,3 +97,9 @@ Also has a mode to unscramble the text one letter at a time as it is being writt
 The unscrambling mode allows users to optionally specify how many frames a letter should stay static (i.e. displaying as itself instead of a random letter) before the next letter appears. This is one frame for the normal `unscramble` macro, half of the letter's "duration" for `unscramble half` (rounded down), and `unscramble N static` allows the user to specify a number of frames.
 
 Currently does not play well with `\move` or `\t` tags. Unlikely it ever will, but consider using lyger's FbfTransform if you need something like this.
+
+## Not-really-published scripts
+
+### Cells Box
+
+Written to automatically generate the infoboxes in Cells at Work, because I wanted them to be consistent. Not on DepCtrl (now or likely ever), this is fairly specialised for the exact use case. Feel free to copy/use as you see fit, though.
