@@ -99,7 +99,7 @@ function generate_box(subs, sel)
         local drawing = string.format("m -25 0 l %d 0 %d %d -25 %d", width+25, width+25, height+35, height+35)
 
         local box, border = util.copy(line), util.copy(line)
-        box.text = "{"..pos.."\\c&HFFFFFF&\\4a&HFF&\\blur1"..fad.."\\p1}"..drawing
+        box.text = "{"..pos.."\\c&HFFFFFF&\\blur1"..fad.."\\p1}"..drawing
         box.layer = box.layer - 1
         border.text = "{"..pos.."\\bord2.5\\blur1"..fad..make_transforms(fstart, fend, line.duration).."\\p1}"..drawing
         border.layer = border.layer - 2
