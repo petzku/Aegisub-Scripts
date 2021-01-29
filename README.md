@@ -199,3 +199,12 @@ This was rather meant as a proof of concept than something that really sees use.
 ### Snapper
 
 Hotkeyable macros to snap the current line's start time to the previous keyframe, and end time to the next keyframe. Both runnable individually. If the start/end time is already on a keyframe, nothing will change.
+
+## Misc
+
+Miscellaneous scripts that are even more “not-for-use” than the above, and are thus not even found in the `macros/` folder.
+Most of these have been written as one-offs for someone else.
+
+### Prepare Gradient
+
+Automates most of the work necessary to create large numbers similarly gradiented lines. Select a line and run this macro, and it will comment the original, duplicate it once for each colour in the included list, set `\3c` for each line, and add a note in the `actor` field about a suitable strip width. Then run Gradient Everything to generate the gradient.

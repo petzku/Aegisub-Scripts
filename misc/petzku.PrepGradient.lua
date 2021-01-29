@@ -13,14 +13,15 @@ script_author = "petzku"
 script_namespace = "petzku.PrepGradient"
 script_version = "0.1.0"
 
-local util, kara = require 'aegisub.util', require 'karaskel'
+require 'karaskel'
+local util = require 'aegisub.util'
 
 local COLORS = {"&H0000FF&", "&H00AEFF&", "&H00FFF7&", "&H00FF4A&", "&HCAFF00&", "&HFF1C00&"}
 
 function process_line(line)
     local width = line.width + line.styleref.outline
-    local strip_width = math.floor(0.5 + width / 100) -- works as long as lines are at least 50px wide
-    
+    local strip_width = math.max(math.floor(0.5 + width / 100), 1)
+
     local lines = {}
     for i,c in ipairs(COLORS) do
         local l = util.copy(line)
@@ -35,7 +36,7 @@ function prepare_gradient(subs, sel)
     local meta, styles = karaskel.collect_head(subs, false)
     local groups = {}
 
-    for si, li in ipairs(sel) do
+    for _, li in ipairs(sel) do
         local line = subs[li]
         karaskel.preproc_line(subs, meta, styles, line)
         if not line.comment then
