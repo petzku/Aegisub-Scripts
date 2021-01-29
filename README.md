@@ -102,4 +102,6 @@ Currently does not play well with `\move` or `\t` tags. Unlikely it ever will, b
 
 ### Cells Box
 
-Written to automatically generate the infoboxes in Cells at Work, because I wanted them to be consistent. Not on DepCtrl (now or likely ever), this is fairly specialised for the exact use case. Feel free to copy/use as you see fit, though.
+Written to automatically generate the infoboxes in Cells at Work season 2, because I wanted them to be fast to generate, and more importantly, consistent. Not on DepCtrl (now or likely ever), this is fairly specialised for the exact use case. Feel free to copy/use as you see fit, though.
+
+Specifically, the macro expects the style defaults to be `\an4\fs50\fnPT Sans` and the sign to be in one ASS event, with lines split by `\N`. The lines are split into separate events and positioned accordingly, and a box is drawn around them. Fades are accounted for (border layer is \1aFF for the duration of the fade).
