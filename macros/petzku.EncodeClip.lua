@@ -19,7 +19,7 @@ script_name = tr'Encode Clip'
 script_description = tr'Encode various clips from the current selection'
 script_author = 'petzku'
 script_namespace = "petzku.EncodeClip"
-script_version = '0.5.1'
+script_version = '0.5.2'
 
 
 local haveDepCtrl, DependencyControl, depctrl = pcall(require, "l0.DependencyControl")
@@ -183,15 +183,15 @@ function run_cmd(cmd, quiet)
 end
 
 function show_dialog(subs, sel)
-    local VIDEO = tr"Video clip"
-    local AUDIO = tr"Audio-only clip"
+    local VIDEO = tr"&Video clip"
+    local AUDIO = tr"Audio-&only clip"
     local diag = {
         {class = 'label', x=0, y=0, label = tr"Settings for video clip: "},
-        {class = 'checkbox', x=1, y=0, label = tr"Subs", hint = tr"Enable subtitles in output", name = 'subs', value = true},
-        {class = 'checkbox', x=2, y=0, label = tr"Audio", hint = tr"Enable audio in output", name = 'audio', value = true}
+        {class = 'checkbox', x=1, y=0, label = tr"&Subs", hint = tr"Enable subtitles in output", name = 'subs', value = true},
+        {class = 'checkbox', x=2, y=0, label = tr"&Audio", hint = tr"Enable audio in output", name = 'audio', value = true}
     }
-    local buttons = {AUDIO, VIDEO, tr"Cancel"}
-    btn, values = aegisub.dialog.display(diag, buttons)
+    local buttons = {AUDIO, VIDEO, tr"&Cancel"}
+    local btn, values = aegisub.dialog.display(diag, buttons)
 
     if btn == AUDIO then
         make_audio_clip(subs, sel)

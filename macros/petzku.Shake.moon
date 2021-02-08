@@ -4,7 +4,7 @@ export script_name =        "Shake"
 export script_description = "Shakes text"
 export script_author =      "petzku"
 export script_namespace =   "petzku.Shake"
-export script_version =     "0.1.0"
+export script_version =     "0.1.1"
 
 DependencyControl = require "l0.DependencyControl"
 dep = DependencyControl{{"a-mo.LineCollection", "l0.ASSFoundation"}}
@@ -44,9 +44,9 @@ shake = (sub, sel, astart, aend) ->
 
 shakeGui = (sub, sel) ->
   diag = {
-    {class: 'label', label: "Amplitude at start", x: 0, y: 0},
+    {class: 'label', label: "Amplitude at &start", x: 0, y: 0},
     {class: 'floatedit', name: "astart", value: 50, x: 1, y: 0},
-    {class: 'label', label: "Amplitude at end", x: 0, y: 1},
+    {class: 'label', label: "Amplitude at &end", x: 0, y: 1},
     {class: 'floatedit', name: "aend", value: 30, x: 1, y: 1}
   }
   btn, vars = aegisub.dialog.display diag
