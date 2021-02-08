@@ -15,7 +15,7 @@
 script_name = "Accenter"
 script_description = "Automatically create accents for lines"
 script_author = "petzku"
-script_version = "0.2.5"
+script_version = "0.2.6"
 script_namespace = "petzku.Accenter"
 
 EFFECT = 'accent'

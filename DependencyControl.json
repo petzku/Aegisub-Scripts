@@ -19,19 +19,22 @@
         "description": "Automatically create accents for lines",
         "channels": {
           "stable": {
-            "version": "0.2.5",
-            "released": "2020-08-21",
+            "version": "0.2.6",
+            "released": "2021-02-08",
             "default": true,
             "files": [
               {
                 "name": ".lua",
                 "url": "@{fileBaseUrl}@{fileName}",
-                "sha1": "4EBF6CE3528BC293F47AF047D69981CA2E2AE18F"
+                "sha1": "491E70235DD3DA9F3D23B0461ABC84F050449E13"
               }
             ]
           }
         },
         "changelog": {
+          "0.2.6": [
+            "Made a bunch of variables local"
+          ],
           "0.2.5": [
             "Moved to 'stable' Git branch for DependencyControl"
           ],
@@ -77,7 +80,8 @@
             "Added DependencyControl"
           ]
         }
-      },"petzku.CombineGradientLines": {
+      },
+      "petzku.CombineGradientLines": {
         "url": "@{baseUrl}#@{namespace}",
         "author": "petzku",
         "name": "Combine Gradient Lines",
@@ -118,19 +122,22 @@
         "description": "Encode a hardsubbed clip encompassing the current selection",
         "channels": {
           "stable": {
-            "version": "0.5.1",
-            "released": "2020-11-13",
+            "version": "0.5.2",
+            "released": "2021-02-08",
             "default": true,
             "files": [
               {
                 "name": ".lua",
                 "url": "@{fileBaseUrl}@{fileName}",
-                "sha1": "E6071D993AD5C62B00516AD4F96F3379F6FEE4BE"
+                "sha1": "ABCF77B2E1CF70623BD02A16CF97CB69833AE672"
               }
             ]
           }
         },
         "changelog": {
+          "0.5.2": [
+            "Add alt-shortcut keys to the GUI"
+          ],
           "0.5.1": [
             "Allow Aegisub to autotranslate GUI text"
           ],
