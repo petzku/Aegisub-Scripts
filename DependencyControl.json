@@ -174,19 +174,23 @@
         "description": "Extrapolates a \\move tag to the line's full duration",
         "channels": {
           "stable": {
-            "version": "0.1.4",
-            "released": "2020-08-21",
+            "version": "0.1.5",
+            "released": "2021-02-08",
             "default": true,
             "files": [
               {
                 "name": ".lua",
                 "url": "@{fileBaseUrl}@{fileName}",
-                "sha1": "7A7F9FAB0AC75A5B290CF0F17BCC5C6E78E404D9"
+                "sha1": "0837987E87287D2414105067ABDF84AC2BA166A3"
               }
             ]
           }
         },
         "changelog": {
+          "0.1.5": [
+            "Now outputs .01 precision co-ords instead of integer",
+            "No longer requires dependencycontrol to work"
+          ],
           "0.1.4": [
             "Moved to 'stable' Git branch for DependencyControl"
           ],
