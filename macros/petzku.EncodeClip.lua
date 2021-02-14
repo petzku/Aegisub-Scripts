@@ -13,6 +13,20 @@
 -- ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 -- OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+--[[ README
+
+# Encode Clip
+
+Uses mpv (executable *must* be on your PATH!) to encode a clip of the current selection.
+
+Macros and GUI should be self-explanatory.
+
+Video and audio are taken from the file(s) loaded into Aegisub, and subtitles from the active script.
+
+TODO:
+- configuration support
+]]
+
 local tr = aegisub.gettext
 
 script_name = tr'Encode Clip'
