@@ -205,7 +205,7 @@ function show_dialog(subs, sel)
         {class = 'checkbox', x=2, y=0, label = tr"&Audio", hint = tr"Enable audio in output", name = 'audio', value = true}
     }
     local buttons = {AUDIO, VIDEO, tr"&Cancel"}
-    local btn, values = aegisub.dialog.display(diag, buttons)
+    local btn, values = aegisub.dialog.display(diag, buttons, {cancel=tr"&Cancel"})
 
     if btn == AUDIO then
         make_audio_clip(subs, sel)
