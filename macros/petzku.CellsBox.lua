@@ -17,7 +17,7 @@
 script_name = "Cells Box"
 script_description = "Generate info boxes for Cells at Work"
 script_author = "petzku"
-script_version = "0.2.0"
+script_version = "0.3.0"
 script_namespace = "petzku.CellsBox"
 
 require 'karaskel'
@@ -32,6 +32,39 @@ function make_transforms(fstart, fend, dur)
         str = str .. string.format("\\t(%d,%d,\\1a&HFF&)", dur - fend, dur - fend + 40)
     end
     return str
+end
+
+function box_stroke(width, height, marginx, marginy, bordsize) -- 25, 35, 3
+    local inner = "m %d %d l %d %d %d %d %d %d"
+    local outer = "m %d 0 l %d 0 %d %d %d %d"
+
+    local w = width + marginx
+    local h = height + marginy + bordsize
+    -- counterclockwise
+    inner = inner:format(
+                -marginx,   bordsize,
+                -marginx,   h,
+                w,          h,
+                w,          bordsize)
+
+    local w2 = w + bordsize
+    local h2 = h + bordsize
+    local mx = -(marginx + bordsize)
+    -- clockwise
+    outer = outer:format(
+                mx,  -- 0
+                w2,  -- 0
+                w2,     h2,
+                mx,     h2)
+
+    return outer .. " " .. inner
+end
+
+function box_fill(width, height, marginx, marginy)
+    local w = width + marginx
+    local h = height + marginy
+
+    return string.format("m %d 0 l %d 0 %d %d %d %d", -marginx, w, w, h, -marginx, h)
 end
 
 function generate_box(subs, sel)
@@ -96,13 +129,15 @@ function generate_box(subs, sel)
         subs[li] = line
 
         -- draw box and border
-        local drawing = string.format("m -25 0 l %d 0 %d %d -25 %d", width+25, width+25, height+35, height+35)
-
+        local marginx, marginy = 25, 35
         local box, border = util.copy(line), util.copy(line)
-        box.text = "{"..pos.."\\c&HFFFFFF&\\blur1"..fad.."\\p1}"..drawing
+
+        box.text = "{"..pos.."\\c&HFFFFFF&\\1a&H80&\\blur1"..fad.."\\p1}"..box_fill(width, height, marginx, marginy)
         box.layer = box.layer - 1
-        border.text = "{"..pos.."\\bord2.5\\blur1"..fad..make_transforms(fstart, fend, line.duration).."\\p1}"..drawing
+
+        border.text = "{"..pos.."\\blur1"..fad.."\\p1}"..box_stroke(width, height, marginx, marginy, 3)
         border.layer = border.layer - 2
+
         subs.insert(li, box)
         subs.insert(li, border)
     end
