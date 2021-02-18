@@ -94,6 +94,10 @@ Written to automatically generate the infoboxes in Cells at Work season 2, becau
 
 Specifically, the macro expects the style defaults to be `\an4\fs50\fnPT Sans` and the sign to be in one ASS event, with lines split by `\N`. The lines are split into separate events and positioned accordingly, and a box is drawn around them. Fades are accounted for (border layer is \1aFF for the duration of the fade).
 
+### Position to Margin
+
+Transforms \pos-based positioning data (such as Mocha tracking) to margins, thus making it not be automatically detected as typesetting.
+
 ### Resample
 
 Corrects 3D-rotations (`\frx\fry`) when resampling script resolutions. Uses trigonometry instead of the classic "multiply by the ratio of the resolutions" and also scales subtitle dimensions when necessary, so this handles even extreme rotations correctly, or at least very nearly so.
