@@ -240,6 +240,31 @@
           ]
         }
       },
+      "petzku.PosToMargin": {
+        "url": "@{baseUrl}#@{namespace}",
+        "author": "petzku",
+        "name": "Position to Margin",
+        "description": "Transforms \\pos-based motion-tracking into margin-based",
+        "channels": {
+          "stable": {
+            "version": "1.0.0",
+            "released": "2021-02-19",
+            "default": true,
+            "files": [
+              {
+                "name": ".moon",
+                "url": "@{fileBaseUrl}@{fileName}",
+                "sha1": "20B20003D20BFA1CB7CAD74531691DD85233814B"
+              }
+            ]
+          }
+        },
+        "changelog": {
+          "1.0.0": [
+            "Initial release"
+          ]
+        }
+      },
       "petzku.Typewriter": {
         "url": "@{baseUrl}#@{namespace}",
         "author": "petzku",

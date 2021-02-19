@@ -9,7 +9,12 @@ export script_version =     "1.0.0"
 -- Assumes \an2 or \an8, because I'm lazy. This is only meant for use with dialogue anyway.
 -- Support for other alignments is on the TODO.
 
-require 'karaskel'
+havedc, DependencyControl, dep = pcall require, "l0.DependencyControl"
+if havedc
+    dep = DependencyControl{{'karaskel'}}
+    dep\requireModules!
+else
+    require 'karaskel'
 
 get_playres = (subs) ->
     local x, y
@@ -116,4 +121,7 @@ can_run = (subs, sel) ->
             return true
     return false
 
-aegisub.register_macro(script_name, script_description, main, can_run)
+if havedc
+    dep\registerMacro main, can_run
+else
+    aegisub.register_macro(script_name, script_description, main, can_run)
