@@ -4,10 +4,7 @@ export script_name =        "Position to Margin"
 export script_description = "Transforms \\pos-based motion-tracking into margin-based"
 export script_author =      "petzku"
 export script_namespace =   "petzku.PosToMargin"
-export script_version =     "1.0.0"
-
--- Assumes \an2 or \an8, because I'm lazy. This is only meant for use with dialogue anyway.
--- Support for other alignments is on the TODO.
+export script_version =     "1.0.1"
 
 havedc, DependencyControl, dep = pcall require, "l0.DependencyControl"
 if havedc
@@ -86,6 +83,10 @@ margin_x_from_pos = (line, posx, width) ->
     if margin_r == 0
         margin_r = -1
         margin_l -= 1
+    
+    -- for clean-up: remove useless margin values
+    if margin_l == line.styleref.margin_l then margin_l = 0
+    if margin_r == line.styleref.margin_r then margin_r = 0
 
     line.margin_l = math.floor(margin_l + 0.5)
     line.margin_r = math.floor(margin_r + 0.5)
