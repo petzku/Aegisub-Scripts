@@ -6,8 +6,8 @@ export script_author =      "petzku"
 export script_namespace =   "petzku.PosToMargin"
 export script_version =     "0.2.0"
 
--- Assumes \an2, because I'm lazy as shit. This is only meant for use with dialogue anyway.
--- Support for other alignments is on the TODO, \an8 probably being the most relevant one.
+-- Assumes \an2 or \an8, because I'm lazy. This is only meant for use with dialogue anyway.
+-- Support for other alignments is on the TODO.
 
 require 'karaskel'
 
@@ -24,8 +24,24 @@ get_playres = (subs) ->
     return x, y
 
 margin_y_from_pos = (line, posy, height) ->
-    -- assume text is \an2 => position from bottom maps directly to desired vertical margin
-    margin = math.floor(height - posy + 0.5)
+    an = line.text\match "\\an(%d)"
+    valign = line.valign
+    if an
+        valign = switch math.floor((an - 1) / 3)
+            when 0 then "bottom"
+            when 1 then "middle"
+            when 2 then "top"
+
+    margin = switch valign
+        when "top"
+            math.floor(posy + 0.5)
+        when "bottom"
+            math.floor(height - posy + 0.5)
+        else
+            -- \an456 doesn't respect vertical margins at all
+            return
+
+    aegisub.log 4, "margin (%s): %s\n", type(margin), margin
     line.margin_t = margin
 
 margin_x_from_pos = (line, posx, width) ->
