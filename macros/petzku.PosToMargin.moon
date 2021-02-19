@@ -53,15 +53,6 @@ margin_x_from_pos = (line, posx, width) ->
     margin_l += offset
     margin_r -= offset
 
-    -- ensure margins are always positive (likely will cause reflows for long-ish text)
-    -- apparently both libass and vsfilter support negative margins, so we can just rely on those
-    -- if margin_l < 0
-    --     margin_r += (1 - margin_l)
-    --     margin_l = 1
-    -- elseif margin_r < 0
-    --     margin_l -= (1 - margin_r)
-    --     margin_r = 1
-
     -- ensure line margins are non-zero (i.e. do not read from style)
     -- might possibly cause reflows in very edge cases!
     if margin_l == 0
