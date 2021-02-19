@@ -88,19 +88,22 @@
         "description": "Combines identical rect-clip gradient lines",
         "channels": {
           "stable": {
-            "version": "0.2.2",
-            "released": "2020-10-24",
+            "version": "0.2.3",
+            "released": "2021-02-19",
             "default": true,
             "files": [
               {
                 "name": ".lua",
                 "url": "@{fileBaseUrl}@{fileName}",
-                "sha1": "B6875A65E1500ABD506E7FD0DD3599C0B07A2146"
+                "sha1": "E01AFB0676E76470B079C8D92434DA126933C975"
               }
             ]
           }
         },
         "changelog": {
+          "0.2.3": [
+            "Clean the selection after running macro"
+          ],
           "0.2.2": [
             "Fix handling of negative coordinates in clips"
           ],
@@ -122,19 +125,23 @@
         "description": "Encode a hardsubbed clip encompassing the current selection",
         "channels": {
           "stable": {
-            "version": "0.5.2",
-            "released": "2021-02-08",
+            "version": "0.5.3",
+            "released": "2021-02-19",
             "default": true,
             "files": [
               {
                 "name": ".lua",
                 "url": "@{fileBaseUrl}@{fileName}",
-                "sha1": "ABCF77B2E1CF70623BD02A16CF97CB69833AE672"
+                "sha1": "761299FA5FEF6EE4BF381A3E799B38D8F46C87F4"
               }
             ]
           }
         },
         "changelog": {
+          "0.5.3": [
+            "Make GUI closable with ESC",
+            "Add short README inside script"
+          ],
           "0.5.2": [
             "Add alt-shortcut keys to the GUI"
           ],

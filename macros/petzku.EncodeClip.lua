@@ -33,7 +33,7 @@ script_name = tr'Encode Clip'
 script_description = tr'Encode various clips from the current selection'
 script_author = 'petzku'
 script_namespace = "petzku.EncodeClip"
-script_version = '0.5.2'
+script_version = '0.5.3'
 
 
 local haveDepCtrl, DependencyControl, depctrl = pcall(require, "l0.DependencyControl")
