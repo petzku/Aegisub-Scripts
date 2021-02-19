@@ -98,7 +98,7 @@ Specifically, the macro expects the style defaults to be `\an4\fs50\fnPT Sans` a
 
 Transforms \pos-based positioning data (such as Mocha tracking) to margins, thus making it not be automatically detected as typesetting.
 
-Handles positioning on both axes, but assumes text to always be `\an2` or `\an8` (At least for now. Note that `\an5` doesn't use margins for vertical positioning). As margins are restricted to integer values, this is not really usable for actual motion tracking, but should be enough for dialogue shenanigans.
+Handles positioning on both axes, and all bottom- or top-aligned alignments, specified either inline or in styles. (middle alignments don't use margins for vertical positioning). As margins are restricted to integer values, this is not really usable for actual motion tracking, but should be enough for dialogue shenanigans.
 
 ### Resample
 

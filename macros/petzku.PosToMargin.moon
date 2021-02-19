@@ -4,7 +4,7 @@ export script_name =        "Position to Margin"
 export script_description = "Transforms \\pos-based motion-tracking into margin-based"
 export script_author =      "petzku"
 export script_namespace =   "petzku.PosToMargin"
-export script_version =     "0.2.0"
+export script_version =     "1.0.0"
 
 -- Assumes \an2 or \an8, because I'm lazy. This is only meant for use with dialogue anyway.
 -- Support for other alignments is on the TODO.
@@ -45,13 +45,33 @@ margin_y_from_pos = (line, posy, height) ->
     line.margin_t = margin
 
 margin_x_from_pos = (line, posx, width) ->
-    -- assume text is middle-aligned (i.e. one of 2,5,8)
-    offset = posx - (width / 2)
-    margin_l = if line.margin_l != 0 then line.margin_l else line.styleref.margin_l
-    margin_r = if line.margin_r != 0 then line.margin_r else line.styleref.margin_r
+    an = line.text\match "\\an(%d)"
+    halign = line.halign
+    if an
+        halign = switch an % 3
+            when 0 then "right"
+            when 1 then "left"
+            when 2 then "center"
 
-    margin_l += offset
-    margin_r -= offset
+    -- preserve the "width" of the available space, should ensure text never reflows accidentally.
+    org_margin_l = if line.margin_l != 0 then line.margin_l else line.styleref.margin_l
+    org_margin_r = if line.margin_r != 0 then line.margin_r else line.styleref.margin_r
+    buffer = (org_margin_l + org_margin_r) / 2
+
+    local margin_l, margin_r
+    switch halign
+        when "center"
+            offset = posx - (width / 2)
+            margin_l = buffer + offset
+            margin_r = buffer - offset
+        when "left"
+            offset = posx
+            margin_l = offset
+            margin_r = 2 * buffer - offset
+        when "right"
+            offset = posx - width
+            margin_l = 2 * buffer + offset
+            margin_r = -offset
 
     -- ensure line margins are non-zero (i.e. do not read from style)
     -- might possibly cause reflows in very edge cases!
