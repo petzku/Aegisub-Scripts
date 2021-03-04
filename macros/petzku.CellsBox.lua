@@ -163,6 +163,7 @@ function generate_box(subs, sel)
         subs.insert(li, border)
         add_to_selection(new_sel, li)
     end
+    aegisub.set_undo_point("generate Cells at Work infoboxes")
     return new_sel
 end
 
