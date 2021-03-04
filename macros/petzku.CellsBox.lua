@@ -67,9 +67,25 @@ function box_fill(width, height, marginx, marginy)
     return string.format("m %d 0 l %d 0 %d %d %d %d", -marginx, w, w, h, -marginx, h)
 end
 
+function add_to_selection(sel, index)
+    if type(index) == 'table' then
+        for _, i in ipairs(index) do
+            add_to_selection(sel, i)
+        end
+    else
+        for si, li in ipairs(sel) do
+            if li >= index then
+                sel[si] = li + 1
+            end
+        end
+        table.insert(sel, index)
+    end
+end
+
 function generate_box(subs, sel)
     local meta, styles = karaskel.collect_head(subs, false)
     local new_sel = {}
+
     for si = #sel,1,-1 do
         local li = sel[si]
         local line = subs[li]
@@ -123,10 +139,14 @@ function generate_box(subs, sel)
             local l = nlines[i]
             l.text = l.text:format(y)
             subs.insert(li+1, l)
+            add_to_selection(new_sel, li+1)
             y = y - style.fontsize
         end
         line.text = line.text:format(y)
         subs[li] = line
+        table.insert(new_sel, li)
+        -- don't use this, because it incorrectly increments stuff
+        -- add_to_selection(new_sel, li)
 
         -- draw box and border
         local marginx, marginy = 25, 35
@@ -139,7 +159,9 @@ function generate_box(subs, sel)
         border.layer = border.layer - 2
 
         subs.insert(li, box)
+        add_to_selection(new_sel, li)
         subs.insert(li, border)
+        add_to_selection(new_sel, li)
     end
     return new_sel
 end
