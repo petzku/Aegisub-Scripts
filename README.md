@@ -14,6 +14,8 @@ Generally, the more useful scripts here will be available to download through De
 
 ### Accenter
 
+**I don't recommend using this in its current form.** I've come across certain rendering issues with these (plus, layering can be a problem anyway when borders would overlap with fills). I'll try to fix what issues exist, but it's not terribly high on my list of priorities. Besides, modifying fonts to add glyphs isn't terribly hard.
+
 Adds diacritics (accents) to lines based on inline comments. Sometimes you want to use glyphs that don't exist in a font, but don't want to or can't edit the font. So you add lines with the shapes you want. But maybe you don't want to position them manually, or maybe the script isn't final yet so you can't. Enter Accenter. Fairly simple instructions given before a character get turned into a line with a diacritic at the character's position.
 
 For example, the line
@@ -93,6 +95,8 @@ The unscrambling mode allows users to optionally specify how many frames a lette
 Currently does not play well with `\move` or `\t` tags. Unlikely it ever will, but consider using lyger's FbfTransform if you need something like this.
 
 ## Not-really-published scripts
+
+These scripts aren't available through DepCtrl for various reasons (usually because they're WIP and/or very specific). For related reasons, I won't always update them to the `master` branch either. You're free to download and use them from here, but it'll usually be worth checking if there's a more recent version on some other branch.
 
 ### Cells Box
 
