@@ -17,7 +17,7 @@
 script_name = "Combine Gradient Lines"
 script_description = "Combines identical rect-clip gradient lines"
 script_author = "petzku"
-script_version = "0.2.3"
+script_version = "0.2.4"
 script_namespace = "petzku.CombineGradientLines"
 
 local DependencyControl = require("l0.DependencyControl")

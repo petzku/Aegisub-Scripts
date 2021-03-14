@@ -88,19 +88,23 @@
         "description": "Combines identical rect-clip gradient lines",
         "channels": {
           "stable": {
-            "version": "0.2.3",
-            "released": "2021-02-19",
+            "version": "0.2.4",
+            "released": "2021-03-14",
             "default": true,
             "files": [
               {
                 "name": ".lua",
                 "url": "@{fileBaseUrl}@{fileName}",
-                "sha1": "E01AFB0676E76470B079C8D92434DA126933C975"
+                "sha1": "C033147D892C2344F04C3D55D09150D6A3630C33"
               }
             ]
           }
         },
         "changelog": {
+          "0.2.4": [
+            "Remove '.00' from generated clips",
+            "Rework internals, removing code duplication"
+          ],
           "0.2.3": [
             "Clean the selection after running macro"
           ],
