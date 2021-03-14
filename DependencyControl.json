@@ -251,19 +251,22 @@
         "description": "Transforms \\pos-based motion-tracking into margin-based",
         "channels": {
           "stable": {
-            "version": "1.0.0",
-            "released": "2021-02-19",
+            "version": "1.0.1",
+            "released": "2021-03-14",
             "default": true,
             "files": [
               {
                 "name": ".moon",
                 "url": "@{fileBaseUrl}@{fileName}",
-                "sha1": "20B20003D20BFA1CB7CAD74531691DD85233814B"
+                "sha1": "DF339F4AECF1E8C74CBE8E4DDA149A378EC5E132"
               }
             ]
           }
         },
         "changelog": {
+          "1.0.1": [
+            "Clean up margin values matching style defaults"
+          ],
           "1.0.0": [
             "Initial release"
           ]
