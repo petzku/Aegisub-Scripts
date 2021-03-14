@@ -24,8 +24,9 @@ local DependencyControl = require("l0.DependencyControl")
 local depctrl = DependencyControl{feed = "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json"}
 
 function generate_clipstr(corners)
-    local x1, y1, x2, y2 = unpack(corners)
-    return ("\\clip(%.2f,%.2f,%.2f,%.2f)"):format(unpack(corners))
+    return ("\\clip(%.2f,%.2f,%.2f,%.2f)")
+            :format(unpack(corners))
+            :gsub("(%d)%.00", "%1")
 end
 
 function extend_prev(subs, prev, x1, y1, x2, y2)
