@@ -17,7 +17,7 @@
 script_name = "Combine Gradient Lines"
 script_description = "Combines identical rect-clip gradient lines"
 script_author = "petzku"
-script_version = "0.2.4"
+script_version = "0.2.5"
 script_namespace = "petzku.CombineGradientLines"
 
 local DependencyControl = require("l0.DependencyControl")
@@ -89,7 +89,7 @@ function combine_gradient_lines(subs, sel)
                     p = conditional_combine(y1-py2, y2-py1)
                 elseif y1 - py1 == 0 and y2 - py2 == 0 then
                     -- combine x co-ords
-                    p = conditional_combine(y1-py2, y2-py1)
+                    p = conditional_combine(x1-px2, x2-px1)
                 end
                 if p then
                     prev = p
