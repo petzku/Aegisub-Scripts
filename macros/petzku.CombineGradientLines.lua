@@ -23,13 +23,13 @@ script_namespace = "petzku.CombineGradientLines"
 local DependencyControl = require("l0.DependencyControl")
 local depctrl = DependencyControl{feed = "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json"}
 
-function generate_clipstr(corners)
+local function generate_clipstr(corners)
     return ("\\clip(%.2f,%.2f,%.2f,%.2f)")
             :format(unpack(corners))
             :gsub("(%d)%.00", "%1")
 end
 
-function extend_prev(subs, prev, x1, y1, x2, y2)
+local function extend_prev(subs, prev, x1, y1, x2, y2)
     local previ, prevline, _, prevstart, prevrest = unpack(prev)
     local newclip = {x1, y1, x2, y2}
     local clipstr = generate_clipstr(newclip)
@@ -46,7 +46,7 @@ function combine_gradient_lines(subs, sel)
     local new_sel = {}
     local removed = 0
 
-    for si, li in ipairs(sel) do
+    for _, li in ipairs(sel) do
         local line = subs[li]
         aegisub.log(5, "started on line: %s\n", line.text)
         local s, e, x1,y1, x2,y2 = line.text:find("\\clip%((-?[%d.]+),(-?[%d.]+),(-?[%d.]+),(-?[%d.]+)%)")
@@ -63,7 +63,7 @@ function combine_gradient_lines(subs, sel)
             aegisub.log(5, "No prev entry... (should happen only once)\n")
             table.insert(new_sel, li)
         else
-            local previ, prevline, prevclip, prevstart, prevrest = unpack(prev)
+            local previ, _, prevclip, prevstart, prevrest = unpack(prev)
 
             aegisub.log(5, "prev: %d, %s, %s\n", previ, prevstart, prevrest)
             if start == prevstart and rest == prevrest then
