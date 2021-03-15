@@ -163,6 +163,10 @@ Written to automatically generate the infoboxes in Cells at Work season 2, becau
 
 Specifically, the macro expects the style defaults to be `\an4\fs50\fnPT Sans` and the sign to be in one ASS event, with lines split by `\N`. The lines are split into separate events and positioned accordingly, and a box is drawn around them. Fades are accounted for (border layer is \1aFF for the duration of the fade).
 
+### Clip to Circle
+
+Creates a circle from a two-point clip, such that the first point defines the centre of the circle, and the second lies on the circumference (defining the radius). Note that this is not *actually* a circle, it's a four-segment bezier approximation, but it gets very close.
+
 ### Resample
 
 Corrects 3D-rotations (`\frx\fry`) when resampling script resolutions. Uses trigonometry instead of the classic "multiply by the ratio of the resolutions" and also scales subtitle dimensions when necessary, so this handles even extreme rotations correctly, or at least very nearly so. Still kind of experimental, though I see little reason not to use this if you ever end up resampling scripts.
