@@ -162,6 +162,7 @@ with easings = {}
     .inout_elastic = make_easer ease_inout_elastic
 
     .linear = make_easer (t) -> t
+    .custom = easer
 
     -- convenience aliases
     .i = {
