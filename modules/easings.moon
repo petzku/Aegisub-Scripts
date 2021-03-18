@@ -131,3 +131,36 @@ with easings = {}
     .inout_circle = make_easer ease_inout_circle
 
     .linear = make_easer (t) -> t
+
+    -- convenience aliases
+    .i = {
+        bounce: .in_bounce
+        back: .in_back
+        circle: .in_circle
+    }
+    .o = {
+        bounce: .out_bounce
+        back: .out_back
+        circle: .out_circle
+    }
+    .io = {
+        bounce: .inout_bounce
+        back: .inout_back
+        circle: .inout_circle
+    }
+
+    .bounce = {
+        i: .in_bounce
+        o: .out_bounce
+        io: .inout_bounce
+    }
+    .back = {
+        i: .in_back
+        o: .out_back
+        io: .inout_back
+    }
+    .circle = {
+        i: .in_circle
+        o: .out_circle
+        io: .inout_circle
+    }
