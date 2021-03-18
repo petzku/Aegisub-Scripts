@@ -117,6 +117,33 @@ ease_in_circle = (t) ->
 ease_inout_circle = (t) ->
     math.sqrt 1 - math.pow x - 1 , 2
 
+ease_in_elastic = (t) ->
+    c = 2 * math.pi / 3
+    switch x
+        when 0 then 0
+        when 1 then 1
+        else
+            -math.pow(2, 10 * x - 10) * math.sin((x * 10 - 10.75) * c)
+
+ease_out_elastic = (t) ->
+    c = 2 * math.pi / 3
+    switch x
+        when 0 then 0
+        when 1 then 1
+        else
+            math.pow(2, -10 * x) * math.sin((x * 10 - 0.75) * c) + 1
+
+ease_inout_elastic = (t) ->
+    c = 2 * math.pi / 3
+    switch x
+        when 0 then 0
+        when 1 then 1
+        else
+            if x < 0.5
+                ease_in_elastic(t*2) / 2
+            else
+                0.5 + ease_out_elastic(t * 2 - 1) / 2
+
 with easings = {}
     .out_bounce = make_easer ease_out_bounce
     .in_bounce = make_easer ease_in_bounce
@@ -130,6 +157,10 @@ with easings = {}
     .in_circle = make_easer ease_in_circle
     .inout_circle = make_easer ease_inout_circle
 
+    .out_elastic = make_easer ease_out_elastic
+    .in_elastic = make_easer ease_in_elastic
+    .inout_elastic = make_easer ease_inout_elastic
+
     .linear = make_easer (t) -> t
 
     -- convenience aliases
@@ -137,16 +168,19 @@ with easings = {}
         bounce: .in_bounce
         back: .in_back
         circle: .in_circle
+        elastic: .in_elastic
     }
     .o = {
         bounce: .out_bounce
         back: .out_back
         circle: .out_circle
+        elastic: .out_elastic
     }
     .io = {
         bounce: .inout_bounce
         back: .inout_back
         circle: .inout_circle
+        elastic: .inout_elastic
     }
 
     .bounce = {
@@ -163,4 +197,9 @@ with easings = {}
         i: .in_circle
         o: .out_circle
         io: .inout_circle
+    }
+    .elastic = {
+        i: .in_elastic
+        o: .out_elastic
+        io: .inout_elastic
     }
