@@ -8,7 +8,6 @@ https://easings.net/
 
 ]]
 
-require 'moonscript'
 petzku = require 'petzku.util'
 
 -- best-effort estimation, assuming CFR
