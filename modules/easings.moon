@@ -93,53 +93,53 @@ ease_inout_bounce = (t) ->
 ease_out_back = (t) ->
     c1 = 1.70158
     c3 = c1 + 1
-    1 + c3 * math.pow(x-1, 3) + c1 * pow(x-1, 2)
+    1 + c3 * math.pow(t-1, 3) + c1 * pow(t-1, 2)
 
 ease_in_back = (t) ->
     c1 = 1.70158
     c3 = c1 + 1
-    c3 * math.pow(x, 3) - c1 * pow(x, 2)
+    c3 * math.pow(t, 3) - c1 * pow(t, 2)
 
 ease_inout_back = (t) ->
     c1 = 1.70158
     c2 = c1 * 1.525
-    if x < 0.5
-        (pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2)) / 2
+    if t < 0.5
+        (pow(2 * t, 2) * ((c2 + 1) * 2 * t - c2)) / 2
     else
-        (pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2
+        (pow(2 * t - 2, 2) * ((c2 + 1) * (t * 2 - 2) + c2) + 2) / 2
 
 ease_out_circle = (t) ->
-    math.sqrt 1 - math.pow x - 1, 2
+    math.sqrt 1 - math.pow t - 1, 2
 
 ease_in_circle = (t) ->
-    1 - math.sqrt 1 - x * x
+    1 - math.sqrt 1 - t * t
 
 ease_inout_circle = (t) ->
-    math.sqrt 1 - math.pow x - 1 , 2
+    math.sqrt 1 - math.pow t - 1 , 2
 
 ease_in_elastic = (t) ->
     c = 2 * math.pi / 3
-    switch x
+    switch t
         when 0 then 0
         when 1 then 1
         else
-            -math.pow(2, 10 * x - 10) * math.sin((x * 10 - 10.75) * c)
+            -math.pow(2, 10 * t - 10) * math.sin((t * 10 - 10.75) * c)
 
 ease_out_elastic = (t) ->
     c = 2 * math.pi / 3
-    switch x
+    switch t
         when 0 then 0
         when 1 then 1
         else
-            math.pow(2, -10 * x) * math.sin((x * 10 - 0.75) * c) + 1
+            math.pow(2, -10 * t) * math.sin((t * 10 - 0.75) * c) + 1
 
 ease_inout_elastic = (t) ->
     c = 2 * math.pi / 3
-    switch x
+    switch t
         when 0 then 0
         when 1 then 1
         else
-            if x < 0.5
+            if t < 0.5
                 ease_in_elastic(t*2) / 2
             else
                 0.5 + ease_out_elastic(t * 2 - 1) / 2
