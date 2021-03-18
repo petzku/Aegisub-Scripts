@@ -92,20 +92,20 @@ ease_inout_bounce = (t) ->
 ease_out_back = (t) ->
     c1 = 1.70158
     c3 = c1 + 1
-    1 + c3 * math.pow(t-1, 3) + c1 * pow(t-1, 2)
+    1 + c3 * math.pow(t-1, 3) + c1 * math.pow(t-1, 2)
 
 ease_in_back = (t) ->
     c1 = 1.70158
     c3 = c1 + 1
-    c3 * math.pow(t, 3) - c1 * pow(t, 2)
+    c3 * math.pow(t, 3) - c1 * math.pow(t, 2)
 
 ease_inout_back = (t) ->
     c1 = 1.70158
     c2 = c1 * 1.525
     if t < 0.5
-        (pow(2 * t, 2) * ((c2 + 1) * 2 * t - c2)) / 2
+        (math.pow(2 * t, 2) * ((c2 + 1) * 2 * t - c2)) / 2
     else
-        (pow(2 * t - 2, 2) * ((c2 + 1) * (t * 2 - 2) + c2) + 2) / 2
+        (math.pow(2 * t - 2, 2) * ((c2 + 1) * (t * 2 - 2) + c2) + 2) / 2
 
 ease_out_circle = (t) ->
     math.sqrt 1 - math.pow t - 1, 2
