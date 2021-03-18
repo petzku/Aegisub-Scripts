@@ -8,14 +8,15 @@ Anyone else is free to use this library too, but most of the stuff is specifical
 ]]
 
 with lib = {}
-    with .math = {}
-        .log_n = (base, x) ->
+    .math = {
+        log_n: (base, x) ->
             math.log(x) / math.log(base)
 
-        .clamp = (x, low, high) ->
+        clamp: (x, low, high) ->
             math.min(math.max(low, x), high)
+    }
 
-    with .transform = {}
+    .transform = {
         -- Calculate the accel value required to make a transform match the midpoint of an arbitrary function
         --   logic borrowed from logarithm:
         --   Assumed ASS accel curve:
@@ -31,7 +32,8 @@ with lib = {}
         --     valHalf = val0 + (val1 - val0) * 0.5 ^ accel
         --     (valHalf - val0) / (val1 - val0) = 0.5 ^ accel
         --     log_0.5( (valHalf - val0) / (val1 - val0) ) = log_0.5(0.5^accel) = accel
-        .calc_accel = (val0, valhalf, val1) ->
-            accel = lib.math.log_n 0.5, math.abs (valhalf - val0) / (val1 - val0)
+        calc_accel: (val0, valhalf, val1) ->
+            accel = .math.log_n 0.5, math.abs (valhalf - val0) / (val1 - val0)
             -- clamp to a sensible interval just in case
-            lib.math.clamp accel, 0.01, 100
+            .math.clamp accel, 0.01, 100
+    }
