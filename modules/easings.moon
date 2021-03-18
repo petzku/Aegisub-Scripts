@@ -43,8 +43,8 @@ easer = (tags, t1, t2, fun) ->
     table.insert strbuf, ")"
 
     x = 0
-    while x + 2*frame <= dt
-        x2 = x + 2*frame
+    while x <= dt
+        x2 = math.min dt, x + 2*frame
 
         r1 = fun x / dt
         rh = fun((x + frame) / dt)
@@ -60,8 +60,6 @@ easer = (tags, t1, t2, fun) ->
         table.insert strbuf, ")"
         x += 2 * frame
 
-    -- final transform
-    -- TODO
     table.concat strbuf
 
 make_easer = (fun) -> (tags, t1, t2) -> easer(tags, t1, t2, fun)
