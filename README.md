@@ -94,6 +94,44 @@ The unscrambling mode allows users to optionally specify how many frames a lette
 
 Currently does not play well with `\move` or `\t` tags. Unlikely it ever will, but consider using lyger's FbfTransform if you need something like this.
 
+## Libraries
+
+### Util
+
+Generic utilities for my stuff. Expect most scripts to require this fairly soon in the future.
+
+### Easings
+
+A collection of [easing functions](https://easings.net/) and a framework to let people use arbitrary easing functions, should they so desire. Pre-defines a bunch of the more complex easing functions from the link above. Mainly intended for use in ktemplates, but nothing's stopping you from using it elsewhere.
+
+#### Usage
+
+Each "easer" function takes three parameters: A `{tag, start_value, end_value}` triple, or a table of multiple ones, and start and end times for the effect (`t1` and `t2`). See example in the [Sample](#sample) section below.
+
+The module exposes a bunch of functions in the format `(in|out|inout)_<effectname>`. The same functions are also accessible either via `i`/`o`/`io` tables (for in/out/in-out) with the effect name as the key, and vice versa:
+
+```lua
+ease = require 'petzku.easings'
+-- all of the following call the same function:
+ease.in_back(...)
+ease.i.back(...)
+ease.back.i(...)
+```
+
+There is also a `custom` function, which takes an additional fourth parameter: a user-supplied function to calculate the "easing factor". The function should take one parameter in the range `[0,1]` (representing time between `t1` and `t2`), and produce a value describing the current state between `start_value` and `end_value`. The return value need not be clamped to `[0,1]`, in case an "overshooting" effect is desired.
+
+#### Sample
+
+In a karaoke template:
+
+```
+code once:     ease = _G.require 'petzku.easings'
+template line: {!ease.out_bounce({"yshad", -200, 0}, 0, 1500)!\xshad-100\t(0,1500,\xshad1)\1a&HFE&\3a&HFF&\bord3}
+template line: {!ease.out_bounce({"yshad", -200, 0}, 0, 1500)!\xshad-100\t(0,1500,\xshad1)\1a&HFE&\3a&HFF&\bord0\4c&H000000&}
+```
+
+Makes the text "bounce" in over 1.5 seconds from a height of 200 px, while moving right 100 px (thus generating a fairly convincing "bounce-in" effect).
+
 ## Not-really-published scripts
 
 These scripts aren't available through DepCtrl for various reasons (usually because they're WIP and/or very specific). For related reasons, I won't always update them to the `master` branch either. You're free to download and use them from here, but it'll usually be worth checking if there's a more recent version on some other branch.
