@@ -84,14 +84,50 @@ ease_out_bounce = (t) ->
 ease_in_bounce = (t) ->
     1 - (ease_out_bounce 1-t)
 
-ease_in_out_bounce = (t) ->
+ease_inout_bounce = (t) ->
     if t < 0.5
         (1 - ease_out_bounce(1 - 2*t)) / 2
     else
         (1 + ease_out_bounce(2*t - 1)) / 2
 
+ease_out_back = (t) ->
+    c1 = 1.70158
+    c3 = c1 + 1
+    1 + c3 * math.pow(x-1, 3) + c1 * pow(x-1, 2)
+
+ease_in_back = (t) ->
+    c1 = 1.70158
+    c3 = c1 + 1
+    c3 * math.pow(x, 3) - c1 * pow(x, 2)
+
+ease_inout_back = (t) ->
+    c1 = 1.70158
+    c2 = c1 * 1.525
+    if x < 0.5
+        (pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2)) / 2
+    else
+        (pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2
+
+ease_out_circle = (t) ->
+    math.sqrt 1 - math.pow x - 1, 2
+
+ease_in_circle = (t) ->
+    1 - math.sqrt 1 - x * x
+
+ease_inout_circle = (t) ->
+    math.sqrt 1 - math.pow x - 1 , 2
+
 with easings = {}
     .out_bounce = make_easer ease_out_bounce
     .in_bounce = make_easer ease_in_bounce
-    .in_out_bonce = make_easer ease_in_out_bounce
+    .inout_bounce = make_easer ease_inout_bounce
+
+    .out_back = make_easer ease_out_back
+    .in_back = make_easer ease_in_back
+    .inout_back = make_easer ease_inout_back
+
+    .out_circle = make_easer ease_out_circle
+    .in_circle = make_easer ease_in_circle
+    .inout_circle = make_easer ease_inout_circle
+
     .linear = make_easer (t) -> t
