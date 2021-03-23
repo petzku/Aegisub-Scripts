@@ -23,12 +23,16 @@ wrap_tags = (tags) ->
 
 -- TODO: maybe work with colours? idk
 -- params:
+--  fun: easing function to use
+--       signature: R_[0,1] -> R (usually [0,1] but not necessarily)
 --  tags: table of {"tag", start_value, end_value} triples
---  alternatively a single such triple
+--        alternatively a single such triple
 --  t1, t2: start and end times, respectively
+--          default to start and end of line if omitted
 -- returns:
 --  string of '\t' tags, approximating the given easing function
-easer = (tags, t1, t2, fun) ->
+easer = (fun, tags, t1=0, t2) ->
+    t2 or= line.duration -- only works if we're running inside a templater, not like it matters
     tags = wrap_tags tags
     frame = get_framedur!
     dt = t2 - t1
@@ -61,7 +65,7 @@ easer = (tags, t1, t2, fun) ->
 
     table.concat strbuf
 
-make_easer = (fun) -> (tags, t1, t2) -> easer(tags, t1, t2, fun)
+make_easer = (fun) -> (tags, t1, t2) -> easer(fun, tags, t1, t2)
 
 ease_out_bounce = (t) ->
     -- what are all these magical constants?

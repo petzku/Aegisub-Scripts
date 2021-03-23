@@ -106,9 +106,10 @@ A collection of [easing functions](https://easings.net/) and a framework to let 
 
 #### Usage
 
-Each "easer" function takes three parameters: A `{tag, start_value, end_value}` triple, or a table of multiple ones, and start and end times for the effect (`t1` and `t2`). See example in the [Sample](#sample) section below.
+Each "easer" method has one required parameter, and two optional ones: A `{tag, start_value, end_value}` triple, or a table of multiple ones, and start and end times for the effect (`t1` and `t2`). The tag-specifying table is required, but `t1` and `t2` default to the start and end of the line respectively if `nil` or omitted.
+See example in the [Sample](#sample) section below.
 
-The module exposes a bunch of functions in the format `(in|out|inout)_<effectname>`. The same functions are also accessible either via `i`/`o`/`io` tables (for in/out/in-out) with the effect name as the key, and vice versa:
+The module exposes a bunch of methods in the format `(in|out|inout)_<effectname>`. The same methods are also accessible either via `i`/`o`/`io` tables (for in/out/in-out) with the effect name as the key, and vice versa:
 
 ```lua
 ease = require 'petzku.easings'
@@ -118,7 +119,8 @@ ease.i.back(...)
 ease.back.i(...)
 ```
 
-There is also a `custom` function, which takes an additional fourth parameter: a user-supplied function to calculate the "easing factor". The function should take one parameter in the range `[0,1]` (representing time between `t1` and `t2`), and produce a value describing the current state between `start_value` and `end_value`. The return value need not be clamped to `[0,1]`, in case an "overshooting" effect is desired.
+There is also a `custom` method, which takes as its first parameter a user-supplied function to calculate the "easing factor" (i.e. `ease.custom(custom_function, tags, t1, t2)`).
+The function should take one parameter in the range `[0,1]` (representing time between `t1` and `t2`), and produce a value describing the current state between `start_value` and `end_value`. The return value need not be clamped to `[0,1]`, in case an "overshooting" effect is desired.
 
 #### Sample
 
