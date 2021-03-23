@@ -27,9 +27,12 @@ TODO: consider behaving nicely with \move and \t
 
 script_name = "Typewriter"
 script_description = "Makes text appear one character at a time"
-script_version = "0.5.2"
+script_version = "0.6.0"
 script_author = "petzku"
 script_namespace = "petzku.Typewriter"
+
+local TYPEWRITER_MENU = script_name..'/'
+local UNSCRAMBLE_MENU = "Unscramble/"
 
 local DependencyControl = require("l0.DependencyControl")
 local depctrl = DependencyControl{
@@ -38,7 +41,7 @@ local depctrl = DependencyControl{
 }
 local util, unicode = depctrl:requireModules()
 
-function randomchar(ch, time)
+local function randomchar(ch, time)
     -- use time for deterministic random shuffle thing
     if ch == ch:lower() and ch ~= ch:upper() then
         local rand = math.pow((time + string.byte(ch:sub(1,1))) % 26, 10) % 26
@@ -54,8 +57,23 @@ function randomchar(ch, time)
     end
 end
 
+local function retime_t_move(delta, start, rest)
+    local function retime_t(t1, t2)
+        return string.format("\\t(%d,%d,", t1+delta, t2+delta)
+    end
+    local function retime_move(x,y,xx,yy,t1,t2)
+        return string.format("\\move(%s,%s,%s,%s,%d,%d)", x,y,xx,yy, t1+delta, t2+delta)
+    end
 
-function write_groups(subs, groups)
+    local num = "[-%d.]+"
+    local t_pattern = "\\t%(("..num.."),("..num.."),"
+    local move_pattern = "\\move%(("..num.."),("..num.."),("..num.."),("..num.."),("..num.."),("..num..")%)"
+    start = start:gsub(t_pattern, retime_t):gsub(move_pattern, retime_move)
+    rest = rest:gsub(t_pattern, retime_t):gsub(move_pattern, retime_move)
+    return start, rest
+end
+
+local function write_groups(subs, groups)
     for j=#groups, 1, -1 do
         local group = groups[j]
         for i=#group, 1, -1 do
@@ -66,9 +84,9 @@ function write_groups(subs, groups)
     end
 end
 
-function apply_by_duration(subs, sel, linefun)
-    groups_to_add = {}
-    for si, li in ipairs(sel) do
+local function apply_by_duration(subs, sel, linefun)
+    local groups_to_add = {}
+    for _, li in ipairs(sel) do
         local line = subs[li]
 
         local duration_frames = aegisub.frame_from_ms(line.end_time) - aegisub.frame_from_ms(line.start_time)
@@ -84,9 +102,9 @@ function apply_by_duration(subs, sel, linefun)
     write_groups(subs, groups_to_add)
 end
 
-function apply_by_frame(subs, sel, linefun)
+local function apply_by_frame(subs, sel, linefun)
     local groups_to_add = {}
-    for si, li in ipairs(sel) do
+    for _, li in ipairs(sel) do
         local line = subs[li]
         groups_to_add[#groups_to_add+1] = typewrite_line(line, 1, li+1, linefun)
         -- comment the original line out
@@ -128,8 +146,26 @@ function unscramble_given_static(subs, sel)
     if pressed ~= "Apply" then return end
     local static_frames = result["static_frames"]
 
-    function linefun(st, et, line, start, char, rest)
+    local function linefun(st, et, line, start, char, rest)
         return generate_unscramble_lines(st, et, line, start, char, rest, static_frames)
+    end
+
+    apply_by_duration(subs, sel, linefun)
+end
+
+function unscramble_given_fade(subs, sel)
+    -- dialog to ask user for number of frames for staticness
+    local pressed, result = aegisub.dialog.display({
+            { class = "label", label = "Enter number of frames letters should fade in over: ",
+            x = 0, y = 0, width = 1, height = 1 },
+            { class = "intedit", name = "fade_frames", value = 1,
+            x = 1, y = 0, width = 1, height = 1 }
+        }, {"Apply", "Cancel"}, {ok = "Apply", cancel = "Cancel"})
+    if pressed ~= "Apply" then return end
+    local fade_frames = result["fade_frames"]
+
+    function linefun(st, et, line, start, char, rest)
+        return generate_unscramble_lines_fading(st, et, line, start, char, rest, fade_frames)
     end
 
     apply_by_duration(subs, sel, linefun)
@@ -177,9 +213,15 @@ function typewrite_line(line, framedur, index, linefun)
         local st = aegisub.ms_from_frame(start_frame + ((i-1) * framedur))
         local et = aegisub.ms_from_frame(start_frame + (i * framedur))
 
-        lines = linefun(st, et, line, start, active_char, rest)
+        -- retime any \t and \move we come across
+        -- this is much simpler than actually interpolating them, especially as \t's can be stacked
+        -- note that unscramble modes will require further manipulation
+        local delta = line.start_time - st
+        start, rest = retime_t_move(delta, start, rest)
 
-        for ii,new_line in ipairs(lines) do
+        local lines = linefun(st, et, line, start, active_char, rest)
+
+        for _,new_line in ipairs(lines) do
             to_add[#to_add+1] = {index, new_line}
         end
     end
@@ -202,6 +244,8 @@ function generate_line(st, et, orig_line, start, char, rest)
         -- new.text = start
     elseif rest ~= "" then
         new.text = start .. SEPARATOR .. rest
+    else
+        new.text = start
     end
 
     return {new}
@@ -227,6 +271,9 @@ function generate_unscramble_lines(st, et, orig_line, start, char, rest, staticf
         new.start_time = aegisub.ms_from_frame(f)
         new.end_time = aegisub.ms_from_frame(f+1)
 
+        local delta = st - new.start_time
+        start, rest = retime_t_move(delta, start, rest)
+
         local newchar
         if (last_frame - f) < staticframes then
             newchar = char
@@ -248,10 +295,64 @@ function generate_unscramble_lines(st, et, orig_line, start, char, rest, staticf
     return lines
 end
 
-depctrl:registerMacros{
-    {"fbf", "Applies effect one char per frame", typewrite_by_frame},
-    {"line", "Applies effect over duration of entire line", typewrite_by_duration},
-    {"unscramble", "Applies unscrambling effect over duration of line", unscramble_by_duration},
-    {"unscramble half", "Applies unscrambling effect, finishing halfway before next letter", unscramble_static_halfway},
-    {"unscramble N static", "Applies unscrambling effect with N static frames between letters", unscramble_given_static}
-}
+local function make_alpha(f, dur)
+    local t = (dur - f) / (dur + 1)
+    -- clamp and transform
+    t = math.min(math.max(t * 256, 0), 255)
+    if t > 0 then
+        return string.format("{\\alpha&H%02X&}", t)
+    else
+        return ""
+    end
+end
+
+function generate_unscramble_lines_fading(st, et, orig_line, start, char, rest, fadedur)
+    if not fadedur then fadedur = 3 end
+    local staticframes = 1
+    local SEPARATOR = "{\\alpha&HFF&}"
+    local lines = {}
+
+    local first_frame = aegisub.frame_from_ms(st)
+    local last_frame = aegisub.frame_from_ms(et) - 1
+    -- frame_from_ms gives the frame that contains the timestamp = the frame where the line shouldn't show up anymore
+
+    if last_frame - first_frame < fadedur then fadedur = last_frame - first_frame end
+
+    for f = first_frame, last_frame do
+        local new = util.deep_copy(orig_line)
+        new.start_time = aegisub.ms_from_frame(f)
+        new.end_time = aegisub.ms_from_frame(f+1)
+
+        local delta = st - new.start_time
+        start, rest = retime_t_move(delta, start, rest)
+
+        local newchar
+        if (last_frame - f) < staticframes then
+            newchar = char
+        else
+            newchar = make_alpha(f - first_frame, fadedur) .. randomchar(char, new.start_time)
+        end
+        -- hackfix for \N newline
+        if start:sub(-1) == '\\' and char == "N" then
+            new.text = start .. 'N' .. SEPARATOR .. rest
+        elseif char == '\\' and rest:sub(1,1) == 'N' then
+            new.text = start .. SEPARATOR .. '\\' .. rest
+        elseif rest ~= "" then
+            new.text = start .. newchar .. SEPARATOR .. rest
+        else
+            new.text = start .. newchar
+        end
+        lines[#lines+1] = new
+    end
+    return lines
+end
+
+depctrl:registerMacros({
+    {TYPEWRITER_MENU.."fbf",    "Applies typewriting effect one char per frame", typewrite_by_frame},
+    {TYPEWRITER_MENU.."line",   "Applies typewriting effect over duration of entire line", typewrite_by_duration},
+
+    {UNSCRAMBLE_MENU.."line",    "Applies unscrambling effect", unscramble_by_duration},
+    {UNSCRAMBLE_MENU.."half",    "Applies unscrambling effect, finishing halfway before next letter", unscramble_static_halfway},
+    {UNSCRAMBLE_MENU.."N fade",  "Applies unscrambling effect with letters fading in during first N frames", unscramble_given_fade},
+    {UNSCRAMBLE_MENU.."N static","Applies unscrambling effect with N static frames between letters", unscramble_given_static}
+},false)
