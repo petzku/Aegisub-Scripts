@@ -31,6 +31,9 @@ script_version = "0.5.3"
 script_author = "petzku"
 script_namespace = "petzku.Typewriter"
 
+local TYPEWRITER_MENU = script_name..'/'
+local UNSCRAMBLE_MENU = "Unscramble/"
+
 local DependencyControl = require("l0.DependencyControl")
 local depctrl = DependencyControl{
     feed = "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json",
@@ -316,11 +319,12 @@ function generate_unscramble_lines_fading(st, et, orig_line, start, char, rest, 
     return lines
 end
 
-depctrl:registerMacros{
-    {"fbf", "Applies effect one char per frame", typewrite_by_frame},
-    {"line", "Applies effect over duration of entire line", typewrite_by_duration},
-    {"unscramble", "Applies unscrambling effect over duration of line", unscramble_by_duration},
-    {"unscramble half", "Applies unscrambling effect, finishing halfway before next letter", unscramble_static_halfway},
-    {"unscramble N static", "Applies unscrambling effect with N static frames between letters", unscramble_given_static},
-    {"unscramble N fade", "Applies unscrambling effect with letters fading in during first N frames", unscramble_given_fade}
-}
+depctrl:registerMacros({
+    {TYPEWRITER_MENU.."fbf",    "Applies typewriting effect one char per frame", typewrite_by_frame},
+    {TYPEWRITER_MENU.."line",   "Applies typewriting effect over duration of entire line", typewrite_by_duration},
+
+    {UNSCRAMBLE_MENU.."line",    "Applies unscrambling effect", unscramble_by_duration},
+    {UNSCRAMBLE_MENU.."half",    "Applies unscrambling effect, finishing halfway before next letter", unscramble_static_halfway},
+    {UNSCRAMBLE_MENU.."N fade",  "Applies unscrambling effect with letters fading in during first N frames", unscramble_given_fade},
+    {UNSCRAMBLE_MENU.."N static","Applies unscrambling effect with N static frames between letters", unscramble_given_static}
+},false)
