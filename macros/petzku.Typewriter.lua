@@ -27,7 +27,7 @@ TODO: consider behaving nicely with \move and \t
 
 script_name = "Typewriter"
 script_description = "Makes text appear one character at a time"
-script_version = "0.5.3"
+script_version = "0.6.0"
 script_author = "petzku"
 script_namespace = "petzku.Typewriter"
 
@@ -57,6 +57,21 @@ local function randomchar(ch, time)
     end
 end
 
+local function retime_t_move(delta, start, rest)
+    local function retime_t(t1, t2)
+        return string.format("\\t(%d,%d,", t1+delta, t2+delta)
+    end
+    local function retime_move(x,y,xx,yy,t1,t2)
+        return string.format("\\move(%s,%s,%s,%s,%d,%d)", x,y,xx,yy, t1+delta, t2+delta)
+    end
+
+    local num = "[-%d.]+"
+    local t_pattern = "\\t%(("..num.."),("..num.."),"
+    local move_pattern = "\\move%(("..num.."),("..num.."),("..num.."),("..num.."),("..num.."),("..num..")%)"
+    start = start:gsub(t_pattern, retime_t):gsub(move_pattern, retime_move)
+    rest = rest:gsub(t_pattern, retime_t):gsub(move_pattern, retime_move)
+    return start, rest
+end
 
 local function write_groups(subs, groups)
     for j=#groups, 1, -1 do
@@ -156,7 +171,6 @@ function unscramble_given_fade(subs, sel)
     apply_by_duration(subs, sel, linefun)
 end
 
-
 function typewrite_line(line, framedur, index, linefun)
     -- framedur: duration of single letter in frames, non-integer values will result in durations
     --           of floor(framedur) or ceil(framedur) creating a decent approximation over the line
@@ -199,6 +213,12 @@ function typewrite_line(line, framedur, index, linefun)
         local st = aegisub.ms_from_frame(start_frame + ((i-1) * framedur))
         local et = aegisub.ms_from_frame(start_frame + (i * framedur))
 
+        -- retime any \t and \move we come across
+        -- this is much simpler than actually interpolating them, especially as \t's can be stacked
+        -- note that unscramble modes will require further manipulation
+        local delta = line.start_time - st
+        start, rest = retime_t_move(delta, start, rest)
+
         local lines = linefun(st, et, line, start, active_char, rest)
 
         for _,new_line in ipairs(lines) do
@@ -224,6 +244,8 @@ function generate_line(st, et, orig_line, start, char, rest)
         -- new.text = start
     elseif rest ~= "" then
         new.text = start .. SEPARATOR .. rest
+    else
+        new.text = start
     end
 
     return {new}
@@ -248,6 +270,9 @@ function generate_unscramble_lines(st, et, orig_line, start, char, rest, staticf
         local new = util.deep_copy(orig_line)
         new.start_time = aegisub.ms_from_frame(f)
         new.end_time = aegisub.ms_from_frame(f+1)
+
+        local delta = st - new.start_time
+        start, rest = retime_t_move(delta, start, rest)
 
         local newchar
         if (last_frame - f) < staticframes then
@@ -297,6 +322,9 @@ function generate_unscramble_lines_fading(st, et, orig_line, start, char, rest, 
         local new = util.deep_copy(orig_line)
         new.start_time = aegisub.ms_from_frame(f)
         new.end_time = aegisub.ms_from_frame(f+1)
+
+        local delta = st - new.start_time
+        start, rest = retime_t_move(delta, start, rest)
 
         local newchar
         if (last_frame - f) < staticframes then
