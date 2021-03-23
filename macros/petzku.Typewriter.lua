@@ -38,7 +38,7 @@ local depctrl = DependencyControl{
 }
 local util, unicode = depctrl:requireModules()
 
-function randomchar(ch, time)
+local function randomchar(ch, time)
     -- use time for deterministic random shuffle thing
     if ch == ch:lower() and ch ~= ch:upper() then
         local rand = math.pow((time + string.byte(ch:sub(1,1))) % 26, 10) % 26
@@ -55,7 +55,7 @@ function randomchar(ch, time)
 end
 
 
-function write_groups(subs, groups)
+local function write_groups(subs, groups)
     for j=#groups, 1, -1 do
         local group = groups[j]
         for i=#group, 1, -1 do
@@ -66,9 +66,9 @@ function write_groups(subs, groups)
     end
 end
 
-function apply_by_duration(subs, sel, linefun)
-    groups_to_add = {}
-    for si, li in ipairs(sel) do
+local function apply_by_duration(subs, sel, linefun)
+    local groups_to_add = {}
+    for _, li in ipairs(sel) do
         local line = subs[li]
 
         local duration_frames = aegisub.frame_from_ms(line.end_time) - aegisub.frame_from_ms(line.start_time)
@@ -84,9 +84,9 @@ function apply_by_duration(subs, sel, linefun)
     write_groups(subs, groups_to_add)
 end
 
-function apply_by_frame(subs, sel, linefun)
+local function apply_by_frame(subs, sel, linefun)
     local groups_to_add = {}
-    for si, li in ipairs(sel) do
+    for _, li in ipairs(sel) do
         local line = subs[li]
         groups_to_add[#groups_to_add+1] = typewrite_line(line, 1, li+1, linefun)
         -- comment the original line out
@@ -128,7 +128,7 @@ function unscramble_given_static(subs, sel)
     if pressed ~= "Apply" then return end
     local static_frames = result["static_frames"]
 
-    function linefun(st, et, line, start, char, rest)
+    local function linefun(st, et, line, start, char, rest)
         return generate_unscramble_lines(st, et, line, start, char, rest, static_frames)
     end
 
@@ -196,9 +196,9 @@ function typewrite_line(line, framedur, index, linefun)
         local st = aegisub.ms_from_frame(start_frame + ((i-1) * framedur))
         local et = aegisub.ms_from_frame(start_frame + (i * framedur))
 
-        lines = linefun(st, et, line, start, active_char, rest)
+        local lines = linefun(st, et, line, start, active_char, rest)
 
-        for ii,new_line in ipairs(lines) do
+        for _,new_line in ipairs(lines) do
             to_add[#to_add+1] = {index, new_line}
         end
     end
@@ -267,7 +267,7 @@ function generate_unscramble_lines(st, et, orig_line, start, char, rest, staticf
     return lines
 end
 
-function make_alpha(f, dur)
+local function make_alpha(f, dur)
     local t = (dur - f) / (dur + 1)
     -- clamp and transform
     t = math.min(math.max(t * 256, 0), 255)
