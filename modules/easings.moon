@@ -28,11 +28,9 @@ wrap_tags = (tags) ->
 --  tags: table of {"tag", start_value, end_value} triples
 --        alternatively a single such triple
 --  t1, t2: start and end times, respectively
---          default to start and end of line if omitted
 -- returns:
 --  string of '\t' tags, approximating the given easing function
-easer = (fun, tags, t1=0, t2) ->
-    t2 or= line.duration -- only works if we're running inside a templater, not like it matters
+easer = (fun, tags, t1, t2) ->
     tags = wrap_tags tags
     frame = get_framedur!
     dt = t2 - t1
