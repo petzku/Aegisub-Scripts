@@ -88,11 +88,12 @@ Handles positioning on both axes, and all bottom- or top-aligned alignments, spe
 
 Takes a line and "writes" it character by character, making the characters appear one by one (using alphas) either frame-by-frame or evenly spaced over the line's duration. My first script, initially made before I even knew what the hell alpha-timing was and actually deleted characters from the string to make this work. Obviously this has been changed since.
 
-Also has a mode to unscramble the text one letter at a time as it is being written out. The most recent character gets randomized each frame, with matching upper/lowercase for letters, numbers for numbers, and keeping any other characters untouched. You should probably either use a monospaced font, or use one of `\an1 \an4 \an7` with this, since the text width will not stay constant. Nothing I can do about that, sorry. Also note that this uses lua's `string.upper` and `string.lower`, so it might not handle non-ASCII letters correctly, depending on your locale settings.
+Also has a mode (under a second automation menu entry, aptly named `Unscramble`) to unscramble the text one letter at a time as it is being written out. The most recent character gets randomized each frame, with matching upper/lowercase for letters, numbers for numbers, and keeping any other characters untouched. This one doesn't have a frame-by-frame setting, for hopefully-obvious reasons.
+You should probably either use a monospaced font, or use one of `\an1 \an4 \an7` with this, since the text width will not stay constant. Nothing I can do about that, sorry. In extreme cases, this could even cause text re-flows. Also note that this uses lua's `string.upper` and `string.lower`, so it might not handle non-ASCII letters correctly, depending on your locale settings.
 
-The unscrambling mode allows users to optionally specify how many frames a letter should stay static (i.e. displaying as itself instead of a random letter) before the next letter appears. This is one frame for the normal `unscramble` macro, half of the letter's "duration" for `unscramble half` (rounded down), and `unscramble N static` allows the user to specify a number of frames.
+The unscrambling mode allows users to optionally specify how many frames a letter should stay static (i.e. displaying as itself instead of a random letter) before the next letter appears. This is one frame for the normal `Unscramble/line` macro, half of the letter's "duration" for `Unscramble/half` (rounded down), and `Unscramble/N static` allows the user to specify a number of frames. There is also a mode named `Unscramble/N fade` that makes the letters fade in over a given number of frames.
 
-Currently does not play well with `\move` or `\t` tags. Unlikely it ever will, but consider using lyger's FbfTransform if you need something like this.
+As of 0.6.0, the script also retimes any (two- or three-arg) `\t`s and (six-arg) `\move`s. Actually computing the resulting values would be hilariously out of scope. Just hope the renderer doesn't have a problem with times outside the current line (they shouldn't).
 
 ## Libraries
 
