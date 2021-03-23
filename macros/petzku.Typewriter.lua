@@ -21,7 +21,6 @@ Two macros: "fbf" starts at line start, adds one char per frame and leaves the f
 string until line end. "line" adds characters linearly spaced over the entire line's duration.
 
 TODO: support rtl and/or bottom-to-top text?
-TODO: consider behaving nicely with \move and \t
 
 ]]--
 
@@ -257,7 +256,7 @@ function generate_unscramble_halfway(st, et, orig_line, start, char, rest)
     return generate_unscramble_lines(st, et, orig_line, start, char, rest, math.floor(framedur/2))
 end
 
-function generate_unscramble_lines(st, et, orig_line, start, char, rest, staticframes)
+function generate_unscramble_lines(st, et, orig_line, org_start, char, org_rest, staticframes)
     if not staticframes then staticframes = 1 end
     local SEPARATOR = "{\\alpha&HFF&}"
     local lines = {}
@@ -272,7 +271,7 @@ function generate_unscramble_lines(st, et, orig_line, start, char, rest, staticf
         new.end_time = aegisub.ms_from_frame(f+1)
 
         local delta = st - new.start_time
-        start, rest = retime_t_move(delta, start, rest)
+        local start, rest = retime_t_move(delta, org_start, org_rest)
 
         local newchar
         if (last_frame - f) < staticframes then
@@ -306,7 +305,7 @@ local function make_alpha(f, dur)
     end
 end
 
-function generate_unscramble_lines_fading(st, et, orig_line, start, char, rest, fadedur)
+function generate_unscramble_lines_fading(st, et, orig_line, org_start, char, org_rest, fadedur)
     if not fadedur then fadedur = 3 end
     local staticframes = 1
     local SEPARATOR = "{\\alpha&HFF&}"
@@ -324,7 +323,7 @@ function generate_unscramble_lines_fading(st, et, orig_line, start, char, rest, 
         new.end_time = aegisub.ms_from_frame(f+1)
 
         local delta = st - new.start_time
-        start, rest = retime_t_move(delta, start, rest)
+        local start, rest = retime_t_move(delta, org_start, org_rest)
 
         local newchar
         if (last_frame - f) < staticframes then
