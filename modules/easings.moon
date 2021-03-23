@@ -28,9 +28,12 @@ wrap_tags = (tags) ->
 --  tags: table of {"tag", start_value, end_value} triples
 --        alternatively a single such triple
 --  t1, t2: start and end times, respectively
+--  framestep: duration (in frames) of generated \t's
+--             optional, defaults to 1
+--             a greater value will reduce the number of \t's produced, but may look choppy with some animations
 -- returns:
 --  string of '\t' tags, approximating the given easing function
-easer = (fun, tags, t1, t2) ->
+easer = (fun, tags, t1, t2, framestep=1) ->
     tags = wrap_tags tags
     frame = get_framedur!
     dt = t2 - t1
@@ -44,11 +47,11 @@ easer = (fun, tags, t1, t2) ->
     table.insert strbuf, ")"
 
     x = 0
-    while x <= dt
-        x2 = math.min dt, x + 2*frame
+    while x < dt
+        x2 = math.min dt, x + framestep*frame
 
         r1 = fun x / dt
-        rh = fun((x + frame) / dt)
+        rh = fun((x + x2) / (2 * dt))
         r2 = fun x2 / dt
 
         accel = petzku.transform.calc_accel(r1, rh, r2)
@@ -59,11 +62,11 @@ easer = (fun, tags, t1, t2) ->
             value = s + r2 * (e - s)
             table.insert strbuf, string.format "\\%s%.2f", tag, value
         table.insert strbuf, ")"
-        x += 2 * frame
+        x = x2
 
     table.concat strbuf
 
-make_easer = (fun) -> (tags, t1, t2) -> easer(fun, tags, t1, t2)
+make_easer = (fun) -> (tags, t1, t2, framestep) -> easer(fun, tags, t1, t2, framestep)
 
 ease_out_bounce = (t) ->
     -- what are all these magical constants?

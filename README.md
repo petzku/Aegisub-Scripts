@@ -106,7 +106,7 @@ A collection of [easing functions](https://easings.net/) and a framework to let 
 
 #### Usage
 
-Each "easer" method has three required required parameters: A `{tag, start_value, end_value}` triple, or a table of multiple ones, and start and end times for the effect (`t1` and `t2`).
+Each "easer" method has three required required parameters, and one optional one: A `{tag, start_value, end_value}` triple, or a table of multiple ones; start and end times for the effect (`t1` and `t2`); and a parameter determining how long each transform should be (`framestep`, defaults to 1). Higher `framestep` values reduce the output length, but may look choppy with some animations. Values below 1 should not produce visibly different results.
 See example in the [Sample](#sample) section below.
 
 The module exposes a bunch of methods in the format `(in|out|inout)_<effectname>`. The same methods are also accessible either via `i`/`o`/`io` tables (for in/out/in-out) with the effect name as the key, and vice versa:
