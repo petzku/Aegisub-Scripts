@@ -213,6 +213,31 @@
           ]
         }
       },
+      "petzku.LookbackSplitter": {
+        "url": "@{baseUrl}#@{namespace}",
+        "author": "petzku",
+        "name": "Lookback Splitter",
+        "description": "Split any lines in selection to segments at most 10 seconds in length",
+        "channels": {
+          "stable": {
+            "version": "1.0.0",
+            "released": "2021-03-24",
+            "default": true,
+            "files": [
+              {
+                "name": ".moon",
+                "url": "@{fileBaseUrl}@{fileName}",
+                "sha1": "07A91370624E722283EE50B10165712D8BED6079"
+              }
+            ]
+          }
+        },
+        "changelog": {
+          "1.0.0": [
+            "Initial release"
+          ]
+        }
+      },
       "petzku.JumpToNextPlus": {
         "url": "@{baseUrl}#@{namespace}",
         "author": "petzku",
