@@ -51,8 +51,8 @@ else
     petzku = require 'petzku.util'
 end
 
-local dialogs = {
-    config = {
+local config_diag = {
+    main = {
         exe_label = {
             class='label', label="mpv path:",
             x=0, y=0, width=5, height=1
@@ -80,8 +80,10 @@ local dialogs = {
             x=0, y=6, width=20, height=3,
             hint=[[Custom command line options passed to mpv when encoding only audio.]]
         }
-    },
-    GUI = {
+    }
+}
+local GUI = {
+    main = {
         settings_label = {
             class='label', label=tr"Settings for video clip: ",
             x=0, y=0
@@ -97,12 +99,12 @@ local dialogs = {
             hint=tr[[Enable audio in output]]
         }
     },
-    GUI_buttons = {
+    buttons = {
         VIDEO = tr"&Video clip",
         AUDIO = tr"Audio-&only clip",
         CANCEL = tr"&Cancel"
     },
-    GUI_buttons_dc = {
+    buttons_dc = {
         VIDEO = tr"&Video clip",
         AUDIO = tr"Audio-&only clip",
         CONFIG = tr"Confi&g",
@@ -110,7 +112,7 @@ local dialogs = {
     }
 }
 if haveDepCtrl then
-    config = ConfigHandler(dialogs, depctrl.configFile, false, script_version, depctrl.configDir)
+    config = ConfigHandler(config_diag, depctrl.configFile, false, script_version, depctrl.configDir)
 end
 
 local function get_configuration()
@@ -120,7 +122,7 @@ local function get_configuration()
     end
     -- this seems hacky, maybe use depctrl's confighandler instead
     local opts = {}
-    for key, values in ipairs(dialogs.config) do
+    for key, values in ipairs(config_diag.main) do
         if values.config then
             opts[key] = values.value
         end
@@ -264,13 +266,13 @@ function make_audio_clip(subs, sel)
 end
 
 function show_dialog(subs, sel)
-    local buttons = haveDepCtrl and dialogs.GUI_buttons_dc or dialogs.GUI_buttons
-    local btn, values = aegisub.dialog.display(dialogs.GUI, buttons, {cancel=buttons.CANCEL})
+    local buttons = haveDepCtrl and GUI.buttons_dc or GUI.buttons
+    local btn, values = aegisub.dialog.display(GUI.main, buttons, {cancel=buttons.CANCEL})
 
     if btn == buttons.AUDIO then
         make_audio_clip(subs, sel)
     elseif btn == buttons.VIDEO then
-        make_clip(subs, sel, values['subs'], values['audio'])
+        make_clip(subs, sel, values.subs, values.audio)
     elseif btn == buttons.CONFIG then
         show_config_dialog()
         -- once config is done, re-open this dialog
@@ -279,11 +281,11 @@ function show_dialog(subs, sel)
 end
 
 function show_config_dialog()
-    local button, result = aegisub.dialog.display(dialogs.config)
+    local button, result = aegisub.dialog.display(config_diag.main)
     if button then
-        config:updateConfiguration(result, 'config')
+        config:updateConfiguration(result, 'main')
         config:write()
-        config:updateInterface('config')
+        config:updateInterface('main')
     end
 end
 
