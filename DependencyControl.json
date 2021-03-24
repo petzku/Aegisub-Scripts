@@ -307,48 +307,34 @@
         "description": "Makes text appear one character at a time",
         "channels": {
           "stable": {
-            "version": "0.5.2",
-            "released": "2020-10-05",
+            "version": "0.6.0",
+            "released": "2021-03-24",
             "default": true,
             "files": [
               {
                 "name": ".lua",
                 "url": "@{fileBaseUrl}@{fileName}",
-                "sha1": "6BF5B82B5FB776B8036469CC01DCAE4214917930"
+                "sha1": "EBA0EF85D50325C2E2C4ACCF834B9688F260022A"
               }
             ]
           }
         },
         "changelog": {
-          "0.5.2": [
-            "Added unscramble mode allowing user to specify 'static duration' (i.e. how many frames letter should display as final before next letter appears)"
-          ],
-          "0.5.1": [
-            "Added unscramble mode 'halfway': letters become static after halfway point to next letter",
-            "Internal cleanup, code deduplication"
-          ],
-          "0.5.0": [
-            "Rework interals, letting aegi handle frame-ms conversion"
-          ],
-          "0.4.1": [
-            "Fix bug causing letters to disappear (whoops)"
-          ],
-          "0.4.0": [
-            "Add Unscramble mode",
-            "Restructure code to support Unscramble",
-            "Minor cleanup"
-          ],
-          "0.3.3": [
-            "Moved to 'stable' Git branch for DependencyControl"
-          ],
-          "0.3.2": [
-            "Removed useless legacy karaskel code"
-          ],
-          "0.3.1": [
-            "General code cleanup"
-          ],
           "0.3.0": [
             "Added DependencyControl"
+          ],
+          "0.4.1": [
+            "Add Unscramble mode"
+          ],
+          "0.5.2": [
+            "Add various unscramble modes ('half', 'N static')",
+            "Let Aegisub handle frame-ms conversions",
+            "Various internal cleanup"
+          ],
+          "0.6.0": [
+            "Separate Unscramble into second automation menu entry",
+            "Add a fade-in unscramble mode",
+            "Retime \\t and \\move tags, to preserve line appearance"
           ]
         }
       }
