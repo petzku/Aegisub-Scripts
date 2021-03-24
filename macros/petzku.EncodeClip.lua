@@ -23,8 +23,10 @@ Macros and GUI should be self-explanatory.
 
 Video and audio are taken from the file(s) loaded into Aegisub, and subtitles from the active script.
 
-TODO:
-- configuration support
+I don't know of a way to get the currently active audio track's ID from Aegisub, so dual audio may not work correctly.
+You can remedy this by specifying the audio track in the configuration dialog. For example:
+`--aid=2` to select the second audio track, or `--alang=jpn` to select the first japanese audio track
+
 ]]
 
 local tr = aegisub.gettext
@@ -33,12 +35,65 @@ script_name = tr'Encode Clip'
 script_description = tr'Encode various clips from the current selection'
 script_author = 'petzku'
 script_namespace = "petzku.EncodeClip"
-script_version = '0.5.3'
+script_version = '0.6.0'
 
 
 local haveDepCtrl, DependencyControl, depctrl = pcall(require, "l0.DependencyControl")
+local ConfigHandler, config
 if haveDepCtrl then
-    depctrl = DependencyControl{feed = "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json"}
+    depctrl = DependencyControl{
+        {"a-mo.ConfigHandler", version="1.1.4", url="https://github.com/TypesettingTools/Aegisub-Motion",
+         feed="https://raw.githubusercontent.com/TypesettingTools/Aegisub-Motion/DepCtrl/DependencyControl.json"},
+    }
+    ConfigHandler = depctrl:requireModules()
+end
+
+local config_dialog = {
+    main = {
+        exe_label = {
+            class='label', label="mpv path:",
+            x=0, y=0, width=5, height=1
+        },
+        mpv_exe = {
+            class='edit', value="", config=true,
+            x=5, y=0, width=15, height=1,
+            hint=[[Path to the mpv executable. If left blank, searches system PATH.]]
+        },
+        video_command_label = {
+            class='label', label='Custom video clip options:',
+            x=0, y=1, width=10, height=1
+        },
+        video_command = {
+            class='textbox', value="--sub-font-provider=auto", config=true,
+            x=0, y=2, width=20, height=3,
+            hint=[[Custom command line options flags passed to mpv when encoding video. Default is "--sub-font-provider=auto", as many mpv configs set this to 'none' by default.]]
+        },
+        audio_command_label = {
+            class='label', label='Custom audio clip options:',
+            x=0, y=5, width=10, height=1
+        },
+        audio_command = {
+            class='textbox', value="", config=true,
+            x=0, y=6, width=20, height=3,
+            hint=[[Custom command line options passed to mpv when encoding only audio.]]
+        }
+    }
+}
+if haveDepCtrl then
+    config = ConfigHandler(config_dialog, depctrl.configFile, false, script_version, depctrl.configDir)
+    config:read()
+    config:updateInterface("main")
+end
+
+local function get_configuration()
+    -- this seems hacky, maybe use depctrl's confighandler instead
+    local opts = {}
+    for key, values in ipairs(config_dialog.main) do
+        if values.config then
+            opts[key] = values.value
+        end
+    end
+    return opts
 end
 
 -- "\" on windows, "/" on any other system
@@ -116,9 +171,16 @@ function make_clip(subs, sel, hardsub, audio)
         postfix = postfix .. "_nosub"
     end
 
-    -- TODO: allow arbitrary command line parameters from user
+    local user_opts = get_configuration()
+    local mpv_exe
+    if user_opts.mpv_exe and user_opts.mpv_exe ~= '' then
+        mpv_exe = user_opts.mpv_exe
+    else
+        mpv_exe = 'mpv'
+    end
+
     local commands = {
-        'mpv', -- TODO: let user specify mpv location if not on PATH
+        mpv_exe,
         '--start=%.3f',
         '--end=%.3f',
         '"%s"',
@@ -126,7 +188,8 @@ function make_clip(subs, sel, hardsub, audio)
         '--o="%s"',
         '--ovcopts="profile=main,level=4.1,crf=23"',
         audio_opts,
-        sub_opts
+        sub_opts,
+        user_opts.video_command
     }
 
     outfile = outfile:format(postfix)
@@ -148,15 +211,24 @@ function make_audio_clip(subs, sel)
     end
     outfile = outfile:gsub('%.[^.]+$', '') .. ('_%.3f-%.3f'):format(t1, t2) .. '.aac'
 
+    local user_opts = get_configuration()
+    local mpv_exe
+    if user_opts.mpv_exe and user_opts.mpv_exe ~= '' then
+        mpv_exe = user_opts.mpv_exe
+    else
+        mpv_exe = 'mpv'
+    end
+
     local commands = {
-        'mpv',
+        mpv_exe,
         '--start=%.3f',
         '--end=%.3f',
         '"%s"',
         '--video=no',
         '--o="%s"',
         '--oac=' .. best_aac_encoder(),
-        '--oacopts="b=256k,frame_size=1024"'
+        '--oacopts="b=256k,frame_size=1024"',
+        user_opts.audio_command
     }
 
     local cmd = table.concat(commands, ' '):format(t1, t2, vidfile, outfile)
@@ -199,18 +271,37 @@ end
 function show_dialog(subs, sel)
     local VIDEO = tr"&Video clip"
     local AUDIO = tr"Audio-&only clip"
+    local CONFIG = tr"Confi&g"
     local diag = {
         {class = 'label', x=0, y=0, label = tr"Settings for video clip: "},
         {class = 'checkbox', x=1, y=0, label = tr"&Subs", hint = tr"Enable subtitles in output", name = 'subs', value = true},
         {class = 'checkbox', x=2, y=0, label = tr"&Audio", hint = tr"Enable audio in output", name = 'audio', value = true}
     }
-    local buttons = {AUDIO, VIDEO, tr"&Cancel"}
+    local buttons
+    if haveDepCtrl then
+        buttons = {AUDIO, VIDEO, CONFIG, tr"&Cancel"}
+    else
+        buttons = {AUDIO, VIDEO, tr"&Cancel"}
+    end
     local btn, values = aegisub.dialog.display(diag, buttons, {cancel=tr"&Cancel"})
 
     if btn == AUDIO then
         make_audio_clip(subs, sel)
     elseif btn == VIDEO then
         make_clip(subs, sel, values['subs'], values['audio'])
+    elseif btn == CONFIG then
+        show_config_dialog()
+        -- once config is done, re-open this dialog
+        show_dialog(subs, sel)
+    end
+end
+
+function show_config_dialog()
+    local button, result = aegisub.dialog.display(config_dialog.main)
+    if button then
+        config:updateConfiguration(result, 'main')
+        config:write()
+        config:updateInterface("main")
     end
 end
 
@@ -239,6 +330,8 @@ local macros = {
     {tr'Clipping GUI',          tr'GUI for all your video/audio clipping needs', show_dialog}
 }
 if haveDepCtrl then
+    -- configuration support for depctrl only
+    table.insert(macros, {tr'Config', tr'Open configuration menu', show_config_dialog})
     depctrl:registerMacros(macros)
 else
     for i,macro in ipairs(macros) do
