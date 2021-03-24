@@ -82,9 +82,20 @@ local dialogs = {
         }
     },
     GUI = {
-        {class = 'label', x=0, y=0, label = tr"Settings for video clip: "},
-        {class = 'checkbox', x=1, y=0, label = tr"&Subs", hint = tr"Enable subtitles in output", name = 'subs', value = true},
-        {class = 'checkbox', x=2, y=0, label = tr"&Audio", hint = tr"Enable audio in output", name = 'audio', value = true}
+        settings_label = {
+            class='label', label=tr"Settings for video clip: ",
+            x=0, y=0
+        },
+        subs = {
+            class='checkbox', label=tr"&Subs", value=true, name='subs',
+            x=1, y=0,
+            hint=tr[[Enable subtitles in output]]
+        },
+        audio = {
+            class='checkbox', label=tr"&Audio", value=true, name='audio',
+            x=2, y=0,
+            hint=tr[[Enable audio in output]]
+        }
     },
     GUI_buttons = {
         VIDEO = tr"&Video clip",
