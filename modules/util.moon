@@ -8,7 +8,7 @@ Anyone else is free to use this library too, but most of the stuff is specifical
 ]]
 
 -- "\" on windows, "/" on any other system
-pathsep = package.config:sub(1,1)
+pathsep = package.config\sub 1,1
 
 with lib = {}
     .math = {
