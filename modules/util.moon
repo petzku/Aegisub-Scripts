@@ -7,7 +7,22 @@ Or maybe I don't. But that's the plan, at least.
 Anyone else is free to use this library too, but most of the stuff is specifically for my own stuff.
 ]]
 
-with lib = {}
+haveDepCtrl, DependencyControl, depctrl = pcall require, 'l0.DependencyControl'
+if haveDepCtrl
+    depctrl = DependencyControl {
+        name: 'petzkuLib',
+        version: '0.2.0',
+        description: [[Various utility functions for use with petzku's Aegisub macros]],
+        author: "petzku",
+        url: "https://github.com/petzku/Aegisub-Scripts",
+        moduleName: 'petzku.util',
+    }
+
+-- "\" on windows, "/" on any other system
+pathsep = package.config\sub 1,1
+
+lib = {}
+with lib
     .math = {
         log_n: (base, x) ->
             math.log(x) / math.log(base)
@@ -37,3 +52,37 @@ with lib = {}
             -- clamp to a sensible interval just in case
             .math.clamp accel, 0.01, 100
     }
+
+    .io = {
+        :pathsep,
+        run_cmd: (cmd, quiet) ->
+            aegisub.log 'running: %s\n', cmd unless quiet
+
+            local output
+            if pathsep == '\\'
+                -- command lines over 256 bytes don't get run correctly, make a temporary file as a workaround
+                tmp = aegisub.decode_path('?temp' .. pathsep .. 'tmp.bat')
+                f = io.open tmp, 'w'
+                f\write cmd
+                f\close!
+
+                p = io.popen tmp
+                output = p\read '*a'
+                p\close!
+
+                os.execute 'del ' .. tmp
+            else
+                -- on linux, we should be fine to just execute the command directly
+                p = io.popen cmd
+                output = p\read '*a'
+                p\close!
+
+            aegisub.log output unless quiet
+            output
+    }
+
+if haveDepCtrl
+    lib.version = depctrl
+    return depctrl\register lib
+else
+    return lib
