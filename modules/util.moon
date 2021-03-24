@@ -7,6 +7,9 @@ Or maybe I don't. But that's the plan, at least.
 Anyone else is free to use this library too, but most of the stuff is specifically for my own stuff.
 ]]
 
+-- "\" on windows, "/" on any other system
+pathsep = package.config:sub(1,1)
+
 with lib = {}
     .math = {
         log_n: (base, x) ->
@@ -36,4 +39,32 @@ with lib = {}
             accel = .math.log_n 0.5, math.abs (valhalf - val0) / (val1 - val0)
             -- clamp to a sensible interval just in case
             .math.clamp accel, 0.01, 100
+    }
+
+    .io = {
+        :pathsep,
+        run_cmd: (cmd, quiet) ->
+            aegisub.log 'running: %s\n', cmd unless quiet
+
+            local output
+            if pathsep == '\\'
+                -- command lines over 256 bytes don't get run correctly, make a temporary file as a workaround
+                tmp = aegisub.decode_path('?temp' .. pathsep .. 'tmp.bat')
+                f = io.open tmp, 'w'
+                f\write cmd
+                f\close!
+
+                p = io.popen tmp
+                output = p\read '*a'
+                p\close!
+
+                os.execute 'del ' .. tmp
+            else
+                -- on linux, we should be fine to just execute the command directly
+                p = io.popen cmd
+                output = p\read '*a'
+                p\close!
+
+            aegisub.log output unless quiet
+            output
     }

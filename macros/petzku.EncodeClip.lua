@@ -39,13 +39,16 @@ script_version = '0.6.0'
 
 
 local haveDepCtrl, DependencyControl, depctrl = pcall(require, "l0.DependencyControl")
-local ConfigHandler, config
+local ConfigHandler, config, petzku
 if haveDepCtrl then
     depctrl = DependencyControl{
         {"a-mo.ConfigHandler", version="1.1.4", url="https://github.com/TypesettingTools/Aegisub-Motion",
          feed="https://raw.githubusercontent.com/TypesettingTools/Aegisub-Motion/DepCtrl/DependencyControl.json"},
+        {"petzku.util"}
     }
-    ConfigHandler = depctrl:requireModules()
+    ConfigHandler, petzku = depctrl:requireModules()
+else
+    petzku = require 'petzku.util'
 end
 
 local dialogs = {
@@ -114,10 +117,6 @@ local function get_configuration()
     return opts
 end
 
--- "\" on windows, "/" on any other system
-local pathsep = package.config:sub(1,1)
-local is_windows = pathsep == "\\"
-
 -- find the best AAC encoder available to us, since ffmpeg-internal is Bad
 -- mpv *should* support --oac="aac_at,aac_mf,libfdk_aac,aac", but it doesn't so we do this
 local aac_encoder = nil
@@ -127,7 +126,7 @@ local function best_aac_encoder()
     end
     local priorities = {aac = 0, libfdk_aac = 1, aac_mf = 2, aac_at = 3}
     local best = "aac"
-    for line in run_cmd("mpv --oac=help", true):gmatch("[^\r\n]+") do
+    for line in petzku.io.run_cmd("mpv --oac=help", true):gmatch("[^\r\n]+") do
         local enc = line:match("--oac=(%S*aac%S*)")
         if enc and priorities[enc] and priorities[enc] > priorities[best] then
             best = enc
@@ -153,7 +152,7 @@ function make_clip(subs, sel, hardsub, audio)
 
     local props = aegisub.project_properties()
     local vidfile = props.video_file
-    local subfile = aegisub.decode_path("?script") .. pathsep .. aegisub.file_name()
+    local subfile = aegisub.decode_path("?script") .. petzku.io.pathsep .. aegisub.file_name()
 
     local outfile
     if aegisub.decode_path("?script") == "?script" then
@@ -212,7 +211,7 @@ function make_clip(subs, sel, hardsub, audio)
 
     outfile = outfile:format(postfix)
     local cmd = table.concat(commands, ' '):format(t1, t2, vidfile, outfile)
-    run_cmd(cmd)
+    petzku.io.run_cmd(cmd)
 end
 
 function make_audio_clip(subs, sel)
@@ -225,7 +224,7 @@ function make_audio_clip(subs, sel)
     if aegisub.decode_path("?script") == "?script" then
         outfile = vidfile
     else
-        outfile = aegisub.decode_path("?script") .. pathsep .. aegisub.file_name()
+        outfile = aegisub.decode_path("?script") .. petzku.io.pathsep .. aegisub.file_name()
     end
     outfile = outfile:gsub('%.[^.]+$', '') .. ('_%.3f-%.3f'):format(t1, t2) .. '.aac'
 
@@ -250,40 +249,7 @@ function make_audio_clip(subs, sel)
     }
 
     local cmd = table.concat(commands, ' '):format(t1, t2, vidfile, outfile)
-    run_cmd(cmd)
-end
-
-function run_cmd(cmd, quiet)
-    if not quiet then
-        aegisub.log('running: ' .. cmd .. '\n')
-    end
-
-    local output
-    if is_windows then
-        -- command lines over 256 bytes don't get run correctly, make a temporary file as a workaround
-        local tmp = aegisub.decode_path('?temp' .. pathsep .. 'tmp.bat')
-        local f = io.open(tmp, 'w')
-        f:write(cmd)
-        f:close()
-
-        local p = io.popen(tmp)
-        output = p:read('*a')
-        if not quiet then
-            aegisub.log(output)
-        end
-        p:close()
-
-        os.execute('del ' .. tmp)
-    else
-        -- on linux, we should be fine to just execute the command directly
-        local p = io.popen(cmd)
-        output = p:read('*a')
-        if not quiet then
-            aegisub.log(output)
-        end
-        p:close()
-    end
-    return output
+    petzku.io.run_cmd(cmd)
 end
 
 function show_dialog(subs, sel)
