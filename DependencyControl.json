@@ -327,5 +327,34 @@
           ]
         }
       }
+    },
+    "modules": {
+      "petzku.util": {
+        "url": "https://github.com/petzku/Aegisub-Scripts",
+        "author": "petzku",
+        "name": "petzkuLib",
+        "description": "Various utility functions for use with petzku's Aegisub macros",
+        "fileBaseUrl": "@{fileBaseUrl}/@{namespace}-v@{version}/modules/@{namespacePath}",
+        "channels": {
+          "stable": {
+            "version": "0.2.0",
+            "released": "2021-03-24",
+            "default": true,
+            "files": [
+              {
+                "name": ".moon",
+                "url": "@{fileBaseUrl}@{fileName}",
+                "sha1": "A4270246AF72F0134BD64B94EEF5A1B863CACEF9"
+              }
+            ]
+          }
+        },
+        "changelog": {
+          "0.2.0": [
+            "Add IO functionality",
+            "Add to DependencyControl"
+          ]
+        }
+      }
     }
   }
