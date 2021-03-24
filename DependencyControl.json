@@ -132,52 +132,53 @@
         "description": "Encode a hardsubbed clip encompassing the current selection",
         "channels": {
           "stable": {
-            "version": "0.5.3",
-            "released": "2021-02-19",
+            "version": "0.6.0",
+            "released": "2021-03-24",
             "default": true,
             "files": [
               {
                 "name": ".lua",
                 "url": "@{fileBaseUrl}@{fileName}",
-                "sha1": "761299FA5FEF6EE4BF381A3E799B38D8F46C87F4"
+                "sha1": "64E3B752B60514ACC293899FE39F49E42E761315"
+              }
+            ],
+            "requiredModules": [
+              {
+                "moduleName": "petzku.util",
+                "name": "petzkuLib",
+                "url": "https://github.com/petzku/Aegisub-Scripts",
+                "version": "0.2.0"
               }
             ]
           }
         },
         "changelog": {
-          "0.5.3": [
-            "Make GUI closable with ESC",
-            "Add short README inside script"
+          "0.3.0": [
+            "Add to DependencyControl"
           ],
-          "0.5.2": [
-            "Add alt-shortcut keys to the GUI"
+          "0.4.0": [
+            "Make DependencyControl optional",
+            "Fallback to video file location if missing subtitle file",
+            "Fix major video artifacting in non-mpv players"
+          ],
+          "0.5.0": [
+            "Add GUI",
+            "Add macros for audioless clips and audio-only clips",
+            "Prefer non-ffmpeg AAC encoders, raise bitrate to 256k"
           ],
           "0.5.1": [
             "Allow Aegisub to autotranslate GUI text"
           ],
-          "0.5.0": [
-            "Add GUI"
+          "0.5.2": [
+            "Add alt-shortcut keys to the GUI"
           ],
-          "0.4.1": [
-            "Add macros to clip without audio as well as audio-only",
-            "Use non-ffmpeg AAC encoder if present",
-            "Set default audio bitrate to 256k"
+          "0.5.3": [
+            "Make GUI closable with ESC",
+            "Add short README inside script"
           ],
-          "0.3.4": [
-            "Fix artifacting in non-mpv players"
-          ],
-          "0.3.3": [
-            "Fix typo in output file generation"
-          ],
-          "0.3.2": [
-            "Fallback to video file location if missing subtitle file"
-          ],
-          "0.3.1": [
-            "Force mpv to disable subs for raw clip",
-            "Make DepCtrl optional"
-          ],
-          "0.3.0": [
-            "Added to DependencyControl"
+          "0.6.0": [
+            "Add configuration support",
+            "Move shell execution to petzku.util, and require the module"
           ]
         }
       },
