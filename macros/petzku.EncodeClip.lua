@@ -48,8 +48,8 @@ if haveDepCtrl then
     ConfigHandler = depctrl:requireModules()
 end
 
-local config_dialog = {
-    main = {
+local dialogs = {
+    config = {
         exe_label = {
             class='label', label="mpv path:",
             x=0, y=0, width=5, height=1
@@ -77,20 +77,36 @@ local config_dialog = {
             x=0, y=6, width=20, height=3,
             hint=[[Custom command line options passed to mpv when encoding only audio.]]
         }
+    },
+    GUI = {
+        {class = 'label', x=0, y=0, label = tr"Settings for video clip: "},
+        {class = 'checkbox', x=1, y=0, label = tr"&Subs", hint = tr"Enable subtitles in output", name = 'subs', value = true},
+        {class = 'checkbox', x=2, y=0, label = tr"&Audio", hint = tr"Enable audio in output", name = 'audio', value = true}
+    },
+    GUI_buttons = {
+        VIDEO = tr"&Video clip",
+        AUDIO = tr"Audio-&only clip",
+        CANCEL = tr"&Cancel"
+    },
+    GUI_buttons_dc = {
+        VIDEO = tr"&Video clip",
+        AUDIO = tr"Audio-&only clip",
+        CONFIG = tr"Confi&g",
+        CANCEL = tr"&Cancel"
     }
 }
 if haveDepCtrl then
-    config = ConfigHandler(config_dialog, depctrl.configFile, false, script_version, depctrl.configDir)
+    config = ConfigHandler(dialogs, depctrl.configFile, false, script_version, depctrl.configDir)
 end
 
 local function get_configuration()
     if haveDepCtrl then
         config:read()
-        config:updateInterface("main")
+        config:updateInterface("config")
     end
     -- this seems hacky, maybe use depctrl's confighandler instead
     local opts = {}
-    for key, values in ipairs(config_dialog.main) do
+    for key, values in ipairs(dialogs.config) do
         if values.config then
             opts[key] = values.value
         end
@@ -271,27 +287,14 @@ function run_cmd(cmd, quiet)
 end
 
 function show_dialog(subs, sel)
-    local VIDEO = tr"&Video clip"
-    local AUDIO = tr"Audio-&only clip"
-    local CONFIG = tr"Confi&g"
-    local diag = {
-        {class = 'label', x=0, y=0, label = tr"Settings for video clip: "},
-        {class = 'checkbox', x=1, y=0, label = tr"&Subs", hint = tr"Enable subtitles in output", name = 'subs', value = true},
-        {class = 'checkbox', x=2, y=0, label = tr"&Audio", hint = tr"Enable audio in output", name = 'audio', value = true}
-    }
-    local buttons
-    if haveDepCtrl then
-        buttons = {AUDIO, VIDEO, CONFIG, tr"&Cancel"}
-    else
-        buttons = {AUDIO, VIDEO, tr"&Cancel"}
-    end
-    local btn, values = aegisub.dialog.display(diag, buttons, {cancel=tr"&Cancel"})
+    local buttons = haveDepCtrl and dialogs.GUI_buttons_dc or dialogs.GUI_buttons
+    local btn, values = aegisub.dialog.display(dialogs.GUI, buttons, {cancel=buttons.CANCEL})
 
-    if btn == AUDIO then
+    if btn == buttons.AUDIO then
         make_audio_clip(subs, sel)
-    elseif btn == VIDEO then
+    elseif btn == buttons.VIDEO then
         make_clip(subs, sel, values['subs'], values['audio'])
-    elseif btn == CONFIG then
+    elseif btn == buttons.CONFIG then
         show_config_dialog()
         -- once config is done, re-open this dialog
         show_dialog(subs, sel)
@@ -299,11 +302,11 @@ function show_dialog(subs, sel)
 end
 
 function show_config_dialog()
-    local button, result = aegisub.dialog.display(config_dialog.main)
+    local button, result = aegisub.dialog.display(dialogs.config)
     if button then
-        config:updateConfiguration(result, 'main')
+        config:updateConfiguration(result, 'config')
         config:write()
-        config:updateInterface("main")
+        config:updateInterface('config')
     end
 end
 
