@@ -7,10 +7,22 @@ Or maybe I don't. But that's the plan, at least.
 Anyone else is free to use this library too, but most of the stuff is specifically for my own stuff.
 ]]
 
+haveDepCtrl, DependencyControl, depctrl = pcall require, 'l0.DependencyControl'
+if haveDepCtrl
+    depctrl = DependencyControl {
+        name: 'petzkuLib',
+        version: '0.2.0',
+        description: [[Various utility functions for use with petzku's Aegisub macros]],
+        author: "petzku",
+        url: "https://github.com/petzku/Aegisub-Scripts",
+        moduleName: 'petzku.util',
+    }
+
 -- "\" on windows, "/" on any other system
 pathsep = package.config\sub 1,1
 
-with lib = {}
+lib = {}
+with lib
     .math = {
         log_n: (base, x) ->
             math.log(x) / math.log(base)
@@ -68,3 +80,9 @@ with lib = {}
             aegisub.log output unless quiet
             output
     }
+
+if haveDepCtrl
+    lib.version = depctrl
+    return depctrl\register lib
+else
+    return lib

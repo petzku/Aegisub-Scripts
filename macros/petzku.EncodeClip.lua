@@ -41,12 +41,14 @@ script_version = '0.6.0'
 local haveDepCtrl, DependencyControl, depctrl = pcall(require, "l0.DependencyControl")
 local ConfigHandler, config, petzku
 if haveDepCtrl then
-    depctrl = DependencyControl{
-        {"a-mo.ConfigHandler", version="1.1.4", url="https://github.com/TypesettingTools/Aegisub-Motion",
-         feed="https://raw.githubusercontent.com/TypesettingTools/Aegisub-Motion/DepCtrl/DependencyControl.json"},
-        {"petzku.util"}
+    depctrl = DependencyControl {
+        {
+            {"petzku.util", version="0.2.0", url="https://github.com/petzku/Aegisub-Scripts"},
+            {"a-mo.ConfigHandler", version="1.1.4", url="https://github.com/TypesettingTools/Aegisub-Motion",
+            feed="https://raw.githubusercontent.com/TypesettingTools/Aegisub-Motion/DepCtrl/DependencyControl.json"}
+        }
     }
-    ConfigHandler, petzku = depctrl:requireModules()
+    petzku, ConfigHandler = depctrl:requireModules()
 else
     petzku = require 'petzku.util'
 end
