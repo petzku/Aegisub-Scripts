@@ -81,11 +81,13 @@ local config_dialog = {
 }
 if haveDepCtrl then
     config = ConfigHandler(config_dialog, depctrl.configFile, false, script_version, depctrl.configDir)
-    config:read()
-    config:updateInterface("main")
 end
 
 local function get_configuration()
+    if haveDepCtrl then
+        config:read()
+        config:updateInterface("main")
+    end
     -- this seems hacky, maybe use depctrl's confighandler instead
     local opts = {}
     for key, values in ipairs(config_dialog.main) do
