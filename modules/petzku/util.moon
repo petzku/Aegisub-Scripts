@@ -8,15 +8,22 @@ Anyone else is free to use this library too, but most of the stuff is specifical
 ]]
 
 haveDepCtrl, DependencyControl, depctrl = pcall require, 'l0.DependencyControl'
+local util
 if haveDepCtrl
     depctrl = DependencyControl {
         name: 'petzkuLib',
-        version: '0.2.0',
+        version: '0.3.0',
         description: [[Various utility functions for use with petzku's Aegisub macros]],
         author: "petzku",
         url: "https://github.com/petzku/Aegisub-Scripts",
         moduleName: 'petzku.util',
+        {
+            "aegisub.util"
+        }
     }
+    util = depctrl\requireModules!
+else
+    util = require "aegisub.util"
 
 -- "\" on windows, "/" on any other system
 pathsep = package.config\sub 1,1
@@ -51,6 +58,49 @@ with lib
             accel = .math.log_n 0.5, math.abs (valhalf - val0) / (val1 - val0)
             -- clamp to a sensible interval just in case
             .math.clamp accel, 0.01, 100
+
+        -- Retime transforms, move tags and fades
+        -- Params:
+        --   line: Either a line object or a string.
+        --         A line object should be karaskel preproc'd (does it need to be?).
+        --         If a string, duration should be given, or simple (line start to line end) tags can't be shifted
+        --   delta: Time in milliseconds to shift the transform.
+        --          Positive values will shift forward, negative will shift backward.
+        --          i.e. delta should be original_start_time - new_start_time
+        --   duration: Duration of the line. Ignored if a line object is supplied.
+        retime: (line, delta, duration) ->
+            str = line
+            if type(line) == 'table'
+                line = util.copy line
+                duration = line.end_time - line.start_time
+                str = line.text
+
+            -- rt = retime, s = simple, a = accel
+            rt_t = (t1, t2) -> string.format "\\t(%d,%d,", t1+delta, t2+delta
+            rt_at = (a) -> rt_t(0, duration) .. a .. ",\\"
+            rt_st = () -> rt_t(0, duration) .. "\\"
+            rt_move = (x,y,xx,yy,t1,t2) -> string.format "\\move(%s,%s,%s,%s,%d,%d)", x,y,xx,yy, t1+delta, t2+delta
+            rt_smove = (x,y,xx,yy) -> rt_move x,y,xx,yy,0,duration
+            rt_fade = (a1,a2,a3,t1,t2,t3,t4) -> string.format "\\fade(%s,%s,%s,%d,%d,%d,%d)", a1,a2,a3, t1+delta, t2+delta, t3+delta, t4+delta
+            rt_sfade = (t_start, t_end) -> rt_fade 255,0,255, 0,t_start, duration-t_end,duration
+
+            n = "[-%d.]+"
+            -- p = pattern, s = simple, a = accel
+            p_t     = "\\t%(("..n.."),("..n.."),"
+            p_at    = "\\t%(("..n.."),\\"
+            p_st    = "\\t%(\\"
+            p_move  = "\\move%(("..n.."),("..n.."),("..n.."),("..n.."),("..n.."),("..n..")%)"
+            p_smove = "\\move%(("..n.."),("..n.."),("..n.."),("..n..")%)"
+            p_fade  = "\\fade?%(("..n.."),("..n.."),("..n.."),("..n.."),("..n.."),("..n.."),("..n..")%)"
+            p_sfade = "\\fade?%(("..n.."),("..n..")%)"
+
+            str = str\gsub(p_t, rt_t)\gsub(p_at, rt_at)\gsub(p_st, rt_st)\gsub(p_move, rt_move)\gsub(p_smove, rt_smove)\gsub(p_fade, rt_fade)\gsub(p_sfade, rt_sfade)
+
+            if type(line) == 'table'
+                line.text = str
+                line
+            else
+                str
     }
 
     .io = {
