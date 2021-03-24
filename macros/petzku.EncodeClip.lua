@@ -120,11 +120,11 @@ end
 local function get_configuration()
     if haveDepCtrl then
         config:read()
-        config:updateInterface("config")
+        config:updateInterface("main")
     end
     -- this seems hacky, maybe use depctrl's confighandler instead
     local opts = {}
-    for key, values in ipairs(config_diag.main) do
+    for key, values in pairs(config_diag.main) do
         if values.config then
             opts[key] = values.value
         end
@@ -283,6 +283,8 @@ function show_dialog(subs, sel)
 end
 
 function show_config_dialog()
+    config:read()
+    config:updateInterface("main")
     local button, result = aegisub.dialog.display(config_diag.main)
     if button then
         config:updateConfiguration(result, 'main')
