@@ -202,32 +202,6 @@
         ]
       }
     },
-    "petzku.LookbackSplitter": {
-      "fileBaseUrl": "@{fileBaseUrl}/@{channel}/macros/@{namespace}",
-      "url": "@{baseUrl}#@{namespace}",
-      "author": "petzku",
-      "name": "Lookback Splitter",
-      "description": "Split any lines in selection to segments at most 10 seconds in length",
-      "channels": {
-        "stable": {
-          "version": "1.0.0",
-          "released": "2021-03-24",
-          "default": true,
-          "files": [
-            {
-              "name": ".moon",
-              "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "07A91370624E722283EE50B10165712D8BED6079"
-            }
-          ]
-        }
-      },
-      "changelog": {
-        "1.0.0": [
-          "Initial release"
-        ]
-      }
-    },
     "petzku.JumpToNextPlus": {
       "fileBaseUrl": "@{fileBaseUrl}/@{channel}/macros/@{namespace}",
       "url": "@{baseUrl}#@{namespace}",
@@ -287,6 +261,45 @@
         ]
       }
     },
+    "petzku.SplitTimer": {
+      "fileBaseUrl": "@{fileBaseUrl}/@{channel}/macros/@{namespace}",
+      "url": "@{baseUrl}#@{namespace}",
+      "author": "petzku",
+      "name": "SplitTimer",
+      "description": "Split lines in selection to shorter segments",
+      "channels": {
+        "stable": {
+          "version": "1.1.0",
+          "released": "2021-03-26",
+          "default": true,
+          "files": [
+            {
+              "name": ".moon",
+              "url": "@{fileBaseUrl}@{fileName}",
+              "sha1": "F7AF0E49B77389C365D9E39E17F6B90CBF4162CD"
+            }
+          ],
+          "requiredModules": [
+            {
+              "moduleName": "petzku.util",
+              "name": "petzkuLib",
+              "url": "https://github.com/petzku/Aegisub-Scripts",
+              "version": "0.3.0"
+            }
+          ]
+        }
+      },
+      "changelog": {
+        "1.0.0": [
+          "Initial release"
+        ],
+        "1.1.0": [
+          "Add by-frame splitting functionality",
+          "Retime transforms while splitting",
+          "Rename from Lookback Splitter"
+        ]
+      }
+    },
     "petzku.Typewriter": {
       "fileBaseUrl": "@{fileBaseUrl}/@{channel}/macros/@{namespace}",
       "url": "@{baseUrl}#@{namespace}",
@@ -303,6 +316,14 @@
               "name": ".lua",
               "url": "@{fileBaseUrl}@{fileName}",
               "sha1": "4060CA2FE22D163D5CC3ED6CB95195A2B338E585"
+            }
+          ],
+          "requiredModules": [
+            {
+              "moduleName": "petzku.util",
+              "name": "petzkuLib",
+              "url": "https://github.com/petzku/Aegisub-Scripts",
+              "version": "0.3.0"
             }
           ]
         }
