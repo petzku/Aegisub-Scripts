@@ -269,14 +269,14 @@
       "description": "Split lines in selection to shorter segments",
       "channels": {
         "stable": {
-          "version": "1.1.0",
+          "version": "1.1.1",
           "released": "2021-03-26",
           "default": true,
           "files": [
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "F7AF0E49B77389C365D9E39E17F6B90CBF4162CD"
+              "sha1": "22d28ca1f43d408bf24085adb14ca3c494094a74"
             }
           ],
           "requiredModules": [
@@ -297,6 +297,9 @@
           "Add by-frame splitting functionality",
           "Retime transforms while splitting",
           "Rename from Lookback Splitter"
+        ],
+        "1.1.1": [
+          "Fix error in requires for non-depctrl"
         ]
       }
     },

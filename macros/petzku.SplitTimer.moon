@@ -4,7 +4,7 @@ export script_name =        "SplitTimer"
 export script_description = "Split lines in selection into shorter segments"
 export script_author =      "petzku"
 export script_namespace =   "petzku.SplitTimer"
-export script_version =     "1.1.0"
+export script_version =     "1.1.1"
 
 havedc, DependencyControl = pcall require, "l0.DependencyControl"
 local dep, util, petzku
@@ -16,7 +16,8 @@ if havedc
     }}
     util, petzku = dep\requireModules!
 else
-    util, petzku = require 'aegisub.util', 'petzku.util'
+    util = require 'aegisub.util'
+    petzku = require 'petzku.util'
 
 
 -- Most matroska demuxers look back up to 10 seconds for events on seek
