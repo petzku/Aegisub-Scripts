@@ -33,20 +33,17 @@
         }
       },
       "changelog": {
-        "0.2.6": [
-          "Made a bunch of variables local"
-        ],
-        "0.2.5": [
-          "Moved to 'stable' Git branch for DependencyControl"
-        ],
-        "0.2.4": [
-          "Fixed handling of multibyte characters in line"
+        "0.2.2": [
+          "Initial release"
         ],
         "0.2.3": [
           "Reversed output line order when one line has multiple accents"
         ],
-        "0.2.2": [
-          "Initial published version"
+        "0.2.4": [
+          "Fixed handling of multibyte characters in line"
+        ],
+        "0.2.6": [
+          "Make a bunch of variables local"
         ]
       }
     },
@@ -71,15 +68,12 @@
         }
       },
       "changelog": {
-        "1.3.0": [
-          "Added support for rect clips and subpixel accuracy",
-          "Moved to 'stable' Git branch for DependencyControl"
-        ],
         "1.2.1": [
-          "Fixed mistakes with DependencyControl"
+          "Add DependencyControl"
         ],
-        "1.2.0": [
-          "Added DependencyControl"
+        "1.3.0": [
+          "Add support for rect clips and subpixel accuracy",
+          "Move to 'stable' Git branch for DependencyControl"
         ]
       }
     },
@@ -104,27 +98,19 @@
         }
       },
       "changelog": {
-        "0.2.5": [
-          "Fix broken behaviour on vertical gradients"
-        ],
-        "0.2.4": [
-          "Remove '.00' from generated clips",
-          "Rework internals, removing code duplication"
-        ],
-        "0.2.3": [
-          "Clean the selection after running macro"
-        ],
-        "0.2.2": [
-          "Fix handling of negative coordinates in clips"
+        "0.1.0": [
+          "Initial release"
         ],
         "0.2.1": [
-          "Added DependencyControl"
+          "Add DependencyControl"
         ],
-        "0.2.0": [
-          "Clean up code a bunch"
+        "0.2.4": [
+          "Clean the selection after running macro",
+          "Fix handling of negative coordinates in clips",
+          "Remove '.00' from generated clips"
         ],
-        "0.1.0": [
-          "Created"
+        "0.2.5": [
+          "Fix broken behaviour on vertical gradients"
         ]
       }
     },
@@ -207,15 +193,12 @@
         }
       },
       "changelog": {
+        "0.1.3": [
+          "Add DependencyControl"
+        ],
         "0.1.5": [
           "Now outputs .01 precision co-ords instead of integer",
           "No longer requires dependencycontrol to work"
-        ],
-        "0.1.4": [
-          "Moved to 'stable' Git branch for DependencyControl"
-        ],
-        "0.1.3": [
-          "Added DependencyControl"
         ]
       }
     },
@@ -266,17 +249,12 @@
         }
       },
       "changelog": {
-        "0.1.5": [
-          "Moved to 'stable' Git branch for DependencyControl"
-        ],
-        "0.1.4": [
-          "Added jumping by end time to the menu"
-        ],
-        "0.1.3": [
-          "Added jumping by end time"
-        ],
         "0.1.2": [
-          "Added DependencyControl"
+          "Add DependencyControl"
+        ],
+        "0.1.5": [
+          "Add jumping by end time",
+          "Move to 'stable' Git branch for DependencyControl"
         ]
       }
     },
@@ -301,11 +279,11 @@
         }
       },
       "changelog": {
-        "1.0.1": [
-          "Clean up margin values matching style defaults"
-        ],
         "1.0.0": [
           "Initial release"
+        ],
+        "1.0.1": [
+          "Clean up margin values matching style defaults"
         ]
       }
     },
@@ -331,7 +309,7 @@
       },
       "changelog": {
         "0.3.0": [
-          "Added DependencyControl"
+          "Add DependencyControl"
         ],
         "0.4.1": [
           "Add Unscramble mode"
