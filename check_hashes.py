@@ -10,6 +10,7 @@ DC_FILE = "DependencyControl.json"
 
 
 def check_contents(entry, basename):
+    all_fine = True
     for ch in entry['channels'].values():
         for f in ch['files']:
             filename = basename + f['name']
@@ -18,21 +19,36 @@ def check_contents(entry, basename):
             if sha1hash == f['sha1'].lower():
                 info(f"{filename} matches hash")
             else:
+                all_fine = False
                 error(f"{filename} hash mismatch!")
                 error(f"  filesystem: {sha1hash}")
                 error(f"  depctrl:    {f['sha1'].lower()}")
+    return all_fine
 
 
-with open(DC_FILE) as fo:
-    depctrl = json.load(fo)
+def main():
+    with open(DC_FILE) as fo:
+        depctrl = json.load(fo)
 
-for ns, macro in depctrl['macros'].items():
-    # assume all macros are in `macros/${namespace}.${extension}`
-    basename = 'macros/' + ns
-    check_contents(macro, basename)
+    macros_fine = True
+    for ns, macro in depctrl['macros'].items():
+        # assume all macros are in `macros/${namespace}.${extension}`
+        basename = 'macros/' + ns
+        if not check_contents(macro, basename):
+            macros_fine = False
+    if macros_fine:
+        print("All macros validated successfully!")
 
-for ns, module in depctrl['modules'].items():
-    # assume all modules are in `modules/${namespacepath}.${extension}`
-    # i.e. modules/petzku/util.moon
-    basename = 'modules/' + ns.replace('.', '/')
-    check_contents(module, basename)
+    modules_fine = True
+    for ns, module in depctrl['modules'].items():
+        # assume all modules are in `modules/${namespacepath}.${extension}`
+        # i.e. modules/petzku/util.moon
+        basename = 'modules/' + ns.replace('.', '/')
+        if not check_contents(module, basename):
+            modules_fine = False
+    if modules_fine:
+        print("All modules validated successfully!")
+
+
+if __name__ == "__main__":
+    main()
