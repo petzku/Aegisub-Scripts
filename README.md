@@ -62,7 +62,9 @@ Should work on any properly formed rect-clip-using gradients. Probably produces 
 
 ### Encode Clip
 
-**Requires `mpv` to work**. The mpv executable must be on your PATH. Some resources for setting PATH on [Windows](https://docs.alfresco.com/4.2/tasks/fot-addpath.html), [macOS](https://apple.stackexchange.com/questions/51677/how-to-set-path-for-finder-launched-applications/51678), [Unix/Linux](https://unix.stackexchange.com/questions/286354/setting-path-environment-variable-for-desktop-launchers). Most Unix- and Unix-like systems will just install mpv on your system PATH anyway, so this shouldn't be a hassle.
+As of 0.6.0, depends on [petzku.util](#util), and has configuration support with DependencyControl. The mpv executable path can be specified here, as well as custom encoding options.
+
+**Requires `mpv` to work**. If the mpv executable is not on your PATH, its location must be specified via the configuration menu. Some resources for setting PATH on [Windows](https://docs.alfresco.com/4.2/tasks/fot-addpath.html), [macOS](https://apple.stackexchange.com/questions/51677/how-to-set-path-for-finder-launched-applications/51678), [Unix/Linux](https://unix.stackexchange.com/questions/286354/setting-path-environment-variable-for-desktop-launchers). Most Unix- and Unix-like systems will just install mpv on your system PATH anyway, so this shouldn't be a hassle.
 
 Encodes a clip of the current video, with audio, video, and hardsubs toggleable. Start and end time are determined from subtitle selection. The resulting file is saved in the same directory as the subtitle file, with a name based on the subtitle file's name and selection times. For example: `01 Dialogue.ass` -> `01 Dialogue_45.960-62.250.mp4`. In case you have no subtitle file open, it saves in a similar fashion in the video file's directory instead.
 
@@ -93,7 +95,7 @@ You should probably either use a monospaced font, or use one of `\an1 \an4 \an7`
 
 The unscrambling mode allows users to optionally specify how many frames a letter should stay static (i.e. displaying as itself instead of a random letter) before the next letter appears. This is one frame for the normal `Unscramble/line` macro, half of the letter's "duration" for `Unscramble/half` (rounded down), and `Unscramble/N static` allows the user to specify a number of frames. There is also a mode named `Unscramble/N fade` that makes the letters fade in over a given number of frames.
 
-As of 0.6.0, the script also retimes any (two- or three-arg) `\t`s and (six-arg) `\move`s. Actually computing the resulting values would be hilariously out of scope. Just hope the renderer doesn't have a problem with times outside the current line (they shouldn't).
+As of 0.6.1, also retimes any `\t`s, `\move`s, and `\fad`/`\fade`s, transforming them into the complex forms where necessary (depends on petzku.util to do this). Actually computing the resulting values would be hilariously out of scope. Just hope the renderer doesn't have a problem with times outside the current line (they shouldn't).
 
 ## Libraries
 
