@@ -295,14 +295,14 @@
       "description": "Makes text appear one character at a time",
       "channels": {
         "stable": {
-          "version": "0.6.0",
-          "released": "2021-03-24",
+          "version": "0.6.1",
+          "released": "2021-03-25",
           "default": true,
           "files": [
             {
               "name": ".lua",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "EBA0EF85D50325C2E2C4ACCF834B9688F260022A"
+              "sha1": "4060CA2FE22D163D5CC3ED6CB95195A2B338E585"
             }
           ]
         }
@@ -323,6 +323,9 @@
           "Separate Unscramble into second automation menu entry",
           "Add a fade-in unscramble mode",
           "Retime \\t and \\move tags, to preserve line appearance"
+        ],
+        "0.6.1": [
+          "Retime \\fades as well, move retiming to util library"
         ]
       }
     }
@@ -336,14 +339,14 @@
       "description": "Various utility functions for use with petzku's Aegisub macros",
       "channels": {
         "stable": {
-          "version": "0.2.0",
-          "released": "2021-03-24",
+          "version": "0.3.0",
+          "released": "2021-03-25",
           "default": true,
           "files": [
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "A4270246AF72F0134BD64B94EEF5A1B863CACEF9"
+              "sha1": "4EE56571E91464D967DCC7F458C5EA1E831AF2B5"
             }
           ]
         }
@@ -352,6 +355,9 @@
         "0.2.0": [
           "Add IO functionality",
           "Add to DependencyControl"
+        ],
+        "0.3.0": [
+          "Add \\t, \\move, \\fad retiming"
         ]
       }
     }

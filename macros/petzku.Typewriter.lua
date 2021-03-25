@@ -26,7 +26,7 @@ TODO: support rtl and/or bottom-to-top text?
 
 script_name = "Typewriter"
 script_description = "Makes text appear one character at a time"
-script_version = "0.6.0"
+script_version = "0.6.1"
 script_author = "petzku"
 script_namespace = "petzku.Typewriter"
 
@@ -36,9 +36,13 @@ local UNSCRAMBLE_MENU = "Unscramble/"
 local DependencyControl = require("l0.DependencyControl")
 local depctrl = DependencyControl{
     feed = "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json",
-    {"aegisub.util", "unicode"}
+    {
+        "aegisub.util", "unicode",
+        {"petzku.util", version="0.3.0", url="https://github.com/petzku/Aegisub-Scripts",
+         feed="https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json"}
+    }
 }
-local util, unicode = depctrl:requireModules()
+local util, unicode, petzku = depctrl:requireModules()
 
 local function randomchar(ch, time)
     -- use time for deterministic random shuffle thing
@@ -54,22 +58,6 @@ local function randomchar(ch, time)
     else
         return ch
     end
-end
-
-local function retime_t_move(delta, start, rest)
-    local function retime_t(t1, t2)
-        return string.format("\\t(%d,%d,", t1+delta, t2+delta)
-    end
-    local function retime_move(x,y,xx,yy,t1,t2)
-        return string.format("\\move(%s,%s,%s,%s,%d,%d)", x,y,xx,yy, t1+delta, t2+delta)
-    end
-
-    local num = "[-%d.]+"
-    local t_pattern = "\\t%(("..num.."),("..num.."),"
-    local move_pattern = "\\move%(("..num.."),("..num.."),("..num.."),("..num.."),("..num.."),("..num..")%)"
-    start = start:gsub(t_pattern, retime_t):gsub(move_pattern, retime_move)
-    rest = rest:gsub(t_pattern, retime_t):gsub(move_pattern, retime_move)
-    return start, rest
 end
 
 local function write_groups(subs, groups)
@@ -216,7 +204,9 @@ function typewrite_line(line, framedur, index, linefun)
         -- this is much simpler than actually interpolating them, especially as \t's can be stacked
         -- note that unscramble modes will require further manipulation
         local delta = line.start_time - st
-        start, rest = retime_t_move(delta, start, rest)
+        local dur = line.end_time - line.start_time
+        start = petzku.transform.retime(start, delta, dur)
+        rest = petzku.transform.retime(rest, delta, dur)
 
         local lines = linefun(st, et, line, start, active_char, rest)
 
@@ -271,7 +261,9 @@ function generate_unscramble_lines(st, et, orig_line, org_start, char, org_rest,
         new.end_time = aegisub.ms_from_frame(f+1)
 
         local delta = st - new.start_time
-        local start, rest = retime_t_move(delta, org_start, org_rest)
+        local dur = new.end_time - new.start_time
+        local start = petzku.transform.retime(org_start, delta, dur)
+        local rest = petzku.transform.retime(org_rest, delta, dur)
 
         local newchar
         if (last_frame - f) < staticframes then
@@ -323,7 +315,9 @@ function generate_unscramble_lines_fading(st, et, orig_line, org_start, char, or
         new.end_time = aegisub.ms_from_frame(f+1)
 
         local delta = st - new.start_time
-        local start, rest = retime_t_move(delta, org_start, org_rest)
+        local dur = new.end_time - new.start_time
+        local start = petzku.transform.retime(org_start, delta, dur)
+        local rest = petzku.transform.retime(org_rest, delta, dur)
 
         local newchar
         if (last_frame - f) < staticframes then
