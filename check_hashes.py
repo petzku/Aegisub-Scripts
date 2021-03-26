@@ -5,6 +5,7 @@
 from hashlib import sha1
 from logging import info, error
 import json
+import sys
 
 DC_FILE = "DependencyControl.json"
 
@@ -49,6 +50,9 @@ def main():
     if modules_fine:
         print("All modules validated successfully!")
 
+    if not (macros_fine and modules_fine):
+        return 1
+
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
