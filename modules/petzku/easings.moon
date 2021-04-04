@@ -119,7 +119,10 @@ ease_in_circle = (t) ->
     1 - math.sqrt 1 - t * t
 
 ease_inout_circle = (t) ->
-    math.sqrt 1 - math.pow t - 1 , 2
+    if t < 0.5
+        (ease_in_circle t*2) / 2
+    else
+        0.5 + (ease_out_circle t*2 - 1) / 2
 
 ease_in_elastic = (t) ->
     c = 2 * math.pi / 3
