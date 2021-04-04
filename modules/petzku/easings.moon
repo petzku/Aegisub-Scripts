@@ -8,7 +8,24 @@ https://easings.net/
 
 ]]
 
-petzku = require 'petzku.util'
+haveDepCtrl, DependencyControl, depctrl = pcall require, 'l0.DependencyControl'
+local petzku
+if haveDepCtrl
+    depctrl = DependencyControl {
+        name: 'easings',
+        version: '0.4.0',
+        description: [[A library of easy-to-use easing functions for transforms]],
+        author: "petzku",
+        url: "https://github.com/petzku/Aegisub-Scripts",
+        moduleName: 'petzku.easings',
+        {
+            {'petzku.util', version: '0.3.0', url: "https://github.com/petzku/Aegisub-Scripts",
+             feed: "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json"},
+        }
+    }
+    petzku = depctrl\requireModules!
+else
+    petzku = require 'petzku.util'
 
 -- best-effort estimation, assuming CFR
 get_framedur = () ->
@@ -151,7 +168,8 @@ ease_inout_elastic = (t) ->
             else
                 0.5 + ease_out_elastic(t * 2 - 1) / 2
 
-with easings = {}
+easings = {}
+with easings
     .out_bounce = make_easer ease_out_bounce
     .in_bounce = make_easer ease_in_bounce
     .inout_bounce = make_easer ease_inout_bounce
@@ -211,3 +229,9 @@ with easings = {}
         o: .out_elastic
         io: .inout_elastic
     }
+
+if haveDepCtrl
+    easings.version = depctrl
+    depctrl\register easings
+else
+    return easings

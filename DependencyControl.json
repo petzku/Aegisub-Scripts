@@ -355,6 +355,32 @@
     }
   },
   "modules": {
+    "petzku.easings": {
+      "fileBaseUrl": "@{fileBaseUrl}/@{namespace}-v@{version}/modules/@{namespacePath}",
+      "url": "https://github.com/petzku/Aegisub-Scripts",
+      "author": "petzku",
+      "name": "Easings",
+      "description": "A library of easy-to-use easing functions for transforms",
+      "channels": {
+        "stable": {
+          "version": "0.4.0",
+          "released": "2021-04-04",
+          "default": true,
+          "files": [
+            {
+              "name": ".moon",
+              "url": "@{fileBaseUrl}@{fileName}",
+              "sha1": "FB2A21FCE4F9A6610FBE90A46ABB907BF076FC00"
+            }
+          ]
+        }
+      },
+      "changelog": {
+        "0.4.0": [
+          "Add to DependencyControl"
+        ]
+      }
+    },
     "petzku.util": {
       "fileBaseUrl": "@{fileBaseUrl}/@{namespace}-v@{version}/modules/@{namespacePath}",
       "url": "https://github.com/petzku/Aegisub-Scripts",
