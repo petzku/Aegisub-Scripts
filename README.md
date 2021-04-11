@@ -43,6 +43,10 @@ The script creates the lines with `accent` in the effect field, so they're easy 
 
 The full syntax for this can be found in the script's README comments. I do not guarantee backwards compatibility before 1.0, in fact I'm currently considering alternatives for the `a`/`b` labels for above/below.
 
+### Autowrapper
+
+Goes through the entire script, adding `\q2` to any lines with manual line breaks (`\N`), removing `\q2` from one-liners that don't have manual line breaks, and flagging any two-liners without manual line breaks.
+
 ### Clip Size
 
 Tells you the distances between points in a vector clip on the selected line. The utility of this is debatable, but I find it useful to quickly compare sizes of similar signs or text in different parts of the video.
@@ -85,6 +89,10 @@ Adds a mode to unanimated's [Jump to Next](https://github.com/unanimated/luaegis
 Transforms `\pos`-based positioning data (such as Mocha tracking) to margins, thus making it not be automatically detected as typesetting.
 
 Handles positioning on both axes, and all bottom- or top-aligned alignments, specified either inline or in styles. (middle alignments don't use margins for vertical positioning). As margins are restricted to integer values, this is not really usable for actual motion tracking, but should be enough for dialogue shenanigans.
+
+### Split Timer
+
+Automatically splits any lines longer than a given threshold, retiming transforms and moves so rendering should be unaffected. `10 second chunks` has a threshold of 10 seconds, useful to account for player lookback buffers. `N frames` prompts for a length of frames, and uses that as the threshold.
 
 ### Typewriter
 
@@ -158,3 +166,7 @@ Very much WIP. Currently only supports resampling from 720p, and does not always
 "Shakes" each line in the selection, randomizing its position within a given radius. Takes two numbers, one for the amplitude (= shake radius, in pixels) for the first line, the other for the last line. Interpolates the amplitude linearly between these two.
 
 Typically, you would want the lines to be frame-by-frame, but the script doesn't actually enforce this at all. The positions before shaking don't have to be aligned either. So you could split the frames to match a lower-framerate animation, or run the script on an already-motiontracked sign.
+
+### Snapper
+
+Hotkeyable macros to snap the current line's start time to the previous keyframe, and end time to the next keyframe. Both runnable individually. If the start/end time is already on a keyframe, nothing will change.
