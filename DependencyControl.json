@@ -52,7 +52,7 @@
       "url": "@{baseUrl}#@{namespace}",
       "author": "petzku",
       "name": "Autowrapper",
-      "description": "Automatically create accents for lines",
+      "description": "Automatically set/unset \\q2 on lines with/without manual linebreaks",
       "channels": {
         "stable": {
           "version": "0.1.0",
