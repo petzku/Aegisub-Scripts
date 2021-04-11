@@ -4,7 +4,7 @@ export script_name =        "Position to Margin"
 export script_description = "Transforms \\pos-based motion-tracking into margin-based"
 export script_author =      "petzku"
 export script_namespace =   "petzku.PosToMargin"
-export script_version =     "1.0.1"
+export script_version =     "1.1.0"
 
 havedc, DependencyControl, dep = pcall require, "l0.DependencyControl"
 if havedc
@@ -12,18 +12,6 @@ if havedc
     dep\requireModules!
 else
     require 'karaskel'
-
-get_playres = (subs) ->
-    local x, y
-    for line in *subs
-        if line.class == 'info'
-            if line.key == 'PlayResX'
-                x = tonumber line.value
-            elseif line.key == 'PlayResY'
-                y = tonumber line.value
-            if x and y
-                break
-    return x, y
 
 margin_y_from_pos = (line, posy, height) ->
     an = line.text\match "\\an(%d)"
@@ -97,8 +85,8 @@ remove_pos = (line) ->
     line.text = line.text\gsub("{}", "", 1)
 
 main = (subs, sel) ->
-    width, height = get_playres subs
     meta, styles = karaskel.collect_head subs, false
+    width, height = meta.res_x, meta.res_y
 
     for i in *sel
         line = subs[i]
