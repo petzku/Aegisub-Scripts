@@ -47,6 +47,32 @@
         ]
       }
     },
+    "petzku.Autowrapper": {
+      "fileBaseUrl": "@{fileBaseUrl}/@{channel}/macros/@{namespace}",
+      "url": "@{baseUrl}#@{namespace}",
+      "author": "petzku",
+      "name": "Autowrapper",
+      "description": "Automatically create accents for lines",
+      "channels": {
+        "stable": {
+          "version": "0.1.0",
+          "released": "2021-04-11",
+          "default": true,
+          "files": [
+            {
+              "name": ".moon",
+              "url": "@{fileBaseUrl}@{fileName}",
+              "sha1": "d8a7a6135b3c390da8a8d2b6a4e1fc6ac1cd69e5"
+            }
+          ]
+        }
+      },
+      "changelog": {
+        "0.1.0": [
+          "Initial release"
+        ]
+      }
+    },
     "petzku.ClipSize": {
       "fileBaseUrl": "@{fileBaseUrl}/@{channel}/macros/@{namespace}",
       "url": "@{baseUrl}#@{namespace}",
@@ -240,14 +266,14 @@
       "description": "Transforms \\pos-based motion-tracking into margin-based",
       "channels": {
         "stable": {
-          "version": "1.0.1",
-          "released": "2021-03-14",
+          "version": "1.1.0",
+          "released": "2021-04-11",
           "default": true,
           "files": [
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "DF339F4AECF1E8C74CBE8E4DDA149A378EC5E132"
+              "sha1": "22303a8740e8c8792247643b46eac3b53dbc7156"
             }
           ]
         }
@@ -258,6 +284,9 @@
         ],
         "1.0.1": [
           "Clean up margin values matching style defaults"
+        ],
+        "1.1.0": [
+          "Get script resolution from karaskel meta"
         ]
       }
     },
