@@ -35,17 +35,19 @@ script_name = tr'Encode Clip'
 script_description = tr'Encode various clips from the current selection'
 script_author = 'petzku'
 script_namespace = "petzku.EncodeClip"
-script_version = '0.6.0'
+script_version = '0.6.1'
 
 
 local haveDepCtrl, DependencyControl, depctrl = pcall(require, "l0.DependencyControl")
 local ConfigHandler, config, petzku
 if haveDepCtrl then
     depctrl = DependencyControl {
+        feed="https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json",
         {
-            {"petzku.util", version="0.2.0", url="https://github.com/petzku/Aegisub-Scripts"},
+            {"petzku.util", version="0.3.0", url="https://github.com/petzku/Aegisub-Scripts",
+             feed="https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json"},
             {"a-mo.ConfigHandler", version="1.1.4", url="https://github.com/TypesettingTools/Aegisub-Motion",
-            feed="https://raw.githubusercontent.com/TypesettingTools/Aegisub-Motion/DepCtrl/DependencyControl.json"}
+             feed="https://raw.githubusercontent.com/TypesettingTools/Aegisub-Motion/DepCtrl/DependencyControl.json"}
         }
     }
     petzku, ConfigHandler = depctrl:requireModules()
@@ -65,7 +67,7 @@ local config_diag = {
             hint=[[Path to the mpv executable. If left blank, searches system PATH.]]
         },
         video_command_label = {
-            class='label', label='Custom video clip options:',
+            class='label', label='Custom mpv options for video clips:',
             x=0, y=1, width=10, height=1
         },
         video_command = {
@@ -74,7 +76,7 @@ local config_diag = {
             hint=[[Custom command line options flags passed to mpv when encoding video. Default is "--sub-font-provider=auto", as many mpv configs set this to 'none' by default.]]
         },
         audio_command_label = {
-            class='label', label='Custom audio clip options:',
+            class='label', label='Custom mpv options for audio-only clips:',
             x=0, y=5, width=10, height=1
         },
         audio_command = {
@@ -101,14 +103,10 @@ local GUI = {
             hint=tr[[Enable audio in output]]
         }
     },
-    buttons = {
-        VIDEO = tr"&Video clip",
+    -- constants for the buttons
+    BUTTONS = {
         AUDIO = tr"Audio-&only clip",
-        CANCEL = tr"&Cancel"
-    },
-    buttons_dc = {
         VIDEO = tr"&Video clip",
-        AUDIO = tr"Audio-&only clip",
         CONFIG = tr"Confi&g",
         CANCEL = tr"&Cancel"
     }
@@ -268,14 +266,18 @@ function make_audio_clip(subs, sel)
 end
 
 function show_dialog(subs, sel)
-    local buttons = haveDepCtrl and GUI.buttons_dc or GUI.buttons
+    local buttons = haveDepCtrl and {
+        GUI.BUTTONS.AUDIO, GUI.BUTTONS.VIDEO, GUI.BUTTONS.CONFIG, GUI.BUTTONS.CANCEL
+    } or {
+        GUI.BUTTONS.AUDIO, GUI.BUTTONS.VIDEO, GUI.BUTTONS.CANCEL
+    }
     local btn, values = aegisub.dialog.display(GUI.main, buttons, {cancel=buttons.CANCEL})
 
-    if btn == buttons.AUDIO then
+    if btn == GUI.BUTTONS.AUDIO then
         make_audio_clip(subs, sel)
-    elseif btn == buttons.VIDEO then
+    elseif btn == GUI.BUTTONS.VIDEO then
         make_clip(subs, sel, values.subs, values.audio)
-    elseif btn == buttons.CONFIG then
+    elseif btn == GUI.BUTTONS.CONFIG then
         show_config_dialog()
         -- once config is done, re-open this dialog
         show_dialog(subs, sel)
@@ -322,7 +324,7 @@ if haveDepCtrl then
     table.insert(macros, {tr'Config', tr'Open configuration menu', show_config_dialog})
     depctrl:registerMacros(macros)
 else
-    for i,macro in ipairs(macros) do
+    for _,macro in ipairs(macros) do
         local name, desc, fun = unpack(macro)
         aegisub.register_macro(script_name .. '/' .. name, desc, fun)
     end

@@ -148,14 +148,14 @@
       "description": "Encode a hardsubbed clip encompassing the current selection",
       "channels": {
         "stable": {
-          "version": "0.6.0",
+          "version": "0.6.1",
           "released": "2021-03-24",
           "default": true,
           "files": [
             {
               "name": ".lua",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "64E3B752B60514ACC293899FE39F49E42E761315"
+              "sha1": "5fdebbf0ab5953a41252ef5c2d83568723ecb344"
             }
           ],
           "requiredModules": [
@@ -163,7 +163,7 @@
               "moduleName": "petzku.util",
               "name": "petzkuLib",
               "url": "https://github.com/petzku/Aegisub-Scripts",
-              "version": "0.2.0"
+              "version": "0.3.0"
             }
           ]
         }
@@ -195,6 +195,10 @@
         "0.6.0": [
           "Add configuration support",
           "Move shell execution to petzku.util, and require the module"
+        ],
+        "0.6.1": [
+          "Fix button ordering in GUI (0.6.0 messed this up, now back to audio-video-config-cancel)",
+          "Bump petzku.util dependency to 0.3.0"
         ]
       }
     },
