@@ -271,7 +271,7 @@ function show_dialog(subs, sel)
     } or {
         GUI.BUTTONS.AUDIO, GUI.BUTTONS.VIDEO, GUI.BUTTONS.CANCEL
     }
-    local btn, values = aegisub.dialog.display(GUI.main, buttons, {cancel=buttons.CANCEL})
+    local btn, values = aegisub.dialog.display(GUI.main, buttons, {cancel=GUI.BUTTONS.CANCEL})
 
     if btn == GUI.BUTTONS.AUDIO then
         make_audio_clip(subs, sel)
