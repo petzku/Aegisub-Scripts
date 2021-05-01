@@ -35,7 +35,7 @@ script_name = tr'Encode Clip'
 script_description = tr'Encode various clips from the current selection'
 script_author = 'petzku'
 script_namespace = "petzku.EncodeClip"
-script_version = '0.6.1'
+script_version = '0.7.0'
 
 
 local haveDepCtrl, DependencyControl, depctrl = pcall(require, "l0.DependencyControl")
@@ -75,13 +75,22 @@ local config_diag = {
             x=0, y=2, width=20, height=3,
             hint=[[Custom command line options flags passed to mpv when encoding video. Default is "--sub-font-provider=auto", as many mpv configs set this to 'none' by default.]]
         },
+        audio_encoder_label = {
+            class='label', label='Audio encoder. Defaults to best available AAC.',
+            x=0, y=5, width=5, height=1
+        },
+        audio_encoder = {
+            class='edit', value="", config=true,
+            x=5, y=5, width=15, height=1,
+            hint="Audio encoder to use. If left blank, automatically picks the best available AAC encoder.\nNote that you may need to change --oacopts if you use a non-AAC encoder."
+        },
         audio_command_label = {
             class='label', label='Custom mpv options for audio-only clips:',
-            x=0, y=5, width=10, height=1
+            x=0, y=6, width=10, height=1
         },
         audio_command = {
             class='textbox', value="", config=true,
-            x=0, y=6, width=20, height=3,
+            x=0, y=7, width=20, height=3,
             hint=[[Custom command line options passed to mpv when encoding only audio.]]
         }
     }
@@ -130,13 +139,20 @@ local function get_configuration()
     return opts
 end
 
--- find the best AAC encoder available to us, since ffmpeg-internal is Bad
+-- Use user-specified encoder, if one exists.
+-- Otherwise, find the best AAC encoder available to us, since ffmpeg-internal is Bad
 -- mpv *should* support --oac="aac_at,aac_mf,libfdk_aac,aac", but it doesn't so we do this
-local aac_encoder = nil
-local function best_aac_encoder()
-    if aac_encoder ~= nil then
-        return aac_encoder
+local audio_encoder = nil
+local function get_audio_encoder()
+    if audio_encoder ~= nil then
+        return audio_encoder
     end
+
+    local opt = get_configuration()
+    if opt.audio_encoder and opt.audio_encoder ~= "" then
+        return opt.audio_encoder
+    end
+
     local priorities = {aac = 0, libfdk_aac = 1, aac_mf = 2, aac_at = 3}
     local best = "aac"
     for line in petzku.io.run_cmd("mpv --oac=help", true):gmatch("[^\r\n]+") do
@@ -145,7 +161,7 @@ local function best_aac_encoder()
             best = enc
         end
     end
-    aac_encoder = best
+    audio_encoder = best
     return best
 end
 
@@ -182,7 +198,7 @@ function make_clip(subs, sel, hardsub, audio)
     local audio_opts
     if audio then
         audio_opts = table.concat({
-            '--oac=' .. best_aac_encoder(),
+            '--oac=' .. get_audio_encoder(),
             '--oacopts="b=256k,frame_size=1024"'
         }, ' ')
     else
@@ -256,7 +272,7 @@ function make_audio_clip(subs, sel)
         '"%s"',
         '--video=no',
         '--o="%s"',
-        '--oac=' .. best_aac_encoder(),
+        '--oac=' .. get_audio_encoder(),
         '--oacopts="b=256k,frame_size=1024"',
         user_opts.audio_command
     }
