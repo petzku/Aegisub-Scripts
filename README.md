@@ -67,6 +67,7 @@ Should work on any properly formed rect-clip-using gradients. Probably produces 
 ### Encode Clip
 
 As of 0.6.0, depends on [petzku.util](#util), and has configuration support with DependencyControl. The mpv executable path can be specified here, as well as custom encoding options.
+As of 0.7.0, these options include specifying an audio encoder to use (otherwise, defaults to the best possible AAC encoder available, as it did before).
 
 **Requires `mpv` to work**. If the mpv executable is not on your PATH, its location must be specified via the configuration menu. Some resources for setting PATH on [Windows](https://docs.alfresco.com/4.2/tasks/fot-addpath.html), [macOS](https://apple.stackexchange.com/questions/51677/how-to-set-path-for-finder-launched-applications/51678), [Unix/Linux](https://unix.stackexchange.com/questions/286354/setting-path-environment-variable-for-desktop-launchers). Most Unix- and Unix-like systems will just install mpv on your system PATH anyway, so this shouldn't be a hassle.
 
