@@ -107,6 +107,8 @@ As of 0.6.1, also retimes any `\t`s, `\move`s, and `\fad`/`\fade`s, transforming
 
 ## Libraries
 
+These should be placed in your Aegisub automation folder in `include/petzku/*`, e.g. `automation/include/petzku/util.moon`.
+
 ### Util
 
 Generic utilities for my stuff. Expect most scripts to require this fairly soon in the future.
