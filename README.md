@@ -47,6 +47,8 @@ The full syntax for this can be found in the script's README comments. I do not 
 
 Goes through the entire script, adding `\q2` to any lines with manual line breaks (`\N`), removing `\q2` from one-liners that don't have manual line breaks, and flagging any two-liners without manual line breaks.
 
+Might not always be 100% accurate, though in most usage should only flag false positives rather than negatives. Main problems are in cases where libass and vsfilter disagree on line wrapping (thus far, I've had the script always match vsfilter output where this differs from libass). Does not care about tags in the line (other than `\q2`). Obviously `\fscx` would affect line width, but sometimes simply `\i1` can do so as well. I may eventually add support for inline tag handling.
+
 ### Clip Size
 
 Tells you the distances between points in a vector clip on the selected line. The utility of this is debatable, but I find it useful to quickly compare sizes of similar signs or text in different parts of the video.
@@ -108,7 +110,7 @@ As of 0.6.1, also retimes any `\t`s, `\move`s, and `\fad`/`\fade`s, transforming
 
 ## Libraries
 
-These should be placed in your Aegisub automation folder in `include/petzku/*`, e.g. `automation/include/petzku/util.moon`.
+These should be placed in your Aegisub automation folder in `include/petzku/*`, e.g. `automation/include/petzku/util.moon`. Installing macros via DependencyControl handles this automatically.
 
 ### Util
 
