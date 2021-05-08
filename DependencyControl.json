@@ -148,14 +148,14 @@
       "description": "Encode a hardsubbed clip encompassing the current selection",
       "channels": {
         "stable": {
-          "version": "0.7.0",
-          "released": "2021-05-02",
+          "version": "0.7.1",
+          "released": "2021-05-08",
           "default": true,
           "files": [
             {
               "name": ".lua",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "e603281599365ce9e2e062944eac8d614e13cd48"
+              "sha1": "c1ce431af603ff54b8cecdddd1f73024f05b4618"
             }
           ],
           "requiredModules": [
@@ -196,6 +196,9 @@
         ],
         "0.7.0": [
           "Add audio encoder setting to config menu"
+        ],
+        "0.7.1": [
+          "Fix handling of spaces in mpv path"
         ]
       }
     },

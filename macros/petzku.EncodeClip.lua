@@ -35,7 +35,7 @@ script_name = tr'Encode Clip'
 script_description = tr'Encode various clips from the current selection'
 script_author = 'petzku'
 script_namespace = "petzku.EncodeClip"
-script_version = '0.7.0'
+script_version = '0.7.1'
 
 
 local haveDepCtrl, DependencyControl, depctrl = pcall(require, "l0.DependencyControl")
@@ -221,6 +221,10 @@ function make_clip(subs, sel, hardsub, audio)
     local mpv_exe
     if user_opts.mpv_exe and user_opts.mpv_exe ~= '' then
         mpv_exe = user_opts.mpv_exe
+        if mpv_exe:match(" ") and not mpv_exe:match("['\"]") then
+            -- spaces but no quotes
+            mpv_exe = '"'..mpv_exe..'"'
+        end
     else
         mpv_exe = 'mpv'
     end
