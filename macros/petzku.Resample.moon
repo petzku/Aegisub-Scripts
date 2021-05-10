@@ -2,7 +2,7 @@ export script_name =        "Resample"
 export script_description = "Recalculates 3D-transforms when resampling script"
 export script_author =      "petzku"
 export script_namespace =   "petzku.Resample"
-export script_version =     "0.1.0"
+export script_version =     "0.2.0"
 
 DependencyControl = require "l0.DependencyControl"
 dep = DependencyControl{{"a-mo.LineCollection", "l0.ASSFoundation"}}
@@ -64,4 +64,13 @@ resample = (src, sub, sel, modtags) ->
 seventwenty = (sub, sel) ->
   resample(720, sub, sel, true)
 
-dep\registerMacro seventwenty
+anyres = (sub, sel) ->
+  diag = {
+    {class: 'label', label: "Source &res", x: 0, y: 0},
+    {class: 'intedit', name: 'res', value: 720, x: 1, y: 0},
+    {class: 'checkbox', label: "&Modify scales", name: 'modscale', value: true, x: 2, y: 0}
+  }
+  btn, res = aegisub.dialog.display diag
+  if btn then resample(res.res, sub, sel, res.modscale)
+
+dep\registerMacro anyres
