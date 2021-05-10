@@ -59,6 +59,7 @@ resample = (src, sub, sel, modtags) ->
 
     data\commit!
   lines\replaceLines!
+  aegisub.set_undo_point string.format "resample rotations from %dp", src
 
 seventwenty = (sub, sel) ->
   resample(720, sub, sel, true)
