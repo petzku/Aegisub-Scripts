@@ -2,10 +2,17 @@ export script_name =        "Resample"
 export script_description = "Recalculates 3D-transforms when resampling script"
 export script_author =      "petzku"
 export script_namespace =   "petzku.Resample"
-export script_version =     "0.2.0"
+export script_version =     "0.2.1"
 
 DependencyControl = require "l0.DependencyControl"
-dep = DependencyControl{{"a-mo.LineCollection", "l0.ASSFoundation"}}
+dep = DependencyControl{
+  {
+    {"a-mo.LineCollection", version: "1.3.0", url: "https://github.com/TypesettingTools/Aegisub-Motion",
+     feed: "https://raw.githubusercontent.com/TypesettingTools/Aegisub-Motion/DepCtrl/DependencyControl.json"},
+    {"l0.ASSFoundation", version: "0.5.0", url: "https://github.com/TypesettingTools/ASSFoundation",
+     feed: "https://raw.githubusercontent.com/TypesettingTools/ASSFoundation/master/DependencyControl.json"},
+  }
+}
 LineCollection, ASS = dep\requireModules!
 
 -- lua's trig works in radians, simplify to degrees
