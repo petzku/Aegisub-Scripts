@@ -1,10 +1,10 @@
 -- Copyright (c) 2021 petzku <petzku@zku.fi> 
 
-export script_name =        "Position to Margin"
-export script_description = "Transforms \\pos-based motion-tracking into margin-based"
+export script_name =        "Margin Position"
+export script_description = "Transforms \\pos-based positioning into margin and vice versa"
 export script_author =      "petzku"
 export script_namespace =   "petzku.PosToMargin"
-export script_version =     "1.1.0"
+export script_version =     "2.0.0"
 
 havedc, DependencyControl, dep = pcall require, "l0.DependencyControl"
 if havedc
@@ -84,7 +84,7 @@ remove_pos = (line) ->
     -- in case position is the only tag, clean up the block too
     line.text = line.text\gsub("{}", "", 1)
 
-main = (subs, sel) ->
+pos2margin = (subs, sel) ->
     meta, styles = karaskel.collect_head subs, false
     width, height = meta.res_x, meta.res_y
 
@@ -102,7 +102,53 @@ main = (subs, sel) ->
 
         subs[i] = line
 
-can_run = (subs, sel) ->
+margin2pos = (subs, sel) ->
+    meta, styles = karaskel.collect_head subs, false
+    width, height = meta.res_x, meta.res_y
+
+    for i in *sel
+        line = subs[i]
+        karaskel.preproc_line subs, meta, styles, line
+
+        marg_l = if line.margin_l != 0 then line.margin_l else line.styleref.margin_l
+        marg_r = if line.margin_r != 0 then line.margin_r else line.styleref.margin_r
+        marg_v = if line.margin_v != 0 then line.margin_v else line.styleref.margin_v
+        an = line.text\match "\\an(%d)"
+
+        halign = line.halign
+        if an
+            halign = switch an % 3
+                when 0 then "right"
+                when 1 then "left"
+                when 2 then "center"
+        valign = line.valign
+        if an
+            valign = switch math.floor((an - 1) / 3)
+                when 0 then "bottom"
+                when 1 then "middle"
+                when 2 then "top"
+
+        x = switch halign
+            when "left"
+                marg_l
+            when "center"
+                (marg_l + width - marg_r) / 2
+            when "right"
+                width - marg_r
+        y = switch valign
+            when "top"
+                marg_v
+            when "bottom"
+                height - marg_v
+            else
+                height / 2
+
+        pos_str = string.format("{\\pos(%d,%d)}", x, y)
+        line.text = (pos_str..line.text)\gsub("}{", "", 1)
+
+        subs[i] = line
+
+check_pos = (subs, sel) ->
     -- check that at least one line in selection has a position tag, otherwise we'd be doing nothing
     for i in *sel
         line = subs[i]
@@ -110,7 +156,13 @@ can_run = (subs, sel) ->
             return true
     return false
 
+macros = {
+    {"Position to Margin", "Transforms \\pos-based positioning into margin", pos2margin, check_pos},
+    {"Margin to Position", "Transforms margin-based positioning into \\pos", margin2pos}
+}
+
 if havedc
-    dep\registerMacro main, can_run
+    dep\registerMacros macros
 else
-    aegisub.register_macro(script_name, script_description, main, can_run)
+    for macro in *macros
+        aegisub.register_macro unpack macro

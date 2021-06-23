@@ -87,11 +87,14 @@ Takes a line with a partial-duration move and extends it to the line's full dura
 
 Adds a mode to unanimated's [Jump to Next](https://github.com/unanimated/luaegisub/blob/master/ua.JumpToNext.lua) script, allowing you to jump by lines' start and end times. The script should work standalone too, if these are the only features you want out of it.
 
-### Position to Margin
+### Margin Position
 
 Transforms `\pos`-based positioning data (such as Mocha tracking) to margins, thus making it not be automatically detected as typesetting.
+Also does the inverse (transform margins into `\pos`).
 
 Handles positioning on both axes, and all bottom- or top-aligned alignments, specified either inline or in styles. (middle alignments don't use margins for vertical positioning). As margins are restricted to integer values, this is not really usable for actual motion tracking, but should be enough for dialogue shenanigans.
+
+**WARNING:** older versions of Aegisub (at the time of writing, this is most commonly used builds) do not handle opening files with negative margin values correctly (negative values are simply clamped to zero). If you use this macro, beware of those values being silently discarded.
 
 ### Split Timer
 

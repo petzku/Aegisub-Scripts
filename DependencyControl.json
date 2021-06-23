@@ -274,20 +274,20 @@
     },
     "petzku.PosToMargin": {
       "fileBaseUrl": "@{fileBaseUrl}/@{channel}/macros/@{namespace}",
-      "url": "@{baseUrl}#@{namespace}",
+      "url": "@{baseUrl}#margin-position",
       "author": "petzku",
-      "name": "Position to Margin",
-      "description": "Transforms \\pos-based motion-tracking into margin-based",
+      "name": "Margin Position",
+      "description": "Transforms \\pos-based positioning into margin and vice versa",
       "channels": {
         "stable": {
-          "version": "1.1.0",
-          "released": "2021-04-11",
+          "version": "2.0.0",
+          "released": "2021-06-23",
           "default": true,
           "files": [
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "22303a8740e8c8792247643b46eac3b53dbc7156"
+              "sha1": "8a750eb595f2e4355543e7664184ec54fc3490fb"
             }
           ]
         }
@@ -301,6 +301,10 @@
         ],
         "1.1.0": [
           "Get script resolution from karaskel meta"
+        ],
+        "2.0.0": [
+          "Added margin -> pos transform",
+          "Renamed from 'Position to Margin'"
         ]
       }
     },
