@@ -33,7 +33,7 @@ main = (subs, _sel) ->
             if is_overwidth meta, line
                 -- warn, do not add \q2
                 line.effect ..= "## AUTOMATIC LINEBREAK ##"
-                res_audobreak += 1
+                res_autobreak += 1
             else
                 line.text = line.text\gsub '\\q2', ''
                 -- and remove empty tag blocks, if we caused one
@@ -47,6 +47,6 @@ main = (subs, _sel) ->
     if res_remq2 > 0 then     aegisub.log "Removed %d \\q2's from lines without \\N\n", res_remq2
 
 if havedc
-    depctrl\registerMacro main
+    dep\registerMacro main
 else
     aegisub.register_macro script_name, script_description, main
