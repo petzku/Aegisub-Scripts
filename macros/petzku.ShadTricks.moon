@@ -9,8 +9,8 @@ export script_version =     "0.1.0"
 main = (sub, sel) ->
     for i in *sel
         line = sub[i]
-        if line.text[1] == "{"
-            line.text = "{\\1a&HFE&\\3a&HFE&\\4a&H00&\\shad0.01\\bord0" .. line.text.sub(2)
+        if line.text\sub(1,1) == "{"
+            line.text = "{\\1a&HFE&\\3a&HFE&\\4a&H00&\\shad0.01\\bord0" .. line.text\sub(2)
         else
             line.text = "{\\1a&HFE&\\3a&HFE&\\4a&H00&\\shad0.01\\bord0}" .. line.text
         sub[i] = line
