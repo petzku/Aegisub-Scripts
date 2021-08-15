@@ -4,7 +4,7 @@ haveDepCtrl, DependencyControl, depctrl = pcall require, 'l0.DependencyControl'
 if haveDepCtrl
     depctrl = DependencyControl {
         name: 'Formatter',
-        version: '0.1.0',
+        version: '0.1.1',
         description: [[Format strings more sensibly]],
         author: "petzku",
         url: "https://github.com/petzku/Aegisub-Scripts",
@@ -16,7 +16,7 @@ with lib
     -- format `num` as a decimal with at most `max_places` decimal places.
     -- trailing zeroes will be stripped.
     .decimal = (num, max_places) ->
-        string.format("%%.%df", max_places)\format(num)\gsub("%.?0+", "")
+        string.format("%%.%df", max_places)\format(num)\gsub("(%.%d-)0+$", "%1")\gsub("%.$", "")
 
 if haveDepCtrl
     lib.version = depctrl
