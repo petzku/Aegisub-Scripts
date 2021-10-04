@@ -17,7 +17,8 @@
 
 # Encode Clip
 
-Uses mpv (executable *must* be on your PATH!) to encode a clip of the current selection.
+Uses mpv to encode a clip of the current selection.
+The mpv executable *must* be either on your PATH, or specified in the configuration dialog!
 
 Macros and GUI should be self-explanatory.
 
