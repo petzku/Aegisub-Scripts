@@ -183,14 +183,12 @@ end
 
 local function get_base_outfile(t1, t2, ext)
     local outfile, cant_hardsub
-    local vid = aegisub.project_properties().video_file
-    local sub = aegisub.decode_path("?script") .. petzku.io.pathsep .. aegisub.file_name()
     if aegisub.decode_path("?script") == "?script" then
         -- no script file to work with, save next to source video instead
-        outfile = vidfile
+        outfile = aegisub.project_properties().video_file
         cant_hardsub = true
     else
-        outfile = subfile
+        outfile = aegisub.decode_path("?script") .. petzku.io.pathsep .. aegisub.file_name()
     end
     outfile = outfile:gsub('%.[^.]+$', '') .. string.format('_%.3f-%.3f', t1, t2) .. '.' .. ext
 
