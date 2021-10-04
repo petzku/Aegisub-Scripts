@@ -35,7 +35,7 @@ script_name = tr'Encode Clip'
 script_description = tr'Encode various clips from the current selection'
 script_author = 'petzku'
 script_namespace = "petzku.EncodeClip"
-script_version = '0.7.1'
+script_version = '0.8.0'
 
 
 local haveDepCtrl, DependencyControl, depctrl = pcall(require, "l0.DependencyControl")
@@ -180,6 +180,22 @@ local function get_mpv()
     return mpv_exe
 end
 
+local function get_base_outfile(t1, t2, ext)
+    local outfile, cant_hardsub
+    local vid = aegisub.project_properties().video_file
+    local sub = aegisub.decode_path("?script") .. petzku.io.pathsep .. aegisub.file_name()
+    if aegisub.decode_path("?script") == "?script" then
+        -- no script file to work with, save next to source video instead
+        outfile = vidfile
+        cant_hardsub = true
+    else
+        outfile = subfile
+    end
+    outfile = outfile:gsub('%.[^.]+$', '') .. string.format('_%.3f-%.3f', t1, t2) .. '.' .. ext
+
+    return outfile, cant_hardsub
+end
+
 local function calc_start_end(subs, sel)
     local t1, t2 = math.huge, 0
     for _, i in ipairs(sel) do
@@ -198,15 +214,8 @@ function make_clip(subs, sel, hardsub, audio)
     local vidfile = props.video_file
     local subfile = aegisub.decode_path("?script") .. petzku.io.pathsep .. aegisub.file_name()
 
-    local outfile
-    if aegisub.decode_path("?script") == "?script" then
-        -- no script file to work with, save next to source video instead
-        outfile = vidfile
-        hardsub = false
-    else
-        outfile = subfile
-    end
-    outfile = outfile:gsub('%.[^.]+$', '') .. ('_%.3f-%.3f'):format(t1, t2) .. '%s.mp4'
+    local outfile, cant_hardsub = get_base_outfile(t1, t2, 'mp4')
+    if cant_hardsub then hardsub = false end
 
     local postfix = ""
 
@@ -248,7 +257,9 @@ function make_clip(subs, sel, hardsub, audio)
         user_opts.video_command
     }
 
-    outfile = outfile:format(postfix)
+    if postfix ~= '' then
+        outfile = outfile:sub(1, -5) .. postfix .. '.mp4'
+    end
     local cmd = table.concat(commands, ' '):format(t1, t2, vidfile, outfile)
     petzku.io.run_cmd(cmd)
 end
@@ -259,13 +270,7 @@ function make_audio_clip(subs, sel)
     local props = aegisub.project_properties()
     local vidfile = props.video_file
 
-    local outfile
-    if aegisub.decode_path("?script") == "?script" then
-        outfile = vidfile
-    else
-        outfile = aegisub.decode_path("?script") .. petzku.io.pathsep .. aegisub.file_name()
-    end
-    outfile = outfile:gsub('%.[^.]+$', '') .. ('_%.3f-%.3f'):format(t1, t2) .. '.aac'
+    local outfile = get_base_outfile(t1, t2, 'aac')
 
     local user_opts = get_configuration()
     local mpv_exe = get_mpv()
