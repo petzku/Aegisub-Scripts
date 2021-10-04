@@ -165,6 +165,21 @@ local function get_audio_encoder()
     return best
 end
 
+local function get_mpv()
+    local user_opts = get_configuration()
+    local mpv_exe
+    if user_opts.mpv_exe and user_opts.mpv_exe ~= '' then
+        mpv_exe = user_opts.mpv_exe
+        if mpv_exe:match(" ") and not mpv_exe:match("['\"]") then
+            -- spaces but no quotes
+            mpv_exe = '"'..mpv_exe..'"'
+        end
+    else
+        mpv_exe = 'mpv'
+    end
+    return mpv_exe
+end
+
 local function calc_start_end(subs, sel)
     local t1, t2 = math.huge, 0
     for _, i in ipairs(sel) do
@@ -218,16 +233,7 @@ function make_clip(subs, sel, hardsub, audio)
     end
 
     local user_opts = get_configuration()
-    local mpv_exe
-    if user_opts.mpv_exe and user_opts.mpv_exe ~= '' then
-        mpv_exe = user_opts.mpv_exe
-        if mpv_exe:match(" ") and not mpv_exe:match("['\"]") then
-            -- spaces but no quotes
-            mpv_exe = '"'..mpv_exe..'"'
-        end
-    else
-        mpv_exe = 'mpv'
-    end
+    local mpv_exe = get_mpv()
 
     local commands = {
         mpv_exe,
@@ -262,12 +268,7 @@ function make_audio_clip(subs, sel)
     outfile = outfile:gsub('%.[^.]+$', '') .. ('_%.3f-%.3f'):format(t1, t2) .. '.aac'
 
     local user_opts = get_configuration()
-    local mpv_exe
-    if user_opts.mpv_exe and user_opts.mpv_exe ~= '' then
-        mpv_exe = user_opts.mpv_exe
-    else
-        mpv_exe = 'mpv'
-    end
+    local mpv_exe = get_mpv()
 
     local commands = {
         mpv_exe,
