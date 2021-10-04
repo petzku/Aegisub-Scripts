@@ -2,9 +2,9 @@ export script_name = "Snapper"
 export script_description = "Snaps line start and end times to keyframes"
 export script_author = "petzku"
 export script_namespace = "petzku.Snapper"
-export script_version = "0.2.0"
+export script_version = "0.2.1"
 
-snap_start = (subs, sel) ->
+_snap_start = (subs, sel) ->
     kfs = aegisub.keyframes!
     for i in *sel
         line = subs[i]
@@ -16,9 +16,8 @@ snap_start = (subs, sel) ->
 
         line.start_time = aegisub.ms_from_frame new
         subs[i] = line
-    aegisub.set_undo_point "snap line start to previous keyframe"
 
-snap_end = (subs, sel) ->
+_snap_end = (subs, sel) ->
     kfs = aegisub.keyframes!
     for i in *sel
         line = subs[i]
@@ -30,11 +29,19 @@ snap_end = (subs, sel) ->
 
         line.end_time = aegisub.ms_from_frame new
         subs[i] = line
+
+snap_start = (subs, sel) ->
+    _snap_start subs, sel
+    aegisub.set_undo_point "snap line start to previous keyframe"
+
+snap_end = (subs, sel) ->
+    _snap_end subs, sel
     aegisub.set_undo_point "snap line end to next keyframe"
 
 snap_both = (subs, sel) ->
-    snap_start subs, sel
-    snap_end subs, sel
+    _snap_start subs, sel
+    _snap_end subs, sel
+    aegisub.set_undo_point "snap line start and end to surrounding keyframes"
 
 macros = {
     {'start', "Snaps line start to previous keyframe", snap_start},
