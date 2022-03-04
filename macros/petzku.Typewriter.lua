@@ -101,6 +101,11 @@ local function apply_by_frame(subs, sel, linefun)
     write_groups(subs, groups_to_add)
 end
 
+local function is_text_tag(left, right)
+    -- recognize \N, \n, and \h
+    return left:sub(-1) == '\\' and right:match("^[Nnh]")
+end
+
 
 function typewrite_by_duration(subs, sel)
     apply_by_duration(subs, sel, generate_line)
@@ -227,8 +232,8 @@ function generate_line(st, et, orig_line, start, char, rest)
     new.end_time = et
     start = start .. char
 
-    -- hackfix for \N newline
-    if start:sub(-1) == '\\' and rest:sub(1,1) == 'N' then
+    -- hackfix for \N and other non-override tags
+    if is_text_tag(start, rest) then
         new.text = start:sub(1, -2) .. SEPARATOR .. '\\' .. rest
         -- new.text = start
     elseif rest ~= "" then
@@ -271,10 +276,10 @@ function generate_unscramble_lines(st, et, orig_line, org_start, char, org_rest,
         else
             newchar = randomchar(char, new.start_time)
         end
-        -- hackfix for \N newline
-        if start:sub(-1) == '\\' and char == "N" then
-            new.text = start .. 'N' .. SEPARATOR .. rest
-        elseif char == '\\' and rest:sub(1,1) == 'N' then
+        -- hackfix for \N and other non-override tags
+        if is_text_tag(start, char) then
+            new.text = start .. char .. SEPARATOR .. rest
+        elseif is_text_tag(char, rest) then
             new.text = start .. SEPARATOR .. '\\' .. rest
         elseif rest ~= "" then
             new.text = start .. newchar .. SEPARATOR .. rest
@@ -325,10 +330,10 @@ function generate_unscramble_lines_fading(st, et, orig_line, org_start, char, or
         else
             newchar = make_alpha(f - first_frame, fadedur) .. randomchar(char, new.start_time)
         end
-        -- hackfix for \N newline
-        if start:sub(-1) == '\\' and char == "N" then
-            new.text = start .. 'N' .. SEPARATOR .. rest
-        elseif char == '\\' and rest:sub(1,1) == 'N' then
+        -- hackfix for \N and other non-override tags
+        if is_text_tag(start, char) then
+            new.text = start .. char .. SEPARATOR .. rest
+        elseif is_text_tag(char, rest) then
             new.text = start .. SEPARATOR .. '\\' .. rest
         elseif rest ~= "" then
             new.text = start .. newchar .. SEPARATOR .. rest
