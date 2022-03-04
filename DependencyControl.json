@@ -347,14 +347,14 @@
       "description": "Makes text appear one character at a time",
       "channels": {
         "stable": {
-          "version": "0.6.1",
-          "released": "2021-03-25",
+          "version": "0.6.2",
+          "released": "2022-03-05",
           "default": true,
           "files": [
             {
               "name": ".lua",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "4060CA2FE22D163D5CC3ED6CB95195A2B338E585"
+              "sha1": "7365463bdf76d6bca3cb6c13a9264d53989cb56d"
             }
           ],
           "requiredModules": [
@@ -386,6 +386,9 @@
         ],
         "0.6.1": [
           "Retime \\fades as well, move retiming to util library"
+        ],
+        "0.6.2": [
+          "Support for \\h and \\n text tags"
         ]
       }
     }
