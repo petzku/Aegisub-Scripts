@@ -176,30 +176,37 @@ function typewrite_line(line, framedur, index, linefun)
     local start_frame = aegisub.frame_from_ms(line.start_time)
 
     for i=1,unicode.len(raw_text) do
-        local start = start_tags
+        local start = ""
         local rest = ""
-        local n = 1
         local in_tags = false
         local active_char = ''
+        local next_char = unicode.chars(text)
 
-        for char in unicode.chars(text) do
-            if n < i then
-                start = start .. char
-            elseif n == i then
+        for n=1,i do
+            local char = next_char()
+
+            -- skip over override blocks, but only if the block actually ends
+            -- if it does not, treat { as text like renderers do
+            -- in that situation, no guarantees are made about the validity of the final output
+            while char == '{' and text:sub(start:len()+1):match("^{.-}") do
+                local last_char
+                repeat
+                    start = start .. char
+                    last_char = char
+                    char = next_char()
+                until last_char == '}'
+            end
+
+            if n == i then
                 active_char = char
             else
-                rest = rest .. char
+                start = start .. char
             end
+        end
+        start = start_tags .. start
 
-            if in_tags then
-                if char == "}" then
-                    in_tags = false
-                end
-            elseif char == "{" then
-                in_tags = true
-            else
-                n = n + 1
-            end
+        for char in next_char do
+            rest = rest .. char
         end
 
         local st = aegisub.ms_from_frame(start_frame + ((i-1) * framedur))
