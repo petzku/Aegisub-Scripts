@@ -44,9 +44,18 @@ local depctrl = DependencyControl{
 }
 local util, unicode, petzku = depctrl:requireModules()
 
+local text_tag_pattern = "\\[Nnh]";
+
+local function remove_tags(text)
+  -- remove override blocks and replace text tags (\N, etc.) with spaces
+  return text:gsub("{.-}", ""):gsub(text_tag_pattern, " ")
+end
+
 local function randomchar(ch, time)
     -- use time for deterministic random shuffle thing
-    if ch == ch:lower() and ch ~= ch:upper() then
+    if ch:match(text_tag_pattern) then
+        return ch
+    elseif ch == ch:lower() and ch ~= ch:upper() then
         local rand = math.pow((time + string.byte(ch:sub(1,1))) % 26, 10) % 26
         return string.char(97 + rand)
     elseif ch == ch:upper() and ch ~= ch:lower() then
@@ -77,7 +86,7 @@ local function apply_by_duration(subs, sel, linefun)
         local line = subs[li]
 
         local duration_frames = aegisub.frame_from_ms(line.end_time) - aegisub.frame_from_ms(line.start_time)
-        local trimmed = util.trim(line.text:gsub("{.-}", ""))
+        local trimmed = util.trim(remove_tags(line.text))
         local line_len = unicode.len(trimmed)
         -- for some reason, this errors but the above works
         -- local line_len = unicode.len(util.trim(line.text:gsub("{.-}", "")))
@@ -100,12 +109,6 @@ local function apply_by_frame(subs, sel, linefun)
     end
     write_groups(subs, groups_to_add)
 end
-
-local function is_text_tag(left, right)
-    -- recognize \N, \n, and \h
-    return left:sub(-1) == '\\' and right:match("^[Nnh]")
-end
-
 
 function typewrite_by_duration(subs, sel)
     apply_by_duration(subs, sel, generate_line)
@@ -168,7 +171,7 @@ function typewrite_line(line, framedur, index, linefun)
     --           of floor(framedur) or ceil(framedur) creating a decent approximation over the line
 
     -- text with tags removed
-    local raw_text = util.trim(line.text:gsub("{.-}", ""))
+    local raw_text = util.trim(remove_tags(line.text))
     local to_add = {}
     local start_tags = line.text:match("^{.-}") or ""
     local text = line.text:sub(start_tags:len()+1)
@@ -195,6 +198,11 @@ function typewrite_line(line, framedur, index, linefun)
                     last_char = char
                     char = next_char()
                 until last_char == '}'
+            end
+
+            -- Treat text tags \N, \n and \h as single characters
+            if char == '\\' and text:sub(start:len()+1):match('^' .. text_tag_pattern) then
+                char = char .. next_char()
             end
 
             if n == i then
@@ -239,11 +247,7 @@ function generate_line(st, et, orig_line, start, char, rest)
     new.end_time = et
     start = start .. char
 
-    -- hackfix for \N and other non-override tags
-    if is_text_tag(start, rest) then
-        new.text = start:sub(1, -2) .. SEPARATOR .. '\\' .. rest
-        -- new.text = start
-    elseif rest ~= "" then
+    if rest ~= "" then
         new.text = start .. SEPARATOR .. rest
     else
         new.text = start
@@ -283,12 +287,7 @@ function generate_unscramble_lines(st, et, orig_line, org_start, char, org_rest,
         else
             newchar = randomchar(char, new.start_time)
         end
-        -- hackfix for \N and other non-override tags
-        if is_text_tag(start, char) then
-            new.text = start .. char .. SEPARATOR .. rest
-        elseif is_text_tag(char, rest) then
-            new.text = start .. SEPARATOR .. '\\' .. rest
-        elseif rest ~= "" then
+        if rest ~= "" then
             new.text = start .. newchar .. SEPARATOR .. rest
         else
             new.text = start .. newchar
@@ -337,12 +336,7 @@ function generate_unscramble_lines_fading(st, et, orig_line, org_start, char, or
         else
             newchar = make_alpha(f - first_frame, fadedur) .. randomchar(char, new.start_time)
         end
-        -- hackfix for \N and other non-override tags
-        if is_text_tag(start, char) then
-            new.text = start .. char .. SEPARATOR .. rest
-        elseif is_text_tag(char, rest) then
-            new.text = start .. SEPARATOR .. '\\' .. rest
-        elseif rest ~= "" then
+        if rest ~= "" then
             new.text = start .. newchar .. SEPARATOR .. rest
         else
             new.text = start .. newchar
