@@ -151,14 +151,14 @@
       "description": "Encode a hardsubbed clip encompassing the current selection",
       "channels": {
         "stable": {
-          "version": "0.7.1",
-          "released": "2021-05-08",
+          "version": "0.8.0",
+          "released": "2022-03-06",
           "default": true,
           "files": [
             {
               "name": ".lua",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "c1ce431af603ff54b8cecdddd1f73024f05b4618"
+              "sha1": "397d09dcd591a1be1264156a47584f4f51f62bec"
             }
           ],
           "requiredModules": [
@@ -202,6 +202,10 @@
         ],
         "0.7.1": [
           "Fix handling of spaces in mpv path"
+        ],
+        "0.8.0": [
+          "Allow user-selectable mpv executable",
+          "Notify user if non-ASCII filenames cause errors and suggest fixes (Windows)"
         ]
       }
     },
