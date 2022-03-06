@@ -162,9 +162,9 @@ Specifically, the macro expects the style defaults to be `\an4\fs50\fnPT Sans` a
 
 ### Resample
 
-Corrects 3D-rotations (`\frx\fry`) when resampling script resolutions. Uses trigonometry instead of the classic "multiply by the ratio of the resolutions" and also scales subtitle dimensions when necessary, so this handles even extreme rotations correctly, or at least very nearly so.
+Corrects 3D-rotations (`\frx\fry`) when resampling script resolutions. Uses trigonometry instead of the classic "multiply by the ratio of the resolutions" and also scales subtitle dimensions when necessary, so this handles even extreme rotations correctly, or at least very nearly so. Still kind of experimental, though I see little reason not to use this if you ever end up resampling scripts.
 
-Very much WIP. Currently only supports resampling from 720p, and does not always handle in-line `bord` and `shad` tags correctly. Also, I've been told the math I've used relies on incorrect assumptions, but it seemed to work correctly in all my testing.
+Somewhat WIP. Does not always handle in-line `bord` and `shad` tags correctly. Also, I've been told the math I've used relies on incorrect assumptions, but it seemed to work correctly in all my testing.
 
 ### Shake
 
