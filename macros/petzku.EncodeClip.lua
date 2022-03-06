@@ -204,6 +204,26 @@ local function calc_start_end(subs, sel)
     return t1/1000, t2/1000
 end
 
+local function is_ascii(str)
+    for i=1, #str do
+        if str:byte(i) > 128 then
+            return false
+        end
+    end
+    return true
+end
+
+local function run_cmd(cmd)
+    -- run the encode command, alerting with possible fixes in the case of an error
+    local output = petzku.io.run_cmd(cmd)
+
+    local WINDOWS_ASCII_ERROR_TEXT = "No such file or directory"
+    if output:find(WINDOWS_ASCII_ERROR_TEXT) and not is_ascii(cmd) then
+        aegisub.log(2, "\nIt looks like some of your input or output file names contain non-ASCII characters, which can break on some systems.\n")
+        aegisub.log(2, "Setting your system to use UTF-8 codepages may solve this issue; see https://superuser.com/a/1451686.\n\n")
+    end
+end
+
 function make_clip(subs, sel, hardsub, audio)
     if audio == nil then audio = true end --encode with audio by default
 
@@ -260,7 +280,7 @@ function make_clip(subs, sel, hardsub, audio)
         outfile = outfile:sub(1, -5) .. postfix .. '.mp4'
     end
     local cmd = table.concat(commands, ' '):format(t1, t2, vidfile, outfile)
-    petzku.io.run_cmd(cmd)
+    run_cmd(cmd)
 end
 
 function make_audio_clip(subs, sel)
@@ -287,7 +307,7 @@ function make_audio_clip(subs, sel)
     }
 
     local cmd = table.concat(commands, ' '):format(t1, t2, vidfile, outfile)
-    petzku.io.run_cmd(cmd)
+    run_cmd(cmd)
 end
 
 function show_dialog(subs, sel)
