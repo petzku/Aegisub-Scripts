@@ -289,7 +289,7 @@ function make_audio_clip(subs, sel)
     local props = aegisub.project_properties()
     local vidfile = props.video_file
 
-    local outfile = get_base_outfile(t1, t2, 'aac')
+    local outfile = get_base_outfile(t1, t2, 'm4a')
 
     local user_opts = get_configuration()
     local mpv_exe = get_mpv()
