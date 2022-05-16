@@ -308,6 +308,32 @@
         ]
       }
     },
+    "petzku.Snapper": {
+      "fileBaseUrl": "@{fileBaseUrl}/@{channel}/macros/@{namespace}",
+      "url": "@{baseUrl}#@{namespace}",
+      "author": "petzku",
+      "name": "Snapper",
+      "description": "Snaps line start and end times to keyframes",
+      "channels": {
+        "stable": {
+          "version": "1.0.0",
+          "released": "2022-05-16",
+          "default": true,
+          "files": [
+            {
+              "name": ".moon",
+              "url": "@{fileBaseUrl}@{fileName}",
+              "sha1": "69ffcda6834fdf4e6bff576bf62b4ff9185e6ffd"
+            }
+          ]
+        }
+      },
+      "changelog": {
+        "1.0.0": [
+          "Add to DepCtrl"
+        ]
+      }
+    },
     "petzku.SplitTimer": {
       "fileBaseUrl": "@{fileBaseUrl}/@{channel}/macros/@{namespace}",
       "url": "@{baseUrl}#@{namespace}",
