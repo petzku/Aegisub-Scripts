@@ -2,7 +2,11 @@ export script_name = "Snapper"
 export script_description = "Snaps line start and end times to keyframes"
 export script_author = "petzku"
 export script_namespace = "petzku.Snapper"
-export script_version = "0.3.0"
+export script_version = "1.0.0"
+
+havedc, DependencyControl, dep = pcall require, "l0.DependencyControl"
+if havedc
+    dep = DependencyControl{}
 
 _snap_start = (subs, sel) ->
     kfs = aegisub.keyframes!
@@ -56,6 +60,10 @@ macros = {
     {'end', "Snaps line end to next keyframe", snap_end}
     {'both', "Snaps line start and end to surrounding keyframes", snap_both}
 }
-for macro in *macros
-    name, desc, fun, cond = unpack macro
-    aegisub.register_macro script_name..'/'..name, desc, fun, cond
+
+if havedc
+    dep\registerMacros macros
+else
+    for macro in *macros
+        name, desc, fun, cond = unpack macro
+        aegisub.register_macro script_name..'/'..name, desc, fun, cond
