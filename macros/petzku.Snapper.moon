@@ -2,34 +2,40 @@ export script_name = "Snapper"
 export script_description = "Snaps line start and end times to keyframes"
 export script_author = "petzku"
 export script_namespace = "petzku.Snapper"
-export script_version = "0.2.2"
+export script_version = "0.3.0"
 
 _snap_start = (subs, sel) ->
-    kfs = table.sort aegisub.keyframes!
+    kfs = aegisub.keyframes!
+    table.sort kfs
     for i in *sel
         line = subs[i]
+        t_start, t_end = aegisub.get_audio_selection!
         kf = do
             j = 1
-            frame = aegisub.frame_from_ms line.start_time
+            frame = aegisub.frame_from_ms t_start
             while kfs[j] <= frame
                 j += 1
             kfs[j-1]
 
         line.start_time = aegisub.ms_from_frame kf
+        line.end_time = t_end
         subs[i] = line
 
 _snap_end = (subs, sel) ->
-    kfs = table.sort aegisub.keyframes!
+    kfs = aegisub.keyframes!
+    table.sort kfs
     for i in *sel
         line = subs[i]
+        t_start, t_end = aegisub.get_audio_selection!
         kf = do
             j = 1
-            frame = aegisub.frame_from_ms line.end_time
+            frame = aegisub.frame_from_ms t_end
             while kfs[j] < frame
                 j += 1
             kfs[j]
 
         line.end_time = aegisub.ms_from_frame kf
+        line.start_time = t_start
         subs[i] = line
 
 snap_start = (subs, sel) ->
