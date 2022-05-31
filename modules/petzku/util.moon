@@ -12,7 +12,7 @@ local util
 if haveDepCtrl
     depctrl = DependencyControl {
         name: 'petzkuLib',
-        version: '0.3.0',
+        version: '0.3.1',
         description: [[Various utility functions for use with petzku's Aegisub macros]],
         author: "petzku",
         url: "https://github.com/petzku/Aegisub-Scripts",
@@ -121,6 +121,11 @@ with lib
                 p\close!
 
                 os.execute 'del ' .. tmp
+
+                -- on windows, the shell apparently gives us the command at the beginning. yeet it.
+                _, cmdend = output\find cmd, 1, true
+                -- 2 bytes for \r\n at end
+                output = output\sub cmdend + 2 + 1
             else
                 -- on linux, we should be fine to just execute the command directly
                 p = io.popen cmd
