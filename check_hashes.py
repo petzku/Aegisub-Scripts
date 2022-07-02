@@ -10,20 +10,42 @@ import sys
 DC_FILE = "DependencyControl.json"
 
 
+def check_hash(content, hash, filename):
+    sha1hash = sha1(content).hexdigest().lower()
+    if sha1hash == hash.lower():
+        info(f"{filename} matches hash")
+        return True
+    else:
+        error(f"{filename} hash mismatch!")
+        error(f"  filesystem: {sha1hash}")
+        error(f"  depctrl:    {hash.lower()}")
+        return False
+
+
+def check_version(content: bytes, version, filename):
+    verline = [line for line in str(content, 'utf-8').split("\n") if "version" in line][0]
+    filever = verline.replace(":", "=").split("=")[1].strip().strip("'\",")
+    if filever == version:
+        info(f"{filename} version matches")
+        return True
+    else:
+        error(f"{filename} version mismatch!")
+        error(f"  filesystem: {filever}")
+        error(f"  depctrl:    {version}")
+        return False
+
+
 def check_contents(entry, basename):
     all_fine = True
     for ch in entry['channels'].values():
         for f in ch['files']:
             filename = basename + f['name']
             with open(filename, 'rb') as fo:
-                sha1hash = sha1(fo.read()).hexdigest().lower()
-            if sha1hash == f['sha1'].lower():
-                info(f"{filename} matches hash")
-            else:
+                content = fo.read()
+            hash_good = check_hash(content, f['sha1'], filename)
+            version_good = check_version(content, ch['version'], filename)
+            if not (hash_good and version_good):
                 all_fine = False
-                error(f"{filename} hash mismatch!")
-                error(f"  filesystem: {sha1hash}")
-                error(f"  depctrl:    {f['sha1'].lower()}")
     return all_fine
 
 
