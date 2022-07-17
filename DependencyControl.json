@@ -550,14 +550,14 @@
       "description": "Various utility functions for use with petzku's Aegisub macros",
       "channels": {
         "stable": {
-          "version": "0.4.4",
+          "version": "0.5.0",
           "released": "2025-01-21",
           "default": true,
           "files": [
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "3aec6adea2cb938480cd22d51930ff626ccfde2e"
+              "sha1": "6df807118a7c0a9d841b2fd4afd2f9118e456972"
             },
             {
               "name": "/tee.exe",
@@ -577,7 +577,8 @@
           "Transforms: change both-negative-times move to pos tag instead"
         ],
         "0.4.3": ["Include feed URL for DepCtrl updating"],
-        "0.4.4": ["Fix decode_path breaking on Windows with Aegisub 3.4.2"]
+        "0.4.4": ["Fix decode_path breaking on Windows with Aegisub 3.4.2"],
+        "0.5.0": ["Add logging functions"]
       }
     }
   }
