@@ -3,7 +3,7 @@
 name: CI
 
 on:
-  # Triggers the workflow on push to any branch, or pull request for the master branch
+  # Triggers the workflow on pull request for the master branch
   push:
     branches: [ master, stable ]
   pull_request:

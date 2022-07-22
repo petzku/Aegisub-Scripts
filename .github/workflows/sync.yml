@@ -1,0 +1,24 @@
+name: Sync
+
+on:
+  push:
+  pull_request:
+    branches: [master]
+
+jobs:
+  sync-stable:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Wait for validation to succeed
+        uses: fountainhead/action-wait-for-check@v1.0.0
+        id: wait-for-depctrl
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          checkName: verify-depctrl
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Sync status to stable
+        if: steps.wait-for-depctrl.outputs.conclusion == 'success'
+        uses: actions/checkout@v3
+        run: git push origin test-stable
