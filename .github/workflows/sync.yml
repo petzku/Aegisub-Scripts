@@ -2,7 +2,8 @@ name: Sync
 
 on:
   push:
-    master
+    branches:
+      - master
 
 jobs:
   sync-stable:
