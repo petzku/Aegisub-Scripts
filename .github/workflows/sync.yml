@@ -18,8 +18,11 @@ jobs:
           checkName: verify-depctrl
           ref: ${{ github.sha }}
 
-      - name: Sync status
+      - name: Checkout branch
         uses: actions/checkout@v3
+
+      - name: Sync stable from remote
+        run: git fetch origin stable
 
       - name: Push status to stable
         if: steps.wait-for-depctrl.outputs.conclusion == 'success'
