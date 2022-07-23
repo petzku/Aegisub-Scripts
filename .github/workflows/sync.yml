@@ -2,8 +2,7 @@ name: Sync
 
 on:
   push:
-  pull_request:
-    branches: [master]
+    master
 
 jobs:
   sync-stable:
@@ -16,7 +15,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           checkName: verify-depctrl
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          ref: ${{ github.sha }}
 
       - name: Sync status
         uses: actions/checkout@v3
