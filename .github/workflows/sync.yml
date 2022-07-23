@@ -18,7 +18,9 @@ jobs:
           checkName: verify-depctrl
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
-      - name: Sync status to stable
-        if: steps.wait-for-depctrl.outputs.conclusion == 'success'
+      - name: Sync status
         uses: actions/checkout@v3
+
+      - name: Push status to stable
+        if: steps.wait-for-depctrl.outputs.conclusion == 'success'
         run: git push origin test-stable
