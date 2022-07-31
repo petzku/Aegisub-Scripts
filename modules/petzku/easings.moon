@@ -13,7 +13,7 @@ local petzku
 if haveDepCtrl
     depctrl = DependencyControl {
         name: 'easings',
-        version: '0.4.0',
+        version: '0.5.0',
         description: [[A library of easy-to-use easing functions for transforms]],
         author: "petzku",
         url: "https://github.com/petzku/Aegisub-Scripts",
@@ -228,6 +228,20 @@ with easings
         i: .in_elastic
         o: .out_elastic
         io: .inout_elastic
+    }
+
+    .raw = {
+        invert: (f) -> (t) -> 1 - f(1 - t)
+        io: {
+            from_i: (f) -> (t) -> t < 0.5 and f(t*2)/2 or 1 - f(1 - t*2)
+            from_o: (f) -> (t) -> t > 0.5 and f(t*2)/2 or 1 - f(1 - t*2)
+        }
+        build: make_easer
+        
+        bounce:  ease_in_bounce
+        back:    ease_in_back
+        circle:  ease_in_circle
+        elastic: ease_in_elastic
     }
 
 if haveDepCtrl
