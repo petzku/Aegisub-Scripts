@@ -2,7 +2,7 @@ export script_name = "Autowrapper"
 export script_description = "Automatically set/unset \\q2 on lines with/without manual linebreaks"
 export script_author = "petzku"
 export script_namespace = "petzku.Autowrapper"
-export script_version = "0.2.0"
+export script_version = "0.3.0"
 
 havedc, DependencyControl, dep = pcall require, "l0.DependencyControl"
 if havedc

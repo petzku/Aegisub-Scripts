@@ -55,14 +55,14 @@
       "description": "Automatically set/unset \\q2 on lines with/without manual linebreaks",
       "channels": {
         "stable": {
-          "version": "0.2.0",
-          "released": "2021-09-05",
+          "version": "0.3.0",
+          "released": "2022-07-31",
           "default": true,
           "files": [
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "65b98005ceead6126a48f4e58e153ecb04ae6358"
+              "sha1": "6c696db28c9c4a1a7f10cf7a625cf90274dc6821"
             }
           ]
         }
@@ -73,6 +73,10 @@
         ],
         "0.2.0": [
           "Give information in output log"
+        ],
+        "0.3.0": [
+          "Add options to not add/remove tags in lines",
+          "Fix error in removed \\q2 calculation"
         ]
       }
     },
