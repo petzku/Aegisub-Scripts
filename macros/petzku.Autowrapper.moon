@@ -34,7 +34,7 @@ main = (subs, _sel) ->
                 -- warn, do not add \q2
                 line.effect ..= "## AUTOMATIC LINEBREAK ##"
                 res_autobreak += 1
-            else
+            elseif line.text\find '\\q2'
                 line.text = line.text\gsub '\\q2', ''
                 -- and remove empty tag blocks, if we caused one
                 line.text = line.text\gsub '{}', ''
