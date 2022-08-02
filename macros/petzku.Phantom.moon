@@ -6,6 +6,14 @@ export script_author =      "petzku"
 export script_namespace =   "petzku.Phantom"
 export script_version =     "0.1.0"
 
+-- Currently uses {} as delimiters
+-- e.g. "foo{}bar{}baz" -> "<HIDE>bar<SHOW>foobar<HIDE>baz"
+
+-- TODO:
+-- - refactor to make things nicer
+-- - support shifting left and right
+-- - use cursor manipulation from arch1t3ct if possible
+
 HIDE = "{\\alpha&HFF&}"
 SHOW = "{\\alpha}"
 
