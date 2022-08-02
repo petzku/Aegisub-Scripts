@@ -4,7 +4,7 @@ export script_name =        "Phantom"
 export script_description = "Align line content to match others by adding text and abusing transparency"
 export script_author =      "petzku"
 export script_namespace =   "petzku.Phantom"
-export script_version =     "0.1.0"
+export script_version =     "0.1.1"
 
 -- Currently uses {} as delimiters
 -- e.g. "foo{}bar{}baz" -> "<HIDE>bar<SHOW>foobar<HIDE>baz"
@@ -28,16 +28,9 @@ main = (sub, _sel, act) ->
 
     procd = {}
 
-    text = [part for part in (text.."\\N")\gmatch "(.-)\\N"]
-    for part in *text
-        if i = part\find "{}"
-            -- *maybe* there's a way to do this more cleanly
-            if j = part\find "{}", i+1
-                beg = part\sub 1, i-1       -- untouched
-                mid = part\sub i+2, j-1     -- keep this where it is; clone to start hidden
-                den = part\sub j+2          -- keep this at the end; hide
-
-                part = HIDE..mid..SHOW..beg..mid..HIDE..den
+    for part in string.gmatch text.."\\N", "(.-)\\N"
+        -- thanks for the Universal Pattern Hammer, arch1t3ct
+        part = part\gsub "^(.-){}(.-){}(.-)$", (beg, mid, den) -> HIDE..mid..SHOW..beg..mid..HIDE..den
         table.insert procd, part
     
     line.text = start .. table.concat procd, "\\N"
