@@ -151,14 +151,14 @@
       "description": "Encode a hardsubbed clip encompassing the current selection",
       "channels": {
         "stable": {
-          "version": "0.8.1",
+          "version": "0.8.2",
           "released": "2022-04-25",
           "default": true,
           "files": [
             {
               "name": ".lua",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "d553472fcc8f1b8282966efdbdc3cdbbed69a087"
+              "sha1": "a04dd3f068525b8f0422f1a90769528a40bb4a5b"
             }
           ],
           "requiredModules": [
@@ -209,6 +209,10 @@
         ],
         "0.8.1": [
           "Output audio-only clips as .m4a instead of .aac"
+        ],
+        "0.8.2": [
+          "Warn user when file not saved (if on approtriate aegisub versions)",
+          "Default to encoding video on Enter press"
         ]
       }
     },
