@@ -2,7 +2,7 @@ export script_name = "Autowrapper"
 export script_description = "Automatically set/unset \\q2 on lines with/without manual linebreaks"
 export script_author = "petzku"
 export script_namespace = "petzku.Autowrapper"
-export script_version = "0.2.0"
+export script_version = "0.3.0"
 
 havedc, DependencyControl, dep = pcall require, "l0.DependencyControl"
 if havedc
@@ -16,7 +16,7 @@ is_overwidth = (meta, line) ->
     wrap_width = meta.res_x - line.styleref.margin_l - line.styleref.margin_r
     line.width > wrap_width
 
-main = (subs, _sel) ->
+process = (subs, _sel, add_q2=true, rem_q2=true) ->
     meta, styles = karaskel.collect_head subs, false
     -- operate on all dialogue lines, not just selection
     -- maybe change this?
@@ -34,7 +34,7 @@ main = (subs, _sel) ->
                 -- warn, do not add \q2
                 line.effect ..= "## AUTOMATIC LINEBREAK ##"
                 res_autobreak += 1
-            else
+            elseif line.text\find '\\q2'
                 line.text = line.text\gsub '\\q2', ''
                 -- and remove empty tag blocks, if we caused one
                 line.text = line.text\gsub '{}', ''
@@ -46,7 +46,24 @@ main = (subs, _sel) ->
     if res_autobreak > 0 then aegisub.log "Found %d automatic linebreaks\n", res_autobreak
     if res_remq2 > 0 then     aegisub.log "Removed %d \\q2's from lines without \\N\n", res_remq2
 
+main = (subs, sel) ->
+    process subs, sel
+
+no_q2 = (subs, sel) ->
+    process subs, sel, false
+
+comment = (subs, sel) ->
+    process subs, sel, false, false
+
+macros = {
+    { "Add all", script_description, main },
+    { "Add \\N", "", no_q2 },
+    { "Only note automatic breaks", "", comment }
+}
+
 if havedc
-    dep\registerMacro main
+    dep\registerMacros macros
 else
-    aegisub.register_macro script_name, script_description, main
+    for m in *macros
+        name, desc, fun = unpack m
+        aegisub.register_macro script_name..'/'..name, desc, fun
