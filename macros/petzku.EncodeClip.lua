@@ -36,7 +36,7 @@ script_name = tr'Encode Clip'
 script_description = tr'Encode various clips from the current selection'
 script_author = 'petzku'
 script_namespace = "petzku.EncodeClip"
-script_version = '0.8.1'
+script_version = '0.8.2'
 
 
 local haveDepCtrl, DependencyControl, depctrl = pcall(require, "l0.DependencyControl")
@@ -119,7 +119,17 @@ local GUI = {
         VIDEO = tr"&Video clip",
         CONFIG = tr"Confi&g",
         CANCEL = tr"&Cancel"
-    }
+    },
+    show_user_warning = function(title, desc, proceed)
+        return aegisub.dialog.display(
+            {
+                {class="label", label=title, x=0, y=0},
+                {class="label", label=desc, x=0, y=1}
+            },
+            {proceed, "&Cancel"},
+            {ok = proceed, cancel = "&Cancel"}
+        )
+    end
 }
 if haveDepCtrl then
     config = ConfigHandler(config_diag, depctrl.configFile, false, script_version, depctrl.configDir)
@@ -235,6 +245,15 @@ function make_clip(subs, sel, hardsub, audio)
 
     local outfile, cant_hardsub = get_base_outfile(t1, t2, 'mp4')
     if cant_hardsub then hardsub = false end
+
+    if hardsub and aegisub.gui and aegisub.gui.is_modified and aegisub.gui.is_modified() then
+        -- warn user about script not being saved
+        if not GUI.show_user_warning("File not saved!", [[Current script file has not been saved.
+        You probably wanted to save first.
+        Press Enter to proceed anyway, or Escape to cancel.]], "Encode &anyway") then
+            return
+        end
+    end
 
     local postfix = ""
 
