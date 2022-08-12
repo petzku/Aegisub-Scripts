@@ -6,6 +6,10 @@ export script_author =      "petzku"
 export script_namespace =   "petzku.Noter"
 export script_version =     "0.2.0"
 
+-- TODO: arbitrary pre/postfix support
+PRE = ""
+POST = " -p"
+
 add_note = (line, pre, post, idx = #line.text+1) ->
     beg, den = line.text\sub(1, idx-1), line.text\sub(idx)
     line.text = beg .. "{#{pre}#{post}}" .. den
@@ -14,10 +18,10 @@ add_note = (line, pre, post, idx = #line.text+1) ->
     line
 
 main = (sub, _, act) ->
-    sub[act] = add_note sub[act], "", " -p"
+    sub[act] = add_note sub[act], PRE, POST
     
 at_cursor = (sub, _, act) ->
-    sub[act] = add_note sub[act], "", " -p", aegisub.gui.get_cursor!
+    sub[act] = add_note sub[act], PRE, POST, aegisub.gui.get_cursor!
 
 
 if aegisub.gui and aegisub.gui.get_cursor
