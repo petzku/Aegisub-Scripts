@@ -55,14 +55,14 @@
       "description": "Automatically set/unset \\q2 on lines with/without manual linebreaks",
       "channels": {
         "stable": {
-          "version": "0.2.0",
-          "released": "2021-09-05",
+          "version": "0.3.0",
+          "released": "2022-07-31",
           "default": true,
           "files": [
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "65b98005ceead6126a48f4e58e153ecb04ae6358"
+              "sha1": "6c696db28c9c4a1a7f10cf7a625cf90274dc6821"
             }
           ]
         }
@@ -73,6 +73,10 @@
         ],
         "0.2.0": [
           "Give information in output log"
+        ],
+        "0.3.0": [
+          "Add options to not add/remove tags in lines",
+          "Fix error in removed \\q2 calculation"
         ]
       }
     },
@@ -151,14 +155,14 @@
       "description": "Encode a hardsubbed clip encompassing the current selection",
       "channels": {
         "stable": {
-          "version": "0.7.1",
-          "released": "2021-05-08",
+          "version": "0.8.2",
+          "released": "2022-04-25",
           "default": true,
           "files": [
             {
               "name": ".lua",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "c1ce431af603ff54b8cecdddd1f73024f05b4618"
+              "sha1": "a04dd3f068525b8f0422f1a90769528a40bb4a5b"
             }
           ],
           "requiredModules": [
@@ -202,6 +206,17 @@
         ],
         "0.7.1": [
           "Fix handling of spaces in mpv path"
+        ],
+        "0.8.0": [
+          "Allow user-selectable mpv executable",
+          "Notify user if non-ASCII filenames cause errors and suggest fixes (Windows)"
+        ],
+        "0.8.1": [
+          "Output audio-only clips as .m4a instead of .aac"
+        ],
+        "0.8.2": [
+          "Warn user when file not saved (if on approtriate aegisub versions)",
+          "Default to encoding video on Enter press"
         ]
       }
     },
@@ -265,22 +280,48 @@
         ]
       }
     },
-    "petzku.PosToMargin": {
+    "petzku.Phantom": {
       "fileBaseUrl": "@{fileBaseUrl}/@{channel}/macros/@{namespace}",
-      "url": "@{baseUrl}#@{namespace}",
+      "url": "@{baseUrl}#phantom",
       "author": "petzku",
-      "name": "Position to Margin",
-      "description": "Transforms \\pos-based motion-tracking into margin-based",
+      "name": "Phantom",
+      "description": "Align line content to match others by adding text and abusing transparency",
       "channels": {
         "stable": {
-          "version": "1.1.0",
-          "released": "2021-04-11",
+          "version": "1.0.0",
+          "released": "2022-08-12",
           "default": true,
           "files": [
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "22303a8740e8c8792247643b46eac3b53dbc7156"
+              "sha1": "30199803e919685e3eb23d846856b5dab0117f3c"
+            }
+          ]
+        }
+      },
+      "changelog": {
+        "1.0.0": [
+          "Initial release"
+        ]
+      }
+    },
+    "petzku.PosToMargin": {
+      "fileBaseUrl": "@{fileBaseUrl}/@{channel}/macros/@{namespace}",
+      "url": "@{baseUrl}#margin-position",
+      "author": "petzku",
+      "name": "Margin Position",
+      "description": "Transforms \\pos-based positioning into margin and vice versa",
+      "channels": {
+        "stable": {
+          "version": "2.0.0",
+          "released": "2021-06-23",
+          "default": true,
+          "files": [
+            {
+              "name": ".moon",
+              "url": "@{fileBaseUrl}@{fileName}",
+              "sha1": "8a750eb595f2e4355543e7664184ec54fc3490fb"
             }
           ]
         }
@@ -294,6 +335,36 @@
         ],
         "1.1.0": [
           "Get script resolution from karaskel meta"
+        ],
+        "2.0.0": [
+          "Added margin -> pos transform",
+          "Renamed from 'Position to Margin'"
+        ]
+      }
+    },
+    "petzku.Snapper": {
+      "fileBaseUrl": "@{fileBaseUrl}/@{channel}/macros/@{namespace}",
+      "url": "@{baseUrl}#@{namespace}",
+      "author": "petzku",
+      "name": "Snapper",
+      "description": "Snaps line start and end times to keyframes",
+      "channels": {
+        "stable": {
+          "version": "1.0.0",
+          "released": "2022-05-16",
+          "default": true,
+          "files": [
+            {
+              "name": ".moon",
+              "url": "@{fileBaseUrl}@{fileName}",
+              "sha1": "69ffcda6834fdf4e6bff576bf62b4ff9185e6ffd"
+            }
+          ]
+        }
+      },
+      "changelog": {
+        "1.0.0": [
+          "Add to DepCtrl"
         ]
       }
     },
@@ -402,14 +473,14 @@
       "description": "A library of easy-to-use easing functions for transforms",
       "channels": {
         "stable": {
-          "version": "0.4.0",
-          "released": "2021-04-04",
+          "version": "0.5.0",
+          "released": "2022-07-23",
           "default": true,
           "files": [
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "FB2A21FCE4F9A6610FBE90A46ABB907BF076FC00"
+              "sha1": "84b5507844e193f9257baf8db3d85ff734048e6f"
             }
           ]
         }
@@ -417,6 +488,9 @@
       "changelog": {
         "0.4.0": [
           "Add to DependencyControl"
+        ],
+        "0.5.0": [
+          "Expose internals and other convenience functions for direct easer manipulation in `easings.raw`"
         ]
       }
     },

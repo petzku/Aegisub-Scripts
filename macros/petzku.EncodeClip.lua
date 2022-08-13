@@ -36,7 +36,7 @@ script_name = tr'Encode Clip'
 script_description = tr'Encode various clips from the current selection'
 script_author = 'petzku'
 script_namespace = "petzku.EncodeClip"
-script_version = '0.8.0'
+script_version = '0.8.2'
 
 
 local haveDepCtrl, DependencyControl, depctrl = pcall(require, "l0.DependencyControl")
@@ -119,7 +119,17 @@ local GUI = {
         VIDEO = tr"&Video clip",
         CONFIG = tr"Confi&g",
         CANCEL = tr"&Cancel"
-    }
+    },
+    show_user_warning = function(title, desc, proceed)
+        return aegisub.dialog.display(
+            {
+                {class="label", label=title, x=0, y=0},
+                {class="label", label=desc, x=0, y=1}
+            },
+            {proceed, "&Cancel"},
+            {ok = proceed, cancel = "&Cancel"}
+        )
+    end
 }
 if haveDepCtrl then
     config = ConfigHandler(config_diag, depctrl.configFile, false, script_version, depctrl.configDir)
@@ -204,6 +214,26 @@ local function calc_start_end(subs, sel)
     return t1/1000, t2/1000
 end
 
+local function is_ascii(str)
+    for i=1, #str do
+        if str:byte(i) > 128 then
+            return false
+        end
+    end
+    return true
+end
+
+local function run_cmd(cmd)
+    -- run the encode command, alerting with possible fixes in the case of an error
+    local output = petzku.io.run_cmd(cmd)
+
+    local WINDOWS_ASCII_ERROR_TEXT = "No such file or directory"
+    if output:find(WINDOWS_ASCII_ERROR_TEXT) and not is_ascii(cmd) then
+        aegisub.log(2, "\nIt looks like some of your input or output file names contain non-ASCII characters, which can break on some systems.\n")
+        aegisub.log(2, "Setting your system to use UTF-8 codepages may solve this issue; see https://superuser.com/a/1451686.\n\n")
+    end
+end
+
 function make_clip(subs, sel, hardsub, audio)
     if audio == nil then audio = true end --encode with audio by default
 
@@ -215,6 +245,15 @@ function make_clip(subs, sel, hardsub, audio)
 
     local outfile, cant_hardsub = get_base_outfile(t1, t2, 'mp4')
     if cant_hardsub then hardsub = false end
+
+    if hardsub and aegisub.gui and aegisub.gui.is_modified and aegisub.gui.is_modified() then
+        -- warn user about script not being saved
+        if not GUI.show_user_warning("File not saved!", [[Current script file has not been saved.
+        You probably wanted to save first.
+        Press Enter to proceed anyway, or Escape to cancel.]], "Encode &anyway") then
+            return
+        end
+    end
 
     local postfix = ""
 
@@ -260,7 +299,7 @@ function make_clip(subs, sel, hardsub, audio)
         outfile = outfile:sub(1, -5) .. postfix .. '.mp4'
     end
     local cmd = table.concat(commands, ' '):format(t1, t2, vidfile, outfile)
-    petzku.io.run_cmd(cmd)
+    run_cmd(cmd)
 end
 
 function make_audio_clip(subs, sel)
@@ -269,7 +308,7 @@ function make_audio_clip(subs, sel)
     local props = aegisub.project_properties()
     local vidfile = props.video_file
 
-    local outfile = get_base_outfile(t1, t2, 'aac')
+    local outfile = get_base_outfile(t1, t2, 'm4a')
 
     local user_opts = get_configuration()
     local mpv_exe = get_mpv()
@@ -287,7 +326,7 @@ function make_audio_clip(subs, sel)
     }
 
     local cmd = table.concat(commands, ' '):format(t1, t2, vidfile, outfile)
-    petzku.io.run_cmd(cmd)
+    run_cmd(cmd)
 end
 
 function show_dialog(subs, sel)
@@ -296,7 +335,7 @@ function show_dialog(subs, sel)
     } or {
         GUI.BUTTONS.AUDIO, GUI.BUTTONS.VIDEO, GUI.BUTTONS.CANCEL
     }
-    local btn, values = aegisub.dialog.display(GUI.main, buttons, {cancel=GUI.BUTTONS.CANCEL})
+    local btn, values = aegisub.dialog.display(GUI.main, buttons, {ok=GUI.BUTTONS.VIDEO, cancel=GUI.BUTTONS.CANCEL})
 
     if btn == GUI.BUTTONS.AUDIO then
         make_audio_clip(subs, sel)
