@@ -8,7 +8,7 @@ Anyone else is free to use this library too, but most of the stuff is specifical
 ]]
 
 haveDepCtrl, DependencyControl, depctrl = pcall require, 'l0.DependencyControl'
-local util
+local util, re
 if haveDepCtrl
     depctrl = DependencyControl {
         name: 'petzkuLib',
@@ -18,12 +18,13 @@ if haveDepCtrl
         url: "https://github.com/petzku/Aegisub-Scripts",
         moduleName: 'petzku.util',
         {
-            "aegisub.util"
+            "aegisub.util", "aegisub.re"
         }
     }
-    util = depctrl\requireModules!
+    util, re = depctrl\requireModules!
 else
     util = require "aegisub.util"
+    re = require "aegisub.re"
 
 -- "\" on windows, "/" on any other system
 pathsep = package.config\sub 1,1
@@ -108,27 +109,39 @@ with lib
         run_cmd: (cmd, quiet) ->
             aegisub.log 'running: %s\n', cmd unless quiet
 
-            local output
+            local runner
+            output_path = os.tmpname()
             if pathsep == '\\'
+                -- windows
                 -- command lines over 256 bytes don't get run correctly, make a temporary file as a workaround
-                tmp = aegisub.decode_path('?temp' .. pathsep .. 'tmp.bat')
-                f = io.open tmp, 'w'
-                f\write cmd
+                runner = aegisub.decode_path('?temp' .. pathsep .. 'petzku.bat')
+                -- provided by https://sourceforge.net/projects/unxutils/
+                tee_path = "#{re.match(debug.getinfo(1).source, '@?(.*[/\\\\])')[1].str}tee"
+                f = io.open runner, 'w'
+                f\write "@echo off\n"
+                f\write cmd .. " 2>&1 | \"#{tee_path}\" \"#{output_path}\"\n"
+                f\write "exit/b\n"
                 f\close!
-
-                p = io.popen tmp
-                output = p\read '*a'
-                p\close!
-
-                os.execute 'del ' .. tmp
             else
-                -- on linux, we should be fine to just execute the command directly
-                p = io.popen cmd
-                output = p\read '*a'
-                p\close!
+                runner = aegisub.decode_path('?temp' .. pathsep .. 'petzku.sh')
+                f = io.open runner, 'w'
+                f\write "#!/bin/sh\n"
+                f\write cmd .. " 2>&1 | tee \"#{output_path}\"\n"
+                f\close!
+                os.execute "chmod +x \"#{runner}\""
 
+            
+            status, reason, exit_code = os.execute runner
+
+            f = io.open output_path
+            output = f\read '*a'
+            f\close!
             aegisub.log output unless quiet
-            output
+
+            os.execute 'del ' .. runner
+            aegisub.log '\nfinished: %s\n', cmd unless quiet
+
+            output, status, reason, exit_code
     }
 
 if haveDepCtrl
