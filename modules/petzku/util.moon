@@ -123,22 +123,27 @@ with lib
                 f = io.open wrapper_path, 'w'
                 f\write "@echo off\n"
                 f\write "call %*\n"
-                f\write "echo %errorlevel% >&4\n"
-                f\write "exit /b %errorlevel%\n"
+                f\write "echo %errorlevel% >\"#{exit_code_path}\"\n"
                 f\close!
                 -- create batch script
                 f = io.open runner_path, 'w'
                 f\write "@echo off\n"
-                f\write "call \"#{wrapper_path}\" #{cmd} 2>&1 4>\"#{exit_code_path}\" | \"#{tee_path}\" \"#{output_path}\"\n"
+                f\write "call \"#{wrapper_path}\" #{cmd} 2>&1 | \"#{tee_path}\" \"#{output_path}\"\n"
                 f\write "set /p errorlevel=<\"#{exit_code_path}\"\n"
                 f\write "exit /b %errorlevel%\n"
                 f\close!
             else
                 runner_path = aegisub.decode_path('?temp' .. pathsep .. 'petzku.sh')
+                pipe_path = os.tmpname()
+                -- create shell script
                 f = io.open runner_path, 'w'
                 f\write "#!/bin/sh\n"
-                f\write "#{cmd} 2>&1 | tee \"#{output_path}\"\n"
+                f\write "mkfifo \"#{pipe_path}\"\n"
+                f\write "tee \"#{output_path} <\"#{pipe_path}\" &\n"
+                f\write "#{cmd} >\"#{pipe_path}\" 2>&1\n"
+                f\write "exit $?\n"
                 f\close!
+                -- make the script executable
                 os.execute "chmod +x \"#{runner_path}\""
 
             
