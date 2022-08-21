@@ -107,39 +107,59 @@ with lib
     .io = {
         :pathsep,
         run_cmd: (cmd, quiet) ->
-            aegisub.log 'running: %s\n', cmd unless quiet
+            aegisub.log 'Running: %s\n', cmd unless quiet
 
-            local runner
+            local runner_path
             output_path = os.tmpname()
             if pathsep == '\\'
                 -- windows
                 -- command lines over 256 bytes don't get run correctly, make a temporary file as a workaround
-                runner = aegisub.decode_path('?temp' .. pathsep .. 'petzku.bat')
+                runner_path = aegisub.decode_path('?temp' .. pathsep .. 'petzku.bat')
+                wrapper_path = aegisub.decode_path('?temp' .. pathsep .. 'petzku-wrapper.bat')
+                exit_code_path = os.tmpname()
                 -- provided by https://sourceforge.net/projects/unxutils/
                 tee_path = "#{re.match(debug.getinfo(1).source, '@?(.*[/\\\\])')[1].str}tee"
-                f = io.open runner, 'w'
+                -- create wrapper
+                f = io.open wrapper_path, 'w'
                 f\write "@echo off\n"
-                f\write cmd .. " 2>&1 | \"#{tee_path}\" \"#{output_path}\"\n"
-                f\write "exit/b\n"
+                f\write "call %*\n"
+                f\write "echo %errorlevel% >&4\n"
+                f\write "exit /b %errorlevel%\n"
+                f\close!
+                -- create batch script
+                f = io.open runner_path, 'w'
+                f\write "@echo off\n"
+                f\write "call \"#{wrapper_path}\" #{cmd} 2>&1 4>\"#{exit_code_path}\" | \"#{tee_path}\" \"#{output_path}\"\n"
+                f\write "set /p errorlevel=<\"#{exit_code_path}\"\n"
+                f\write "exit /b %errorlevel%\n"
                 f\close!
             else
-                runner = aegisub.decode_path('?temp' .. pathsep .. 'petzku.sh')
-                f = io.open runner, 'w'
+                runner_path = aegisub.decode_path('?temp' .. pathsep .. 'petzku.sh')
+                f = io.open runner_path, 'w'
                 f\write "#!/bin/sh\n"
-                f\write cmd .. " 2>&1 | tee \"#{output_path}\"\n"
+                f\write "#{cmd} 2>&1 | tee \"#{output_path}\"\n"
                 f\close!
-                os.execute "chmod +x \"#{runner}\""
+                os.execute "chmod +x \"#{runner_path}\""
 
             
-            status, reason, exit_code = os.execute runner
+            status, reason, exit_code = os.execute runner_path
 
             f = io.open output_path
             output = f\read '*a'
             f\close!
             aegisub.log output unless quiet
 
-            os.execute 'del ' .. runner
-            aegisub.log '\nfinished: %s\n', cmd unless quiet
+            os.execute 'del ' .. runner_path
+
+            aegisub.log "\n" unless quiet
+            aegisub.log "Status: " unless quiet
+            if status
+                aegisub.log "success\n" unless quiet
+            else
+                aegisub.log "failed\n" unless quiet
+                aegisub.log "Reason: #{reason}\n" unless quiet
+                aegisub.log "Exit Code: #{exit_code}\n" unless quiet
+            aegisub.log 'Finished: %s\n', cmd unless quiet
 
             output, status, reason, exit_code
     }
