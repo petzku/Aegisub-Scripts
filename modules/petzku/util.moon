@@ -107,7 +107,7 @@ with lib
     .io = {
         :pathsep,
         run_cmd: (cmd, quiet) ->
-            aegisub.log 'Running: %s\n', cmd unless quiet
+            aegisub.log 5, 'Running: %s\n', cmd unless quiet
 
             local runner_path
             output_path = os.tmpname()
@@ -148,23 +148,28 @@ with lib
 
             
             status, reason, exit_code = os.execute runner_path
+            os.execute 'del ' .. runner_path
 
             f = io.open output_path
             output = f\read '*a'
             f\close!
-            aegisub.log output unless quiet
 
-            os.execute 'del ' .. runner_path
-
-            aegisub.log "\n" unless quiet
-            aegisub.log "Status: " unless quiet
-            if status
-                aegisub.log "success\n" unless quiet
-            else
-                aegisub.log "failed\n" unless quiet
-                aegisub.log "Reason: #{reason}\n" unless quiet
-                aegisub.log "Exit Code: #{exit_code}\n" unless quiet
-            aegisub.log 'Finished: %s\n', cmd unless quiet
+            unless quiet
+                local log_level
+                if status
+                    log_level = 5
+                else
+                    log_level = 1
+                aegisub.log log_level, "Command Logs: \n\n"
+                aegisub.log log_level, output
+                aegisub.log log_level, "\n\nStatus: "
+                if status
+                    aegisub.log log_level, "success\n"
+                else
+                    aegisub.log log_level, "failed\n"
+                    aegisub.log log_level, "Reason: #{reason}\n"
+                    aegisub.log log_level, "Exit Code: #{exit_code}\n"
+                aegisub.log log_level, '\nFinished: %s\n', cmd
 
             output, status, reason, exit_code
     }
