@@ -507,9 +507,9 @@
           "default": true,
           "files": [
             {
-              "name": "/util.moon",
+              "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "4afc8d5a49b5985867588bf147bdeaf827b92edb"
+              "sha1": "136e2cc7e242cd8442d13ea60736768ef8768d34"
             },
             {
               "name": "/tee.exe",
