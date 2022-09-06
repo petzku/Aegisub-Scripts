@@ -509,7 +509,7 @@
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "136e2cc7e242cd8442d13ea60736768ef8768d34"
+              "sha1": "3def7b96613ce775e9e7debec3ca9804f3710c68"
             },
             {
               "name": "/tee.exe",

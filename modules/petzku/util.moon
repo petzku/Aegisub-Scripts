@@ -148,7 +148,6 @@ with lib
 
             
             status, reason, exit_code = os.execute runner_path
-            os.execute 'del ' .. runner_path
 
             f = io.open output_path
             output = f\read '*a'

@@ -63,22 +63,18 @@ def check_changelog(lines, changelog, filename):
 
 def check_contents(entry, basename):
     all_fine = True
-    for ch in entry["channels"].values():
-        for f in ch["files"]:
-            filename = basename + f["name"]
-            with open(filename, "rb") as fo:
+    for ch in entry['channels'].values():
+        for f in ch['files']:
+            filename = basename + f['name']
+            with open(filename, 'rb') as fo:
                 content = fo.read()
                 try:
-                    content_lines = (
-                        content.decode("utf-8").replace("\r", "").split("\n")
-                    )
-                except:
+                    content_lines = content.decode('utf-8').replace("\r", "").split("\n")
+                except UnicodeDecodeError:
                     content_lines = None
-            hash_good = check_hash(content, f["sha1"], filename)
-            version_good = check_version(content_lines, ch["version"], filename)
-            changelog_good = check_changelog(
-                content_lines, entry["changelog"], filename
-            )
+            hash_good = check_hash(content, f['sha1'], filename)
+            version_good = check_version(content_lines, ch['version'], filename)
+            changelog_good = check_changelog(content_lines, entry['changelog'], filename)
             if not (hash_good and version_good and changelog_good):
                 all_fine = False
     return all_fine
@@ -89,7 +85,7 @@ def main():
         depctrl = json.load(fo)
 
     macros_fine = True
-    for ns, macro in depctrl["macros"].items():
+    for ns, macro in depctrl['macros'].items():
         # assume all macros are in `macros/${namespace}.${extension}`
         basename = "macros/" + ns
         if not check_contents(macro, basename):
@@ -98,7 +94,7 @@ def main():
         print("All macros validated successfully!")
 
     modules_fine = True
-    for ns, module in depctrl["modules"].items():
+    for ns, module in depctrl['modules'].items():
         # assume all modules are in `modules/${namespacepath}.${extension}`
         # i.e. modules/petzku/util.moon
         basename = "modules/" + ns.replace(".", "/")
