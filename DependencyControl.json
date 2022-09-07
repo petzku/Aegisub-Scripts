@@ -421,14 +421,14 @@
       "description": "Makes text appear one character at a time",
       "channels": {
         "stable": {
-          "version": "0.6.2",
-          "released": "2022-03-05",
+          "version": "0.7.0",
+          "released": "2022-07-09",
           "default": true,
           "files": [
             {
               "name": ".lua",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "7365463bdf76d6bca3cb6c13a9264d53989cb56d"
+              "sha1": "067b447e30080a8dcf775367ec1cdf04703a707c"
             }
           ],
           "requiredModules": [
@@ -463,6 +463,11 @@
         ],
         "0.6.2": [
           "Support for \\h and \\n text tags"
+        ],
+        "0.7.0": [
+          "Refactor the partitioning logic in typewrite_line to use a state machine-based approach",
+          "For an active_char immediately following an override block, ensure that the override block is put in start (It was previously being deleted accidentally)",
+          "Treat text tags \\N, \\n and \\h as single characters and remove the hackfix"
         ]
       }
     }
