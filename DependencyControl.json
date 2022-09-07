@@ -288,14 +288,14 @@
       "description": "Align line content to match others by adding text and abusing transparency",
       "channels": {
         "stable": {
-          "version": "1.0.0",
-          "released": "2022-08-12",
+          "version": "1.0.1",
+          "released": "2022-09-05",
           "default": true,
           "files": [
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "30199803e919685e3eb23d846856b5dab0117f3c"
+              "sha1": "00bb71edfc26f769e208c86de2e77af3cc1fe29a"
             }
           ]
         }
@@ -303,6 +303,9 @@
       "changelog": {
         "1.0.0": [
           "Initial release"
+        ],
+        "1.0.1": [
+          "Fix handling of newlines"
         ]
       }
     },
