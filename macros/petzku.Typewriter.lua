@@ -26,7 +26,7 @@ TODO: support rtl and/or bottom-to-top text?
 
 script_name = "Typewriter"
 script_description = "Makes text appear one character at a time"
-script_version = "0.6.2"
+script_version = "0.7.0"
 script_author = "petzku"
 script_namespace = "petzku.Typewriter"
 
