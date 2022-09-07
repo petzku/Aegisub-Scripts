@@ -522,6 +522,7 @@
             {
               "name": "/tee.exe",
               "url": "@{fileBaseUrl}@{fileName}",
+              "platform": "Windows-x64",
               "sha1": "054c04d341152311d40aaab4049e6c2c26646b3a"
             }
           ]
