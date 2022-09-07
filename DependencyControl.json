@@ -288,14 +288,14 @@
       "description": "Align line content to match others by adding text and abusing transparency",
       "channels": {
         "stable": {
-          "version": "1.0.0",
-          "released": "2022-08-12",
+          "version": "1.0.1",
+          "released": "2022-09-05",
           "default": true,
           "files": [
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "30199803e919685e3eb23d846856b5dab0117f3c"
+              "sha1": "00bb71edfc26f769e208c86de2e77af3cc1fe29a"
             }
           ]
         }
@@ -303,6 +303,9 @@
       "changelog": {
         "1.0.0": [
           "Initial release"
+        ],
+        "1.0.1": [
+          "Fix handling of newlines"
         ]
       }
     },
@@ -502,14 +505,19 @@
       "description": "Various utility functions for use with petzku's Aegisub macros",
       "channels": {
         "stable": {
-          "version": "0.3.0",
-          "released": "2021-03-25",
+          "version": "0.4.0",
+          "released": "2022-09-04",
           "default": true,
           "files": [
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "4EE56571E91464D967DCC7F458C5EA1E831AF2B5"
+              "sha1": "3def7b96613ce775e9e7debec3ca9804f3710c68"
+            },
+            {
+              "name": "/tee.exe",
+              "url": "@{fileBaseUrl}@{fileName}",
+              "sha1": "054c04d341152311d40aaab4049e6c2c26646b3a"
             }
           ]
         }
@@ -521,6 +529,9 @@
         ],
         "0.3.0": [
           "Add \\t, \\move, \\fad retiming"
+        ],
+        "0.4.0": [
+          "Upgrade run_cmd in a way that handles stderr"
         ]
       }
     }

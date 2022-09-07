@@ -4,7 +4,7 @@ export script_name =        "Phantom"
 export script_description = "Align line content to match others by adding text and abusing transparency"
 export script_author =      "petzku"
 export script_namespace =   "petzku.Phantom"
-export script_version =     "1.0.0"
+export script_version =     "1.0.1"
 
 -- Currently uses {} as delimiters
 -- e.g. "foo{}bar{}baz" -> "<HIDE>bar<SHOW>foobar<HIDE>baz"
@@ -32,7 +32,10 @@ cursor_proc = (part, offset) ->
     sels = sels - offset
     sele = sele - offset
 
-    proc part\sub(1, sels-1), part\sub(sels, sele-1), part\sub(sele)
+    if sels > part\len! or sele < 1
+        part
+    else
+        proc part\sub(1, sels-1), part\sub(sels, sele-1), part\sub(sele)
     
 
 -- only operate on active line; ignore selection

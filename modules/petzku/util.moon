@@ -8,22 +8,23 @@ Anyone else is free to use this library too, but most of the stuff is specifical
 ]]
 
 haveDepCtrl, DependencyControl, depctrl = pcall require, 'l0.DependencyControl'
-local util
+local util, re
 if haveDepCtrl
     depctrl = DependencyControl {
         name: 'petzkuLib',
-        version: '0.3.0',
+        version: '0.4.0',
         description: [[Various utility functions for use with petzku's Aegisub macros]],
         author: "petzku",
         url: "https://github.com/petzku/Aegisub-Scripts",
         moduleName: 'petzku.util',
         {
-            "aegisub.util"
+            "aegisub.util", "aegisub.re"
         }
     }
-    util = depctrl\requireModules!
+    util, re = depctrl\requireModules!
 else
     util = require "aegisub.util"
+    re = require "aegisub.re"
 
 -- "\" on windows, "/" on any other system
 pathsep = package.config\sub 1,1
@@ -106,29 +107,70 @@ with lib
     .io = {
         :pathsep,
         run_cmd: (cmd, quiet) ->
-            aegisub.log 'running: %s\n', cmd unless quiet
+            aegisub.log 5, 'Running: %s\n', cmd unless quiet
 
-            local output
+            local runner_path
+            output_path = os.tmpname()
             if pathsep == '\\'
+                -- windows
                 -- command lines over 256 bytes don't get run correctly, make a temporary file as a workaround
-                tmp = aegisub.decode_path('?temp' .. pathsep .. 'tmp.bat')
-                f = io.open tmp, 'w'
-                f\write cmd
+                runner_path = aegisub.decode_path('?temp' .. pathsep .. 'petzku.bat')
+                wrapper_path = aegisub.decode_path('?temp' .. pathsep .. 'petzku-wrapper.bat')
+                exit_code_path = os.tmpname()
+                -- provided by https://sourceforge.net/projects/unxutils/
+                tee_path = "#{re.match(debug.getinfo(1).source, '@?(.*[/\\\\])')[1].str}util/tee"
+                -- create wrapper
+                f = io.open wrapper_path, 'w'
+                f\write "@echo off\n"
+                f\write "call %*\n"
+                f\write "echo %errorlevel% >\"#{exit_code_path}\"\n"
                 f\close!
-
-                p = io.popen tmp
-                output = p\read '*a'
-                p\close!
-
-                os.execute 'del ' .. tmp
+                -- create batch script
+                f = io.open runner_path, 'w'
+                f\write "@echo off\n"
+                f\write "call \"#{wrapper_path}\" #{cmd} 2>&1 | \"#{tee_path}\" \"#{output_path}\"\n"
+                f\write "set /p errorlevel=<\"#{exit_code_path}\"\n"
+                f\write "exit /b %errorlevel%\n"
+                f\close!
             else
-                -- on linux, we should be fine to just execute the command directly
-                p = io.popen cmd
-                output = p\read '*a'
-                p\close!
+                runner_path = aegisub.decode_path('?temp' .. pathsep .. 'petzku.sh')
+                pipe_path = os.tmpname()
+                -- create shell script
+                f = io.open runner_path, 'w'
+                f\write "#!/bin/sh\n"
+                f\write "mkfifo \"#{pipe_path}\"\n"
+                f\write "tee \"#{output_path} <\"#{pipe_path}\" &\n"
+                f\write "#{cmd} >\"#{pipe_path}\" 2>&1\n"
+                f\write "exit $?\n"
+                f\close!
+                -- make the script executable
+                os.execute "chmod +x \"#{runner_path}\""
 
-            aegisub.log output unless quiet
-            output
+            
+            status, reason, exit_code = os.execute runner_path
+
+            f = io.open output_path
+            output = f\read '*a'
+            f\close!
+
+            unless quiet
+                local log_level
+                if status
+                    log_level = 5
+                else
+                    log_level = 1
+                aegisub.log log_level, "Command Logs: \n\n"
+                aegisub.log log_level, output
+                aegisub.log log_level, "\n\nStatus: "
+                if status
+                    aegisub.log log_level, "success\n"
+                else
+                    aegisub.log log_level, "failed\n"
+                    aegisub.log log_level, "Reason: #{reason}\n"
+                    aegisub.log log_level, "Exit Code: #{exit_code}\n"
+                aegisub.log log_level, '\nFinished: %s\n', cmd
+
+            output, status, reason, exit_code
     }
 
 if haveDepCtrl
