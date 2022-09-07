@@ -28,6 +28,8 @@ def check_hash(content, hash, filename):
 
 
 def check_version(lines, version, filename):
+    if not lines:
+        return True
     file_ver = get_version(lines)
     if file_ver == version:
         info(f"{filename} version matches")
@@ -40,6 +42,8 @@ def check_version(lines, version, filename):
 
 
 def check_changelog(lines, changelog, filename):
+    if not lines:
+        return True
     file_ver = get_version(lines)
     latest_log = max(changelog.keys())
     if file_ver == latest_log:
@@ -64,7 +68,10 @@ def check_contents(entry, basename):
             filename = basename + f['name']
             with open(filename, 'rb') as fo:
                 content = fo.read()
-                content_lines = content.decode("utf-8").replace("\r", "").split("\n")
+                try:
+                    content_lines = content.decode('utf-8').replace("\r", "").split("\n")
+                except UnicodeDecodeError:
+                    content_lines = None
             hash_good = check_hash(content, f['sha1'], filename)
             version_good = check_version(content_lines, ch['version'], filename)
             changelog_good = check_changelog(content_lines, entry['changelog'], filename)
@@ -80,7 +87,7 @@ def main():
     macros_fine = True
     for ns, macro in depctrl['macros'].items():
         # assume all macros are in `macros/${namespace}.${extension}`
-        basename = 'macros/' + ns
+        basename = "macros/" + ns
         if not check_contents(macro, basename):
             macros_fine = False
     if macros_fine:
@@ -90,7 +97,7 @@ def main():
     for ns, module in depctrl['modules'].items():
         # assume all modules are in `modules/${namespacepath}.${extension}`
         # i.e. modules/petzku/util.moon
-        basename = 'modules/' + ns.replace('.', '/')
+        basename = "modules/" + ns.replace(".", "/")
         if not check_contents(module, basename):
             modules_fine = False
     if modules_fine:
