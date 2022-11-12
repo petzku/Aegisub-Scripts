@@ -34,19 +34,20 @@ process = (subs, _sel, add_q2=true, rem_q2=true) ->
                 res_addq2 += 1
         else
             lines = lines_needed meta, line
-            if lines > 2
-                -- three-liner
-                line.effect ..= "## THREE-LINER ##"
-                res_threelines += 1
-            elseif lines > 1.9
-                -- maybe three-liner
-                line.effect ..= "## POSSIBLE THREE-LINER ##"
-                res_maybethree += 1
-            elseif lines > 1
-                -- warn, do not add \q2
-                line.effect ..= "## AUTOMATIC LINEBREAK ##"
-                res_autobreak += 1
-            elseif line.text\find '\\q2'
+            if not line.text\find '\\q2'
+                if lines > 2
+                    -- three-liner
+                    line.effect ..= "## THREE-LINER ##"
+                    res_threelines += 1
+                elseif lines > 1.9
+                    -- maybe three-liner
+                    line.effect ..= "## POSSIBLE THREE-LINER ##"
+                    res_maybethree += 1
+                elseif lines > 1
+                    -- warn, do not add \q2
+                    line.effect ..= "## AUTOMATIC LINEBREAK ##"
+                    res_autobreak += 1
+            elseif lines <= 1
                 line.text = line.text\gsub '\\q2', ''
                 -- and remove empty tag blocks, if we caused one
                 line.text = line.text\gsub '{}', ''
