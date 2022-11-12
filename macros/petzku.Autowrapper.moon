@@ -13,7 +13,8 @@ else
 
 is_overwidth = (meta, line) ->
     -- maximum width of line before automatically wrapping
-    wrap_width = meta.res_x - line.styleref.margin_l - line.styleref.margin_r
+    -- eff_margin takes into account in-line margins
+    wrap_width = meta.res_x - line.eff_margin_l - line.eff_margin_r
     line.width > wrap_width
 
 process = (subs, _sel, add_q2=true, rem_q2=true) ->
