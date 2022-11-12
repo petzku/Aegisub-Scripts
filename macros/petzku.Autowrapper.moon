@@ -1,5 +1,6 @@
 export script_name = "Autowrapper"
 export script_description = "Automatically set/unset \\q2 on lines with/without manual linebreaks"
+export alt_description = "Automatically unset \\q2 on lines without manual linebreaks"
 export script_author = "petzku"
 export script_namespace = "petzku.Autowrapper"
 export script_version = "0.3.0"
@@ -57,8 +58,8 @@ comment = (subs, sel) ->
     process subs, sel, false, false
 
 macros = {
-    { "Add all", script_description, main },
-    { "Add \\N", "", no_q2 },
+    { "Add missing \\q2 tags", script_description, main },
+    { "Remove unnecessary \\q2 tags", alt_description, no_q2 },
     { "Only note automatic breaks", "", comment }
 }
 
