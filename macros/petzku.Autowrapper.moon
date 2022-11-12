@@ -3,7 +3,7 @@ export script_description = "Automatically set/unset \\q2 on lines with/without 
 export alt_description = "Automatically unset \\q2 on lines without manual linebreaks"
 export script_author = "petzku"
 export script_namespace = "petzku.Autowrapper"
-export script_version = "0.4.0"
+export script_version = "0.5.0"
 
 havedc, DependencyControl, dep = pcall require, "l0.DependencyControl"
 if havedc
@@ -12,40 +12,59 @@ if havedc
 else
     require 'karaskel'
 
-is_overwidth = (meta, line) ->
+lines_needed = (meta, line) ->
     -- maximum width of line before automatically wrapping
     -- eff_margin takes into account in-line margins
     wrap_width = meta.res_x - line.eff_margin_l - line.eff_margin_r
-    line.width > wrap_width
+    line.width / wrap_width
 
 process = (subs, _sel, add_q2=true, rem_q2=true) ->
     meta, styles = karaskel.collect_head subs, false
     -- operate on all dialogue lines, not just selection
     -- maybe change this?
     res_addq2, res_autobreak, res_remq2 = 0,0,0
+    res_overq2 = 0
+    res_threelines, res_maybethree = 0, 0
     for i, line in ipairs subs
         continue unless line.class == 'dialogue' and not line.comment
         karaskel.preproc_line subs, meta, styles, line
 
         if line.text_stripped\find '\\N'
-            unless line.text\find '\\q2'
+            if add_q2 and not line.text\find '\\q2'
                 line.text = '{\\q2}'..line.text
                 res_addq2 += 1
         else
-            if is_overwidth meta, line
-                -- warn, do not add \q2
-                line.effect ..= "## AUTOMATIC LINEBREAK ##"
-                res_autobreak += 1
-            elseif line.text\find '\\q2'
-                line.text = line.text\gsub '\\q2', ''
-                -- and remove empty tag blocks, if we caused one
-                line.text = line.text\gsub '{}', ''
-                res_remq2 += 1
+            lines = lines_needed meta, line
+            if not line.text\find '\\q2'
+                if lines > 2
+                    -- three-liner
+                    line.effect ..= "## THREE-LINER ##"
+                    res_threelines += 1
+                elseif lines > 1.9
+                    -- maybe three-liner
+                    line.effect ..= "## POSSIBLE THREE-LINER ##"
+                    res_maybethree += 1
+                elseif lines > 1
+                    -- warn, do not add \q2
+                    line.effect ..= "## AUTOMATIC LINEBREAK ##"
+                    res_autobreak += 1
+            else
+                if lines > 1
+                    -- overwidth but has \q2
+                    line.effect ..= "## OVERWIDTH WITH FORCED WRAP ##"
+                    res_overq2 += 1
+                elseif rem_q2
+                    line.text = line.text\gsub '\\q2', ''
+                    -- and remove empty tag blocks, if we caused one
+                    line.text = line.text\gsub '{}', ''
+                    res_remq2 += 1
         subs[i] = line
     aegisub.set_undo_point "automatically set/unset \\q2"
 
     if res_addq2 > 0 then     aegisub.log "Added %d \\q2's on lines with \\N\n", res_addq2
     if res_autobreak > 0 then aegisub.log "Found %d automatic linebreaks\n", res_autobreak
+    if res_threelines + res_maybethree > 0 then aegisub.log "Found %d three-liners and %d likely ones\n", res_threelines, res_maybethree
+    if res_overq2 > 0 then    aegisub.log "Found %d overwidth lines with forced wrapping\n", res_overq2
     if res_remq2 > 0 then     aegisub.log "Removed %d \\q2's from lines without \\N\n", res_remq2
 
 main = (subs, sel) ->
