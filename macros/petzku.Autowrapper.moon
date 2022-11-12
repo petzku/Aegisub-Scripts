@@ -30,7 +30,7 @@ process = (subs, _sel, add_q2=true, rem_q2=true) ->
         karaskel.preproc_line subs, meta, styles, line
 
         if line.text_stripped\find '\\N'
-            unless line.text\find '\\q2'
+            if add_q2 and not line.text\find '\\q2'
                 line.text = '{\\q2}'..line.text
                 res_addq2 += 1
         else
@@ -53,7 +53,7 @@ process = (subs, _sel, add_q2=true, rem_q2=true) ->
                     -- overwidth but has \q2
                     line.effect ..= "## OVERWIDTH WITH FORCED WRAP ##"
                     res_overq2 += 1
-                else
+                elseif rem_q2
                     line.text = line.text\gsub '\\q2', ''
                     -- and remove empty tag blocks, if we caused one
                     line.text = line.text\gsub '{}', ''
