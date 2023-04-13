@@ -52,6 +52,13 @@ process = (subs, _sel, add_q2=true, rem_q2=true) ->
             if add_q2 and not line.text\find '\\q2'
                 line.text = '{\\q2}'..line.text
                 res_addq2 += 1
+            if not add_q2
+                -- check each half for potential two-liner
+                _, top, bot = length_ratio line.text_stripped, line.styleref
+                space = space_for_line meta, line
+                if top > space or bot > space
+                    line.effect ..= "## LIKELY THREE-LINER WITH FORCED BREAK ##"
+                    res_threelines += 1
         else
             lines = lines_needed meta, line
             if not line.text\find '\\q2'
