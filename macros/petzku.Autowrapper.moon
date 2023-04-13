@@ -16,11 +16,14 @@ else
     require 'karaskel'
 
 space_for_line = (meta, line) ->
+    -- maximum width of line before automatically wrapping
+    -- eff_margin takes into account in-line margins
     meta.res_x - line.eff_margin_l - line.eff_margin_r
 
 lines_needed = (meta, line) ->
-    -- maximum width of line before automatically wrapping
-    -- eff_margin takes into account in-line margins
+    -- calculate line length in terms of maximum wrapping width,
+    -- i.e. a value under 1 means the line fits on one line,
+    -- while a value over 2 means it needs _three_ lines to fit
     wrap_width = space_for_line meta, line
     line.width / wrap_width
 
@@ -37,13 +40,14 @@ length_ratio = (text, style) ->
         b / a, a, b
 
 
-process = (subs, _sel, add_q2=true, rem_q2=true) ->
+process = (subs, add_q2=true, rem_q2=true) ->
+    -- operates on all dialogue lines, not just selection
     meta, styles = karaskel.collect_head subs, false
-    -- operate on all dialogue lines, not just selection
-    -- maybe change this?
+
     res_addq2, res_autobreak, res_remq2 = 0,0,0
     res_overq2 = 0
     res_threelines, res_maybethree = 0, 0
+
     for i, line in ipairs subs
         continue unless line.class == 'dialogue' and not line.comment
         karaskel.preproc_line subs, meta, styles, line
@@ -62,6 +66,8 @@ process = (subs, _sel, add_q2=true, rem_q2=true) ->
         else
             lines = lines_needed meta, line
             if not line.text\find '\\q2'
+                -- no manual newline, and default wrapping mode
+                -- warn of automatic linebreaks, and flag three-liners separately
                 if lines > 2
                     -- three-liner
                     line.effect ..= "## Three-liner ##"
@@ -80,6 +86,8 @@ process = (subs, _sel, add_q2=true, rem_q2=true) ->
                     line.effect ..= "## Overwidth with forced wrap ##"
                     res_overq2 += 1
                 elseif rem_q2
+                    -- no newline and line is short enough to fit on one line
+                    -- => it's safe to remove the \q2
                     line.text = line.text\gsub '\\q2', ''
                     -- and remove empty tag blocks, if we caused one
                     line.text = line.text\gsub '{}', ''
@@ -90,11 +98,11 @@ process = (subs, _sel, add_q2=true, rem_q2=true) ->
     if res_addq2 > 0 then     aegisub.log "Added %d \\q2's on lines with \\N\n", res_addq2
     if res_autobreak > 0 then aegisub.log "Found %d automatic linebreaks\n", res_autobreak
     if res_threelines + res_maybethree > 0 then aegisub.log "Found %d three-liners and %d likely ones\n", res_threelines, res_maybethree
-    if res_overq2 > 0 then    aegisub.log "Found %d overwidth lines with forced wrapping\n", res_overq2
+    if res_overq2 > 0 then    aegisub.log "Found %d overwidth lines with prevented wrapping\n", res_overq2
     if res_remq2 > 0 then     aegisub.log "Removed %d \\q2's from lines without \\N\n", res_remq2
 
 
-line_balance = (subs, sel) ->
+line_balance = (subs, _sel) ->
     meta, styles = karaskel.collect_head subs, false
 
     for i, line in ipairs subs
@@ -117,14 +125,14 @@ line_balance = (subs, sel) ->
         if edit
             subs[i] = line
 
-main = (subs, sel) ->
-    process subs, sel
+main = (subs, _sel) ->
+    process subs
 
-no_q2 = (subs, sel) ->
-    process subs, sel, false
+no_q2 = (subs, _sel) ->
+    process subs, false
 
-comment = (subs, sel) ->
-    process subs, sel, false, false
+comment = (subs, _sel) ->
+    process subs, false, false
 
 macros = {
     { "Add missing \\q2 tags", script_description, main },
