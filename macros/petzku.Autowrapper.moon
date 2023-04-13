@@ -57,27 +57,27 @@ process = (subs, _sel, add_q2=true, rem_q2=true) ->
                 _, top, bot = length_ratio line.text_stripped, line.styleref
                 space = space_for_line meta, line
                 if top > space or bot > space
-                    line.effect ..= "## LIKELY THREE-LINER WITH FORCED BREAK ##"
+                    line.effect ..= "## Likely three-liner with forced break ##"
                     res_threelines += 1
         else
             lines = lines_needed meta, line
             if not line.text\find '\\q2'
                 if lines > 2
                     -- three-liner
-                    line.effect ..= "## THREE-LINER ##"
+                    line.effect ..= "## Three-liner ##"
                     res_threelines += 1
                 elseif lines > 1.9
                     -- maybe three-liner
-                    line.effect ..= "## POSSIBLE THREE-LINER ##"
+                    line.effect ..= "## Possible three-liner ##"
                     res_maybethree += 1
                 elseif lines > 1
                     -- warn, do not add \q2
-                    line.effect ..= "## AUTOMATIC LINEBREAK ##"
+                    line.effect ..= "## Automatic linebreak ##"
                     res_autobreak += 1
             else
                 if lines > 1
                     -- overwidth but has \q2
-                    line.effect ..= "## OVERWIDTH WITH FORCED WRAP ##"
+                    line.effect ..= "## Overwidth with forced wrap ##"
                     res_overq2 += 1
                 elseif rem_q2
                     line.text = line.text\gsub '\\q2', ''
@@ -109,10 +109,10 @@ line_balance = (subs, sel) ->
 
         edit = false
         if ratio > 1.5
-            line.effect ..= "## notably lopsided line break (" .. math.floor(ratio*100+0.5)/100 .. " ratio) ##"
+            line.effect ..= "## Notably lopsided line break (" .. math.floor(ratio*100+0.5)/100 .. " ratio) ##"
             edit = true
         if spaceratio < 0.4
-            line.effect ..= "## unnecessary line break (uses " .. math.floor(100*spaceratio+0.5) .. "%) ##"
+            line.effect ..= "## Unnecessary line break (uses " .. math.floor(100*spaceratio+0.5) .. "%) ##"
             edit = true
         if edit
             subs[i] = line
