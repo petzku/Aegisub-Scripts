@@ -15,11 +15,27 @@ if havedc
 else
     require 'karaskel'
 
+space_for_line = (meta, line) ->
+    meta.res_x - line.eff_margin_l - line.eff_margin_r
+
 lines_needed = (meta, line) ->
     -- maximum width of line before automatically wrapping
     -- eff_margin takes into account in-line margins
-    wrap_width = meta.res_x - line.eff_margin_l - line.eff_margin_r
+    wrap_width = space_for_line meta, line
     line.width / wrap_width
+
+length_ratio = (text, style) ->
+    -- assuming the line contains a newline,
+    -- calculate lengths of each half
+    -- as well as the ratio of the two
+    first, second = text\match "^%s*(.-)%s*\\N%s*(.-)%s*$"
+    a, _ = aegisub.text_extents style, first
+    b, _ = aegisub.text_extents style, second
+    if a > b
+        a / b, a, b
+    else
+        b / a, a, b
+
 
 process = (subs, _sel, add_q2=true, rem_q2=true) ->
     meta, styles = karaskel.collect_head subs, false
@@ -70,6 +86,30 @@ process = (subs, _sel, add_q2=true, rem_q2=true) ->
     if res_overq2 > 0 then    aegisub.log "Found %d overwidth lines with forced wrapping\n", res_overq2
     if res_remq2 > 0 then     aegisub.log "Removed %d \\q2's from lines without \\N\n", res_remq2
 
+
+line_balance = (subs, sel) ->
+    meta, styles = karaskel.collect_head subs, false
+
+    for i, line in ipairs subs
+        continue unless line.class == 'dialogue' and not line.comment
+        karaskel.preproc_line subs, meta, styles, line
+        continue unless line.text_stripped\match "\\N"
+
+        ratio, top, bot = length_ratio line.text_stripped, line.styleref
+
+        space = space_for_line meta, line
+        spaceratio = math.max(top, bot) / space
+
+        edit = false
+        if ratio > 1.5
+            line.effect ..= "## notably lopsided line break (" .. math.floor(ratio*100+0.5)/100 .. " ratio) ##"
+            edit = true
+        if spaceratio < 0.4
+            line.effect ..= "## unnecessary line break (uses " .. math.floor(100*spaceratio+0.5) .. "%) ##"
+            edit = true
+        if edit
+            subs[i] = line
+
 main = (subs, sel) ->
     process subs, sel
 
@@ -83,6 +123,7 @@ macros = {
     { "Add missing \\q2 tags", script_description, main },
     { "Remove unnecessary \\q2 tags", alt_description, no_q2 },
     { "Only note automatic breaks", "", comment }
+    { "Check line break visual balance", "", line_balance }
 }
 
 if havedc
