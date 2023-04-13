@@ -52,10 +52,12 @@ process = (subs, add_q2=true, rem_q2=true) ->
         continue unless line.class == 'dialogue' and not line.comment
         karaskel.preproc_line subs, meta, styles, line
 
+        edit = false
         if line.text_stripped\find '\\N'
             if add_q2 and not line.text\find '\\q2'
                 line.text = '{\\q2}'..line.text
                 res_addq2 += 1
+                edit = true
             if not add_q2
                 -- check each half for potential two-liner
                 _, top, bot = length_ratio line.text_stripped, line.styleref
@@ -63,6 +65,7 @@ process = (subs, add_q2=true, rem_q2=true) ->
                 if top > space or bot > space
                     line.effect ..= "## Likely three-liner with forced break ##"
                     res_threelines += 1
+                    edit = true
         else
             lines = lines_needed meta, line
             if not line.text\find '\\q2'
@@ -72,19 +75,23 @@ process = (subs, add_q2=true, rem_q2=true) ->
                     -- three-liner
                     line.effect ..= "## Three-liner ##"
                     res_threelines += 1
+                    edit = true
                 elseif lines > 1.9
                     -- maybe three-liner
                     line.effect ..= "## Possible three-liner ##"
                     res_maybethree += 1
+                    edit = true
                 elseif lines > 1
                     -- warn, do not add \q2
                     line.effect ..= "## Automatic linebreak ##"
                     res_autobreak += 1
+                    edit = true
             else
                 if lines > 1
                     -- overwidth but has \q2
                     line.effect ..= "## Overwidth with forced wrap ##"
                     res_overq2 += 1
+                    edit = true
                 elseif rem_q2
                     -- no newline and line is short enough to fit on one line
                     -- => it's safe to remove the \q2
@@ -92,7 +99,8 @@ process = (subs, add_q2=true, rem_q2=true) ->
                     -- and remove empty tag blocks, if we caused one
                     line.text = line.text\gsub '{}', ''
                     res_remq2 += 1
-        subs[i] = line
+                    edit = true
+        subs[i] = line if edit
     aegisub.set_undo_point "automatically set/unset \\q2"
 
     if res_addq2 > 0 then     aegisub.log "Added %d \\q2's on lines with \\N\n", res_addq2
@@ -122,8 +130,7 @@ line_balance = (subs, _sel) ->
         if spaceratio < 0.4
             line.effect ..= "## Unnecessary line break (uses " .. math.floor(100*spaceratio+0.5) .. "%) ##"
             edit = true
-        if edit
-            subs[i] = line
+        subs[i] = line if edit
 
 main = (subs, _sel) ->
     process subs
