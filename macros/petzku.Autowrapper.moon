@@ -109,6 +109,28 @@ process = (subs, add_q2=true, rem_q2=true) ->
     if res_overq2 > 0 then    aegisub.log "Found %d overwidth lines with prevented wrapping\n", res_overq2
     if res_remq2 > 0 then     aegisub.log "Removed %d \\q2's from lines without \\N\n", res_remq2
 
+balance = (line, no_checks=false) ->
+    return unless line.text_stripped\match "\\N"
+
+    ratio, top, bot = length_ratio line.text_stripped, line.styleref
+
+    space = space_for_line meta, line
+    spaceratio = math.max(top, bot) / space
+
+    -- for selected lines
+    if no_checks
+        line.effect ..= string.format("## (%.2f ratio, %d%% width)", ratio, spaceratio*100)
+        return line
+    -- for file-scan
+    edit = false
+    if ratio > 1.5
+        line.effect ..= string.format("## Notably lopsided line break (%.2f ratio) ##", ratio)
+        edit = true
+    if spaceratio < 0.4
+        line.effect ..= string.format("## Unnecessary line break (%d%% width) ##", spaceratio*100)
+        edit = true
+    return line if edit
+
 
 line_balance = (subs, _sel) ->
     meta, styles = karaskel.collect_head subs, false
@@ -116,21 +138,21 @@ line_balance = (subs, _sel) ->
     for i, line in ipairs subs
         continue unless line.class == 'dialogue' and not line.comment
         karaskel.preproc_line subs, meta, styles, line
-        continue unless line.text_stripped\match "\\N"
 
-        ratio, top, bot = length_ratio line.text_stripped, line.styleref
+        line = balance line
 
-        space = space_for_line meta, line
-        spaceratio = math.max(top, bot) / space
+        subs[i] = line if line
 
-        edit = false
-        if ratio > 1.5
-            line.effect ..= "## Notably lopsided line break (" .. math.floor(ratio*100+0.5)/100 .. " ratio) ##"
-            edit = true
-        if spaceratio < 0.4
-            line.effect ..= "## Unnecessary line break (uses " .. math.floor(100*spaceratio+0.5) .. "%) ##"
-            edit = true
-        subs[i] = line if edit
+scanline = (subs, sel) ->
+    meta, styles = karaskel.collect_head subs, false
+
+    for i in *sel
+        line = subs[i]
+        continue unless line.class == 'dialogue' and not line.comment
+        karaskel.preproc_line subs, meta, styles, line
+        line = balance line, true
+        subs[i] = line
+
 
 main = (subs, _sel) ->
     process subs
@@ -144,8 +166,9 @@ comment = (subs, _sel) ->
 macros = {
     { "Add missing \\q2 tags", script_description, main },
     { "Remove unnecessary \\q2 tags", alt_description, no_q2 },
-    { "Only note automatic breaks", "", comment }
-    { "Check line break visual balance", "", line_balance }
+    { "Only note automatic breaks", "", comment },
+    { "Check line break visual balance", "", line_balance },
+    { "Analyze selected lines' visual balance", "", select_balance },
 }
 
 if havedc
