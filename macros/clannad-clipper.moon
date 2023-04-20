@@ -42,7 +42,7 @@ main = (sub, sel, iclips) ->
         -- then do clips
         for j = #CLIPS, 1, -1
             clip = CLIPS[j]
-            unless clip continue --skip blank
+            continue unless clip or iclips --skip blank, if "fading in"
             clip = clip\gsub("clip", "iclip") if iclips
 
             line.start_time = msff start_f + j - 1
