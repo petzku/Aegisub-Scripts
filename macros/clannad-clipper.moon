@@ -23,11 +23,12 @@ CLIPS = {
 msff = aegisub.ms_from_frame
 ffms = aegisub.frame_from_ms
 
-main = (sub, sel) ->
+main = (sub, sel, iclips) ->
     -- for each selected line
     --   fbf first 15 frames
     --   leave out first, apply clips to rest
     --   leave end otherwise untouched
+    -- if "iclips" is set, output iclips instead (for fade-out)
 
     for i = #sel, 1, -1
         line = sub[sel[i]]
@@ -42,6 +43,7 @@ main = (sub, sel) ->
         for j = #CLIPS, 1, -1
             clip = CLIPS[j]
             unless clip continue --skip blank
+            clip = clip\gsub("clip", "iclip") if iclips
 
             line.start_time = msff start_f + j - 1
             line.end_time = msff start_f + j
@@ -49,4 +51,8 @@ main = (sub, sel) ->
 
             sub[-sel[i]] = line
 
-aegisub.register_macro script_name, script_description, main
+clips = (sub, sel) -> main sub, sel, false
+iclips = (sub, sel) -> main sub, sel, true
+
+aegisub.register_macro script_name .. "/clip (fadein)", script_description, clips
+aegisub.register_macro script_name .. "/iclip (fadeout)", script_description, iclips
