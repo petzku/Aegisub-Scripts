@@ -1,6 +1,6 @@
 export script_name        = "Clannad clipper"
 export script_description = "Nazaki's dumb clannad clip bullshit"
-export script_version     = "0.4.2"
+export script_version     = "0.5.0"
 
 CLIPS = {
     false, -- edit this into a clip tag block as below if you want to insert something on the first frame too
@@ -37,17 +37,17 @@ main = (sub, sel, iclips) ->
 
         -- write out end first
         line.start_time = msff start_f + 15
-        sub[sel[i]] = line
+        sub[sel[i]] = line unless line.start_time >= line.end_time
 
         -- then do clips
         for j = #CLIPS, 1, -1
             clip = CLIPS[j]
             continue unless clip or iclips --skip blank, if "fading in"
-            clip = clip\gsub("clip", "iclip") if iclips
+            clip = clip\gsub("clip", "iclip") if iclips and clip
 
             line.start_time = msff start_f + j - 1
             line.end_time = msff start_f + j
-            line.text = clip .. text
+            line.text = clip .. text if clip
 
             sub[-sel[i]] = line
 
