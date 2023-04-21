@@ -163,12 +163,17 @@ no_q2 = (subs, _sel) ->
 comment = (subs, _sel) ->
     process subs, false, false
 
+full = (subs, sel) ->
+    main subs, sel
+    line_balance subs
+
 macros = {
     { "Add missing \\q2 tags", script_description, main },
     { "Remove unnecessary \\q2 tags", alt_description, no_q2 },
     { "Only note automatic breaks", "", comment },
     { "Check line break visual balance", "", line_balance },
     { "Analyze selected lines' visual balance", "", select_balance },
+    { "Run all checks", "", full },
 }
 
 if havedc
