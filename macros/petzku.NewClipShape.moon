@@ -4,7 +4,7 @@ export script_name =        "New Clip Shape"
 export script_description = "Converts the last point of a vectorial clip into a new origin point"
 export script_author =      "petzku"
 export script_namespace =   "petzku.NewClipShape"
-export script_version =     "0.1.0"
+export script_version =     "0.2.0"
 
 havedc, DependencyControl, dep = pcall require, "l0.DependencyControl"
 if havedc
@@ -15,7 +15,12 @@ make_final_move = (clip) ->
 
     clip\gsub(" ([-%d.]+ [-%d.]+)%s*$", " m %1")
 
-make_final_move = simpler
+escape_pattern = (str) ->
+    str\gsub "[-()]", {
+        "-": "%-",
+        "(": "%(",
+        ")": "%)",
+    }
 
 main = (subs, sel) ->
     for i in *sel
@@ -30,7 +35,7 @@ main = (subs, sel) ->
 
         aegisub.log 5, "got back: %s\n", newclip
 
-        line.text = line.text\gsub(clip, newclip, 1)
+        line.text = line.text\gsub escape_pattern(clip), newclip, 1
 
         aegisub.log 5, "after gsub, line.text: %s\n", line.text
 
