@@ -10,45 +10,7 @@ havedc, DependencyControl, dep = pcall require, "l0.DependencyControl"
 if havedc
     dep = DependencyControl{}
 
-way_overcomplicated = (clip) ->
-    local last_points, last_start, last_end
-    -- cmd = clip\sub(1,1) --should always be m
-    -- clip = clip\sub(2)
-
-    aegisub.log 4, "way_overcomplicated(%s)\n", clip
-    orig_clip = clip
-
-    while true
-        i = clip\find("[mlb]")
-
-        unless i break
-        cmd = clip\sub(i,i)
-        clip = clip\sub(i+1)
-
-        aegisub.log 4, "drawing command: %s, remaining: %s\n", cmd, clip
-
-        pattern = if cmd == "b"
-                " [-%d.]+ [-%d.]+ [-%d.]+ [-%d.]+ [-%d.]+ [-%d.]+"
-        else
-                " [-%d.]+ [-%d.]+"
-
-        stringpos = 0
-        while true
-            pi, pj = clip\find(pattern, stringpos+1)
-            unless pi break
-            last_points = clip\sub(pi,pj)
-            last_start, last_end = pi, pj
-            stringpos = pj + 1
-
-            aegisub.log 4, "points: %s (idx %d-%d), remaining: %s\n", last_points, pi, pj, clip\sub(last_end+1)
-
-    if temp = last_points\match(" [-%d.]+ [-%d.]+ [-%d.]+ [-%d.]+ ([-%d.]+ [-%d.]+)")
-        last_points = temp
-
-    new_clip = clip\sub(1, last_start-1).." m" .. last_points
-    return new_clip
-
-simpler = (clip) ->
+make_final_move = (clip) ->
     aegisub.log 4, "simpler(%s)\n", clip
 
     clip\gsub(" ([-%d.]+ [-%d.]+)%s*$", " m %1")
@@ -64,7 +26,7 @@ main = (subs, sel) ->
         clip = line.text\match("\\i?clip%((%s*m%s+[%s%-%d.mlb]+)%)")
         unless clip continue
 
-        newclip = make_final_move(clip)
+        newclip = make_final_move clip
 
         aegisub.log 5, "got back: %s\n", newclip
 
