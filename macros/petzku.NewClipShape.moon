@@ -4,7 +4,7 @@ export script_name =        "New Clip Shape"
 export script_description = "Converts the last point of a vectorial clip into a new origin point"
 export script_author =      "petzku"
 export script_namespace =   "petzku.NewClipShape"
-export script_version =     "0.3.0"
+export script_version =     "0.3.1"
 
 havedc, DependencyControl, dep = pcall require, "l0.DependencyControl"
 if havedc
@@ -35,11 +35,10 @@ main = (subs, sel) ->
 can_run = (subs, sel) ->
     for i in *sel
         line = subs[i]
-        if line.text\match "\\i?clip%(m .*%)"
-            return true
-    return false
+        return true if line.text\match "\\i?clip%(m .*%)"
+    false
 
 if havedc
     dep\registerMacro main, can_run
 else
-    aegisub.register_macro(script_name, script_description, main, can_run)
+    aegisub.register_macro script_name, script_description, main, can_run
