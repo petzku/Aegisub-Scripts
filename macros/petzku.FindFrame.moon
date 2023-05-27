@@ -40,6 +40,8 @@ main = (sub, sel) ->
         if found_match
             match_frame = fr
             break
+        collectgarbage("collect")
+
     -- correct frame found, retime lines to that frame
     for i in *sel
         line = sub[i]
