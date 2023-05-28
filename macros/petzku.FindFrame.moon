@@ -22,7 +22,7 @@ main = (sub, sel) ->
     local match_frame
     for fr = 1, lastkf
         -- update progress for user
-        aegisub.progress.set fr / lastkf
+        aegisub.progress.set fr / lastkf * 100
         aegisub.progress.task "Finding matching frame... #{fr}/#{lastkf}"
         if aegisub.progress.is_cancelled!
             aegisub.cancel!
