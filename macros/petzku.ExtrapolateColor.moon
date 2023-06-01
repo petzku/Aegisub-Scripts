@@ -25,5 +25,4 @@ gui = (sub, sel) ->
     }
     ext sub, sel, res.t if btn
 
-aegisub.register_macro "extrapolate color", "", main
 aegisub.register_macro "extrapolate color gui", "", gui
