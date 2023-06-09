@@ -12,7 +12,7 @@ NAMES = [
     "Hoshino Ruby",
     "Arima Kana",
 ]
-reversed = [" ".join(n.split()[::-1]) for n in NAMES]
+revnames = [" ".join(n.split()[::-1]) for n in NAMES]
 
 if len(sys.argv) > 1:
     fpath = sys.argv[1]
@@ -31,7 +31,7 @@ for i, line in enumerate(lines):
         continue
     cont = line.split(",", 10)
     text = cont[-1]
-    if any(name in text for name in reversed):
+    if any(name in text for name in revnames):
         # found bad name, flag and move on
         cont[-2] += "!! WRONG NAME ORDER !!"
         lines[i] = ",".join(cont)
