@@ -35,6 +35,8 @@ for i, line in enumerate(lines):
         # found bad name, flag and move on
         cont[-2] += "!! WRONG NAME ORDER !!"
         lines[i] = ",".join(cont)
+        # output to terminal too
+        print(f"Bad line at {cont[1]}-{cont[2]}: {text}")
         edited = True
 
 if edited:
