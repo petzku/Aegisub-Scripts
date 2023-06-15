@@ -29,7 +29,7 @@ edited = False
 for i, line in enumerate(lines):
     if not line.startswith("Dialogue:"):
         continue
-    cont = line.split(",", 10)
+    cont = line.split(",", 9)
     text = cont[-1]
     if any(name in text for name in revnames):
         # found bad name, flag and move on
