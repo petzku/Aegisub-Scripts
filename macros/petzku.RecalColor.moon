@@ -2,16 +2,12 @@ export script_name =        "RecalColor"
 export script_description = "Like Recalculator, but worse and for color tags"
 export script_author =      "petzku"
 export script_namespace =   "petzku.RecalColor"
-export script_version =     "0.3.0"
+export script_version =     "0.4.0"
 
 
 GUI = {
-    { x: 0, y: 0, class: 'checkbox', label: "Primary (\\&1c)", value: false, name: 'c1', hint: "Apply to fill color" },
-    { x: 1, y: 0, class: 'checkbox', label: "Karaoke (\\&2c)", value: false, name: 'c2', hint: "Apply to karaoke fill color" },
-    { x: 2, y: 0, class: 'checkbox', label: "Border (\\&3c)", value: false, name: 'c3', hint: "Apply to border color" },
-    { x: 3, y: 0, class: 'checkbox', label: "Shadow (\\&4c)", value: false, name: 'c4', hint: "Apply to shadow color" },
-    { x: 4, y: 0, class: 'checkbox', label: "Line alpha (\\alpha)", value: false, name: 'full', hint: "Apply to whole line (alpha only)" },
-
+    { x: 0, y: 0, class: 'label', label: "Change color values by:" },
+    -- value settings
     { x: 0, y: 1, class: 'label', label: "&Hue" },
     { x: 1, y: 1, class: 'floatedit', value: 0, min: -360, max: 360, name: 'hue', hint: "How much to add/remove to hue" },
     { x: 0, y: 2, class: 'label', label: "&Saturation" },
@@ -20,6 +16,13 @@ GUI = {
     { x: 1, y: 3, class: 'floatedit', value: 0, min: -1, max: 1, name: 'light', hint: "How much to add/remove to lightness" },
     { x: 0, y: 4, class: 'label', label: "&Alpha" },
     { x: 1, y: 4, class: 'floatedit', value: 0, min: -255, max: 255, name: 'alpha', hint: "How much to add/remove to alpha" },
+
+    -- tag selection. alpha is first here so tab focuses it from the alpha value input box. this is a terrible hack and should probably not be done
+    { x: 2, y: 4, class: 'checkbox', label: "Line alpha (\\alpha)", value: false, name: 'full', hint: "Apply to whole line (alpha only)" },
+    { x: 2, y: 0, class: 'checkbox', label: "Primary (\\&1c)", value: false, name: 'c1', hint: "Apply to fill color" },
+    { x: 2, y: 1, class: 'checkbox', label: "Karaoke (\\&2c)", value: false, name: 'c2', hint: "Apply to karaoke fill color" },
+    { x: 2, y: 2, class: 'checkbox', label: "Border (\\&3c)", value: false, name: 'c3', hint: "Apply to border color" },
+    { x: 2, y: 3, class: 'checkbox', label: "Shadow (\\&4c)", value: false, name: 'c4', hint: "Apply to shadow color" },
 }
 
 util = require 'aegisub.util'
