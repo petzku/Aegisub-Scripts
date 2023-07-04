@@ -33,18 +33,12 @@
         }
       },
       "changelog": {
-        "0.2.2": [
-          "Initial release"
-        ],
+        "0.2.2": ["Initial release"],
         "0.2.3": [
           "Reversed output line order when one line has multiple accents"
         ],
-        "0.2.4": [
-          "Fixed handling of multibyte characters in line"
-        ],
-        "0.2.6": [
-          "Make a bunch of variables local"
-        ]
+        "0.2.4": ["Fixed handling of multibyte characters in line"],
+        "0.2.6": ["Make a bunch of variables local"]
       }
     },
     "petzku.Autowrapper": {
@@ -68,12 +62,8 @@
         }
       },
       "changelog": {
-        "0.1.0": [
-          "Initial release"
-        ],
-        "0.2.0": [
-          "Give information in output log"
-        ],
+        "0.1.0": ["Initial release"],
+        "0.2.0": ["Give information in output log"],
         "0.3.0": [
           "Add options to not add/remove tags in lines (except they apparently did nothing, whoops)",
           "Fix error in removed \\q2 calculation"
@@ -110,9 +100,7 @@
         }
       },
       "changelog": {
-        "1.2.1": [
-          "Add DependencyControl"
-        ],
+        "1.2.1": ["Add DependencyControl"],
         "1.3.0": [
           "Add support for rect clips and subpixel accuracy",
           "Move to 'stable' Git branch for DependencyControl"
@@ -140,20 +128,14 @@
         }
       },
       "changelog": {
-        "0.1.0": [
-          "Initial release"
-        ],
-        "0.2.1": [
-          "Add DependencyControl"
-        ],
+        "0.1.0": ["Initial release"],
+        "0.2.1": ["Add DependencyControl"],
         "0.2.4": [
           "Clean the selection after running macro",
           "Fix handling of negative coordinates in clips",
           "Remove '.00' from generated clips"
         ],
-        "0.2.5": [
-          "Fix broken behaviour on vertical gradients"
-        ]
+        "0.2.5": ["Fix broken behaviour on vertical gradients"]
       }
     },
     "petzku.EncodeClip": {
@@ -185,9 +167,7 @@
         }
       },
       "changelog": {
-        "0.3.0": [
-          "Add to DependencyControl"
-        ],
+        "0.3.0": ["Add to DependencyControl"],
         "0.4.0": [
           "Make DependencyControl optional",
           "Fallback to video file location if missing subtitle file",
@@ -210,19 +190,13 @@
           "Fix button ordering in GUI (0.6.0 messed this up, now back to audio-video-config-cancel)",
           "Bump petzku.util dependency to 0.3.0"
         ],
-        "0.7.0": [
-          "Add audio encoder setting to config menu"
-        ],
-        "0.7.1": [
-          "Fix handling of spaces in mpv path"
-        ],
+        "0.7.0": ["Add audio encoder setting to config menu"],
+        "0.7.1": ["Fix handling of spaces in mpv path"],
         "0.8.0": [
           "Allow user-selectable mpv executable",
           "Notify user if non-ASCII filenames cause errors and suggest fixes (Windows)"
         ],
-        "0.8.1": [
-          "Output audio-only clips as .m4a instead of .aac"
-        ],
+        "0.8.1": ["Output audio-only clips as .m4a instead of .aac"],
         "0.8.2": [
           "Warn user when file not saved (if on appropriate aegisub versions)",
           "Default to encoding video on Enter press"
@@ -253,9 +227,7 @@
         }
       },
       "changelog": {
-        "0.1.3": [
-          "Add DependencyControl"
-        ],
+        "0.1.3": ["Add DependencyControl"],
         "0.1.5": [
           "Now outputs .01 precision co-ords instead of integer",
           "No longer requires dependencycontrol to work"
@@ -283,9 +255,7 @@
         }
       },
       "changelog": {
-        "0.1.2": [
-          "Add DependencyControl"
-        ],
+        "0.1.2": ["Add DependencyControl"],
         "0.1.5": [
           "Add jumping by end time",
           "Move to 'stable' Git branch for DependencyControl"
@@ -313,12 +283,8 @@
         }
       },
       "changelog": {
-        "1.0.0": [
-          "Initial release"
-        ],
-        "1.0.1": [
-          "Fix handling of newlines"
-        ]
+        "1.0.0": ["Initial release"],
+        "1.0.1": ["Fix handling of newlines"]
       }
     },
     "petzku.PosToMargin": {
@@ -342,15 +308,9 @@
         }
       },
       "changelog": {
-        "1.0.0": [
-          "Initial release"
-        ],
-        "1.0.1": [
-          "Clean up margin values matching style defaults"
-        ],
-        "1.1.0": [
-          "Get script resolution from karaskel meta"
-        ],
+        "1.0.0": ["Initial release"],
+        "1.0.1": ["Clean up margin values matching style defaults"],
+        "1.1.0": ["Get script resolution from karaskel meta"],
         "2.0.0": [
           "Added margin -> pos transform",
           "Renamed from 'Position to Margin'"
@@ -378,9 +338,7 @@
         }
       },
       "changelog": {
-        "1.0.0": [
-          "Add to DepCtrl"
-        ]
+        "1.0.0": ["Add to DepCtrl"]
       }
     },
     "petzku.SplitTimer": {
@@ -412,17 +370,13 @@
         }
       },
       "changelog": {
-        "1.0.0": [
-          "Initial release"
-        ],
+        "1.0.0": ["Initial release"],
         "1.1.0": [
           "Add by-frame splitting functionality",
           "Retime transforms while splitting",
           "Rename from Lookback Splitter"
         ],
-        "1.1.1": [
-          "Fix error in requires for non-depctrl"
-        ]
+        "1.1.1": ["Fix error in requires for non-depctrl"]
       }
     },
     "petzku.Typewriter": {
@@ -454,12 +408,8 @@
         }
       },
       "changelog": {
-        "0.3.0": [
-          "Add DependencyControl"
-        ],
-        "0.4.1": [
-          "Add Unscramble mode"
-        ],
+        "0.3.0": ["Add DependencyControl"],
+        "0.4.1": ["Add Unscramble mode"],
         "0.5.2": [
           "Add various unscramble modes ('half', 'N static')",
           "Let Aegisub handle frame-ms conversions",
@@ -470,12 +420,8 @@
           "Add a fade-in unscramble mode",
           "Retime \\t and \\move tags, to preserve line appearance"
         ],
-        "0.6.1": [
-          "Retime \\fades as well, move retiming to util library"
-        ],
-        "0.6.2": [
-          "Support for \\h and \\n text tags"
-        ],
+        "0.6.1": ["Retime \\fades as well, move retiming to util library"],
+        "0.6.2": ["Support for \\h and \\n text tags"],
         "0.7.0": [
           "Refactor the partitioning logic in typewrite_line to use a state machine-based approach",
           "For an active_char immediately following an override block, ensure that the override block is put in start (It was previously being deleted accidentally)",
@@ -506,9 +452,7 @@
         }
       },
       "changelog": {
-        "0.4.0": [
-          "Add to DependencyControl"
-        ],
+        "0.4.0": ["Add to DependencyControl"],
         "0.5.0": [
           "Expose internals and other convenience functions for direct easer manipulation in `easings.raw`"
         ]
@@ -541,16 +485,9 @@
         }
       },
       "changelog": {
-        "0.2.0": [
-          "Add IO functionality",
-          "Add to DependencyControl"
-        ],
-        "0.3.0": [
-          "Add \\t, \\move, \\fad retiming"
-        ],
-        "0.4.0": [
-          "Upgrade run_cmd in a way that handles stderr"
-        ]
+        "0.2.0": ["Add IO functionality", "Add to DependencyControl"],
+        "0.3.0": ["Add \\t, \\move, \\fad retiming"],
+        "0.4.0": ["Upgrade run_cmd in a way that handles stderr"]
       }
     }
   }
