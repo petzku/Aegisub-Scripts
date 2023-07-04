@@ -36,7 +36,7 @@ script_name = tr'Encode Clip'
 script_description = tr'Encode various clips from the current selection'
 script_author = 'petzku'
 script_namespace = "petzku.EncodeClip"
-script_version = '0.8.2'
+script_version = '0.8.3'
 
 
 local haveDepCtrl, DependencyControl, depctrl = pcall(require, "l0.DependencyControl")
@@ -241,6 +241,7 @@ function make_clip(subs, sel, hardsub, audio)
 
     local props = aegisub.project_properties()
     local vidfile = props.video_file
+    local audiofile = props.audio_file or props.video_file
     local subfile = aegisub.decode_path("?script") .. petzku.io.pathsep .. aegisub.file_name()
 
     local outfile, cant_hardsub = get_base_outfile(t1, t2, 'mp4')
@@ -294,6 +295,9 @@ function make_clip(subs, sel, hardsub, audio)
         sub_opts,
         user_opts.video_command
     }
+    if audiofile ~= vidfile then
+        table.insert(commands, 4, string.format('--audio-file="%s"', audiofile))
+    end
 
     if postfix ~= '' then
         outfile = outfile:sub(1, -5) .. postfix .. '.mp4'
@@ -306,7 +310,7 @@ function make_audio_clip(subs, sel)
     local t1, t2 = calc_start_end(subs, sel)
 
     local props = aegisub.project_properties()
-    local vidfile = props.video_file
+    local audiofile = props.audio_file or props.video_file
 
     local outfile = get_base_outfile(t1, t2, 'm4a')
 
@@ -325,7 +329,7 @@ function make_audio_clip(subs, sel)
         user_opts.audio_command
     }
 
-    local cmd = table.concat(commands, ' '):format(t1, t2, vidfile, outfile)
+    local cmd = table.concat(commands, ' '):format(t1, t2, audiofile, outfile)
     run_cmd(cmd)
 end
 
