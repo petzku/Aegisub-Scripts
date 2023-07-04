@@ -36,7 +36,7 @@ script_name = tr'Encode Clip'
 script_description = tr'Encode various clips from the current selection'
 script_author = 'petzku'
 script_namespace = "petzku.EncodeClip"
-script_version = '0.8.3'
+script_version = '0.8.4'
 
 
 local haveDepCtrl, DependencyControl, depctrl = pcall(require, "l0.DependencyControl")
@@ -241,7 +241,6 @@ function make_clip(subs, sel, hardsub, audio)
 
     local props = aegisub.project_properties()
     local vidfile = props.video_file
-    local audiofile = props.audio_file or props.video_file
     local subfile = aegisub.decode_path("?script") .. petzku.io.pathsep .. aegisub.file_name()
 
     local outfile, cant_hardsub = get_base_outfile(t1, t2, 'mp4')
@@ -260,10 +259,18 @@ function make_clip(subs, sel, hardsub, audio)
 
     local audio_opts
     if audio then
-        audio_opts = table.concat({
+        -- If audio is not loaded, this property is blank (an empty string).
+        -- We assume the user is more likely to want audio from the video file than none at all, if they requested a clip with audio.
+        local audiofile = props.audio_file ~= "" and props.audio_file or props.video_file
+
+        local _opts = {
             '--oac=' .. get_audio_encoder(),
             '--oacopts="b=256k,frame_size=1024"'
-        }, ' ')
+        }
+        if audiofile ~= vidfile then
+            table.insert(_opts, string.format('--audio-file="%s"', audiofile))
+        end
+        audio_opts = table.concat(_opts, ' ')
     else
         audio_opts = '--audio=no'
         postfix = postfix .. "_noaudio"
@@ -295,9 +302,6 @@ function make_clip(subs, sel, hardsub, audio)
         sub_opts,
         user_opts.video_command
     }
-    if audiofile ~= vidfile then
-        table.insert(commands, 4, string.format('--audio-file="%s"', audiofile))
-    end
 
     if postfix ~= '' then
         outfile = outfile:sub(1, -5) .. postfix .. '.mp4'
@@ -310,7 +314,7 @@ function make_audio_clip(subs, sel)
     local t1, t2 = calc_start_end(subs, sel)
 
     local props = aegisub.project_properties()
-    local audiofile = props.audio_file or props.video_file
+    local audiofile = props.audio_file
 
     local outfile = get_base_outfile(t1, t2, 'm4a')
 
