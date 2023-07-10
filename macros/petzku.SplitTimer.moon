@@ -1,7 +1,7 @@
 -- Copyright (c) 2021 petzku <petzku@zku.fi>
 
 export script_name =        "SplitTimer"
-export script_description = "Split lines in selection into shorter segments"
+export script_description = "Split lines in selection into shorter segments, preserving any transforms"
 export script_author =      "petzku"
 export script_namespace =   "petzku.SplitTimer"
 export script_version =     "1.2.0"
@@ -84,9 +84,9 @@ split_video = (subs, sel) ->
     split subs, sel, calc
 
 macros = {
-    {'10 second chunks', "Split line into 10-second-long chunks", split_time},
-    {'On video frame', "Split line on current video frame", split_video},
-    {'N frames', "Split line into N-frame-long events (opens GUI)", split_frames}
+    {'10 second chunks', "Split line into 10-second-long chunks, preserving transforms", split_time},
+    {'On video frame', "Split line on current video frame, preserving transforms", split_video},
+    {'N frames...', "Split line into N-frame-long events, preserving transforms (opens GUI)", split_frames}
 }
 
 if havedc
