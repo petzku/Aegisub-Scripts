@@ -4,7 +4,7 @@ export script_name =        "SplitTimer"
 export script_description = "Split lines in selection into shorter segments"
 export script_author =      "petzku"
 export script_namespace =   "petzku.SplitTimer"
-export script_version =     "1.1.1"
+export script_version =     "1.2.0"
 
 havedc, DependencyControl = pcall require, "l0.DependencyControl"
 local dep, util, petzku
@@ -52,12 +52,12 @@ split = (subs, sel, calc) ->
         line = subs[i]
         
         -- skip iteration if line is at most one split long
-        unless line.end_time > calc line.start_time
+        unless line.end_time > calc line.start_time, line.end_time
             continue
         
         k = 1
         st = line.start_time
-        et = math.min line.end_time, calc line.start_time
+        et = math.min line.end_time, calc line.start_time, line.end_time
         while st < line.end_time
             new = util.copy line
             new = petzku.transform.retime new, line.start_time - st
@@ -66,7 +66,7 @@ split = (subs, sel, calc) ->
             subs.insert i+k, new
 
             st = et
-            et = math.min line.end_time, calc st
+            et = math.min line.end_time, calc st, line.end_time
             k += 1
         subs.delete i
 
@@ -78,8 +78,14 @@ split_frames = (subs, sel) ->
     if btn
         split subs, sel, calc_end_frames res.frames
 
+split_video = (subs, sel) ->
+    time = aegisub.ms_from_frame aegisub.project_properties!.video_position
+    calc = (st, et) -> if st <= time then time else et
+    split subs, sel, calc
+
 macros = {
     {'10 second chunks', "Split line into 10-second-long chunks", split_time},
+    {'On video frame', "Split line on current video frame", split_video},
     {'N frames', "Split line into N-frame-long events (opens GUI)", split_frames}
 }
 
