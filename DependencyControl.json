@@ -347,17 +347,17 @@
       "url": "@{baseUrl}#@{namespace}",
       "author": "petzku",
       "name": "SplitTimer",
-      "description": "Split lines in selection to shorter segments",
+      "description": "Split lines in selection to shorter segments, preserving any transforms",
       "channels": {
         "stable": {
-          "version": "1.1.1",
-          "released": "2021-03-26",
+          "version": "1.2.0",
+          "released": "2023-07-10",
           "default": true,
           "files": [
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "22d28ca1f43d408bf24085adb14ca3c494094a74"
+              "sha1": "05abf61681770eea971210cb34f0f89cb0f7390d"
             }
           ],
           "requiredModules": [
@@ -377,7 +377,11 @@
           "Retime transforms while splitting",
           "Rename from Lookback Splitter"
         ],
-        "1.1.1": ["Fix error in requires for non-depctrl"]
+        "1.1.1": ["Fix error in requires for non-depctrl"],
+        "1.2.0": [
+          "Add 'split on video frame' mode",
+          "Improve macro descriptions to mention preserving transforms"
+        ]
       }
     },
     "petzku.Typewriter": {
