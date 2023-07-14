@@ -1,6 +1,6 @@
 export script_name        = "Clannad clipper"
 export script_description = "Nazaki's dumb clannad clip bullshit"
-export script_version     = "0.5.1"
+export script_version     = "0.6.0"
 
 CLIPS = {
     false, -- edit this into a clip tag block as below if you want to insert something on the first frame too
@@ -33,15 +33,21 @@ main = (sub, sel, iclips) ->
     for i = #sel, 1, -1
         line = sub[sel[i]]
         text = line.text
-        start_f = ffms line.start_time
 
-        -- write out end first
-        -- in iclips mode, this (currently) leaves a negative-duration line in, but... that's fine, right?
-        -- proper fix would ofc be to count from the end in iclips
-        line.start_time = msff start_f + 15
+        local start_f
+        -- write out the rest of the line first
+        -- in normal mode, that's N frames after start
+        -- in iclips mode, that's until N frames from end
+        unless iclips
+            start_f = ffms line.start_time
+            line.start_time = msff start_f + #CLIPS
+        else
+            start_f = -#CLIPS + ffms line.end_time
+            line.end_time = msff start_f
         sub[sel[i]] = line
 
         -- then do clips
+        -- this inserts everything _before_ the main line, which is a bit silly with the fade-out version, but _oh well_
         for j = #CLIPS, 1, -1
             clip = CLIPS[j]
             continue unless clip or iclips --skip blank, if "fading in"
