@@ -72,9 +72,9 @@ local config_diag = {
             x=0, y=1, width=10, height=1
         },
         video_command = {
-            class='textbox', value="--sub-font-provider=auto", config=true,
+            class='textbox', value="", config=true,
             x=0, y=2, width=20, height=3,
-            hint=[[Custom command line options flags passed to mpv when encoding video. Default is "--sub-font-provider=auto", as many mpv configs set this to 'none' by default.]]
+            hint=[[Custom command line options flags passed to mpv when encoding video. You can put options on separate lines, but all options must be prefixed with --. (e.g. "--aid=2" to pick the second audio track in the file)]]
         },
         audio_encoder_label = {
             class='label', label='Audio encoder. Defaults to best available AAC.',
@@ -234,6 +234,35 @@ local function run_cmd(cmd)
     end
 end
 
+local function build_cmd(user_opts, ...)
+
+    local opts = {}
+    for _, optset in ipairs(table.pack(...)) do
+        for _, o in ipairs(optset) do
+            table.insert(opts, o)
+        end
+    end
+
+    -- format strings will be handled by caller
+    local cmd_table = {
+        get_mpv(),
+        '--no-config',
+        '--start=%.3f',
+        '--end=%.3f',
+        '"%s"',
+        '--o="%s"',
+        -- all options supplied as varargs
+        table.concat(opts, ' '),
+        -- user options
+        -- these parentheses are required to drop the "made X replacements" return value of gsub.
+        -- in the middle of list construction, from a single "entry".
+        -- this is the worst feature ever.
+        (user_opts:gsub("\n", " "))
+    }
+
+    return table.concat(cmd_table, ' ')
+end
+
 function make_clip(subs, sel, hardsub, audio)
     if audio == nil then audio = true end --encode with audio by default
 
@@ -263,53 +292,43 @@ function make_clip(subs, sel, hardsub, audio)
         -- We assume the user is more likely to want audio from the video file than none at all, if they requested a clip with audio.
         local audiofile = props.audio_file ~= "" and props.audio_file or props.video_file
 
-        local _opts = {
+        audio_opts = {
             '--oac=' .. get_audio_encoder(),
             '--oacopts="b=256k,frame_size=1024"'
         }
         if audiofile ~= vidfile then
-            table.insert(_opts, string.format('--audio-file="%s"', audiofile))
+            table.insert(audio_opts, string.format('--audio-file="%s"', audiofile))
         end
-        audio_opts = table.concat(_opts, ' ')
     else
-        audio_opts = '--audio=no'
+        audio_opts = { '--audio=no' }
         postfix = postfix .. "_noaudio"
     end
 
     local sub_opts
     if hardsub then
-        sub_opts = table.concat({
+        sub_opts = {
             '--slang=',
             '--no-sub-auto',
             '--subs-with-matching-audio=yes',
-            '--sub-file="%s"'
-        }, ' '):format(subfile)
+            string.format('--sub-file="%s"', subfile)
+        }
     else
-        sub_opts = '--sid=no'
+        sub_opts = { '--sid=no' }
         postfix = postfix .. "_nosub"
     end
 
-    local user_opts = get_configuration()
-    local mpv_exe = get_mpv()
-
-    local commands = {
-        mpv_exe,
-        '--no-config',
-        '--start=%.3f',
-        '--end=%.3f',
-        '"%s"',
+    local video_opts = {
         '--vf=format=yuv420p',
-        '--o="%s"',
         '--ovcopts="profile=main,level=4.1,crf=23"',
-        audio_opts,
-        sub_opts,
-        user_opts.video_command
     }
+
+    local user_opts = get_configuration().video_command
 
     if postfix ~= '' then
         outfile = outfile:sub(1, -5) .. postfix .. '.mp4'
     end
-    local cmd = table.concat(commands, ' '):format(t1, t2, vidfile, outfile)
+    local cmd = build_cmd(user_opts, video_opts, audio_opts, sub_opts)
+                :format(t1, t2, vidfile, outfile)
     run_cmd(cmd)
 end
 
@@ -321,23 +340,16 @@ function make_audio_clip(subs, sel)
 
     local outfile = get_base_outfile(t1, t2, 'm4a')
 
-    local user_opts = get_configuration()
-    local mpv_exe = get_mpv()
+    local user_opts = get_configuration().audio_command
 
-    local commands = {
-        mpv_exe,
-        '--no-config',
-        '--start=%.3f',
-        '--end=%.3f',
-        '"%s"',
-        '--video=no',
-        '--o="%s"',
+    local video_opts = { '--video=no' }
+    local audio_opts = {
         '--oac=' .. get_audio_encoder(),
-        '--oacopts="b=256k,frame_size=1024"',
-        user_opts.audio_command
+        '--oacopts="b=256k,frame_size=1024"'
     }
 
-    local cmd = table.concat(commands, ' '):format(t1, t2, audiofile, outfile)
+    local cmd = build_cmd(user_opts, video_opts, audio_opts)
+                :format(t1, t2, audiofile, outfile)
     run_cmd(cmd)
 end
 
