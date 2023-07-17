@@ -12,7 +12,7 @@ local util, re
 if haveDepCtrl
     depctrl = DependencyControl {
         name: 'petzkuLib',
-        version: '0.4.0',
+        version: '0.4.1',
         description: [[Various utility functions for use with petzku's Aegisub macros]],
         author: "petzku",
         url: "https://github.com/petzku/Aegisub-Scripts",
@@ -139,7 +139,7 @@ with lib
                 f = io.open runner_path, 'w'
                 f\write "#!/bin/sh\n"
                 f\write "mkfifo \"#{pipe_path}\"\n"
-                f\write "tee \"#{output_path} <\"#{pipe_path}\" &\n"
+                f\write "tee \"#{output_path}\" <\"#{pipe_path}\" &\n"
                 f\write "#{cmd} >\"#{pipe_path}\" 2>&1\n"
                 f\write "exit $?\n"
                 f\close!
