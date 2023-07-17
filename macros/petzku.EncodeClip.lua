@@ -36,7 +36,7 @@ script_name = tr'Encode Clip'
 script_description = tr'Encode various clips from the current selection'
 script_author = 'petzku'
 script_namespace = "petzku.EncodeClip"
-script_version = '0.8.5'
+script_version = '0.9.0'
 
 
 local haveDepCtrl, DependencyControl, depctrl = pcall(require, "l0.DependencyControl")
@@ -279,7 +279,9 @@ function make_clip(subs, sel, hardsub, audio)
     local sub_opts
     if hardsub then
         sub_opts = table.concat({
-            '--sub-font-provider=auto',
+            '--slang=',
+            '--no-sub-auto',
+            '--subs-with-matching-audio=yes',
             '--sub-file="%s"'
         }, ' '):format(subfile)
     else
@@ -292,6 +294,7 @@ function make_clip(subs, sel, hardsub, audio)
 
     local commands = {
         mpv_exe,
+        '--no-config',
         '--start=%.3f',
         '--end=%.3f',
         '"%s"',
@@ -323,6 +326,7 @@ function make_audio_clip(subs, sel)
 
     local commands = {
         mpv_exe,
+        '--no-config',
         '--start=%.3f',
         '--end=%.3f',
         '"%s"',
