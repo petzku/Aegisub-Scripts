@@ -4,7 +4,7 @@ export script_name =        "SplitTimer"
 export script_description = "Split lines in selection into shorter segments, preserving any transforms"
 export script_author =      "petzku"
 export script_namespace =   "petzku.SplitTimer"
-export script_version =     "1.2.0"
+export script_version =     "1.2.1"
 
 havedc, DependencyControl = pcall require, "l0.DependencyControl"
 local dep, util, petzku
@@ -80,7 +80,7 @@ split_frames = (subs, sel) ->
 
 split_video = (subs, sel) ->
     time = aegisub.ms_from_frame aegisub.project_properties!.video_position
-    calc = (st, et) -> if st <= time then time else et
+    calc = (st, et) -> if st < time then time else et
     split subs, sel, calc
 
 macros = {
