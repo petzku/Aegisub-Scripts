@@ -350,14 +350,14 @@
       "description": "Split lines in selection to shorter segments, preserving any transforms",
       "channels": {
         "stable": {
-          "version": "1.2.0",
-          "released": "2023-07-10",
+          "version": "1.2.1",
+          "released": "2023-07-21",
           "default": true,
           "files": [
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "05abf61681770eea971210cb34f0f89cb0f7390d"
+              "sha1": "cb35840d7c066db15010529b9348530d507d6675"
             }
           ],
           "requiredModules": [
@@ -381,7 +381,8 @@
         "1.2.0": [
           "Add 'split on video frame' mode",
           "Improve macro descriptions to mention preserving transforms"
-        ]
+        ],
+        "1.2.1": ["Fix infinite loop in 'split on video frame' mode"]
       }
     },
     "petzku.Typewriter": {
