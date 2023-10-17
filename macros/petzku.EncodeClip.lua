@@ -137,8 +137,8 @@ local GUI = {
     BUTTONS = {
         AUDIO = tr"Audio-&only clip",
         VIDEO = tr"&Video clip",
-        CONFIG = tr"Confi&g",
-        CANCEL = tr"&Cancel"
+        CONFIG = tr"&Config",
+        CANCEL = tr"Ca&ncel"
     },
     show_user_warning = function(title, desc, proceed)
         return aegisub.dialog.display(
@@ -146,8 +146,8 @@ local GUI = {
                 {class="label", label=title, x=0, y=0},
                 {class="label", label=desc, x=0, y=1}
             },
-            {proceed, "&Cancel"},
-            {ok = proceed, cancel = "&Cancel"}
+            {proceed, "Ca&ncel"},
+            {ok = proceed, cancel = "Ca&ncel"}
         )
     end
 }
