@@ -271,21 +271,24 @@
       "description": "Align line content to match others by adding text and abusing transparency",
       "channels": {
         "stable": {
-          "version": "1.0.1",
-          "released": "2022-09-05",
+          "version": "1.1.0",
+          "released": "2023-10-17",
           "default": true,
           "files": [
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "00bb71edfc26f769e208c86de2e77af3cc1fe29a"
+              "sha1": "d44967267f1a6aff9150e630e5cf90897293b01f"
             }
           ]
         }
       },
       "changelog": {
         "1.0.0": ["Initial release"],
-        "1.0.1": ["Fix handling of newlines"]
+        "1.0.1": ["Fix handling of newlines"],
+        "1.1.0": [
+          "Add DepCtrl support to script itself, allowing for auto-update and submenu configuration"
+        ]
       }
     },
     "petzku.PosToMargin": {
