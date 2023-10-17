@@ -272,13 +272,23 @@ local function build_cmd(user_opts, ...)
         '"%s"',
         '--o="%s"',
         -- all options supplied as varargs
-        table.concat(opts, ' '),
-        -- user options
-        -- these parentheses are required to drop the "made X replacements" return value of gsub.
-        -- in the middle of list construction, from a single "entry".
-        -- this is the worst feature ever.
-        (user_opts:gsub("\n", " "))
+        table.concat(opts, ' ')
     }
+
+    -- force audio track
+    local cfg = get_configuration()
+    if cfg.use_aid then
+        table.insert(cmd_table, "--aid=" .. cfg.aid)
+    end
+
+    -- user options, if relevant. these are allowed to override aid setting above
+    if user_opts and user_opts ~= "" then
+        -- these extra parentheses are required to drop the "made X replacements" return value of gsub.
+        -- which gives table.insert a third argument, and makes it error since the second argument is an optional index.
+        -- in the middle of a function call, from what should by all rights be a single argument.
+        -- this is the worst feature ever.
+        table.insert(cmd_table, (user_opts:gsub("\n", " ")))
+    end
 
     return table.concat(cmd_table, ' ')
 end
