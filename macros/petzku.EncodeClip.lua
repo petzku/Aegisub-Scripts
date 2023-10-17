@@ -111,7 +111,8 @@ You can put options on separate lines, but all options must be prefixed with --
         audio_command = {
             class='textbox', value="", config=true,
             x=0, y=8, width=20, height=3,
-            hint=[[Custom command line options passed to mpv when encoding only audio.]]
+            hint=[[Custom command line options passed to mpv when encoding only audio.
+Options here do NOT get applied when encoding video, whether it has audio or not.]]
         }
     }
 }
