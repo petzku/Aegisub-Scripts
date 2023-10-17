@@ -4,7 +4,7 @@ export script_name =        "Phantom"
 export script_description = "Align line content to match others by adding text and abusing transparency"
 export script_author =      "petzku"
 export script_namespace =   "petzku.Phantom"
-export script_version =     "1.0.1"
+export script_version =     "1.1.0"
 
 -- Currently uses {} as delimiters
 -- e.g. "foo{}bar{}baz" -> "<HIDE>bar<SHOW>foobar<HIDE>baz"
@@ -12,6 +12,8 @@ export script_version =     "1.0.1"
 -- Additionally, if using a version of aegisub exposing cursor position, an extra macro is registered,
 -- using the selection (and direction of it) to determine the "desired" output.
 
+havedc, DependencyControl, dep = pcall require, "l0.DependencyControl"
+dep = DependencyControl{} if havedc
 
 HIDE = "{\\alpha&HFF&}"
 SHOW = "{\\alpha}"
@@ -68,7 +70,15 @@ align_end = (sub, _sel, act) ->
 align_by_cursor = (sub, _sel, act) ->
     main sub, act, cursor_proc
 
-aegisub.register_macro script_name.."/Align start", "Keep start of line aligned", align_start
-aegisub.register_macro script_name.."/Align end", "Keep end of line aligned", align_end
+macros = {
+    {script_name.."/Align start", "Keep start of line aligned", align_start},
+    {script_name.."/Align end", "Keep end of line aligned", align_end}
+}
 if aegisub.gui
-    aegisub.register_macro script_name.."/By cursor", "Determine sections and alignment from selection", align_by_cursor
+    table.insert macros, {script_name.."/By cursor", "Determine sections and alignment from selection", align_by_cursor}
+
+if havedc
+    dep\registerMacros macros
+else
+    for macro in *macros
+        aegisub.register_macro unpack macro

@@ -36,7 +36,7 @@ script_name = tr'Encode Clip'
 script_description = tr'Encode various clips from the current selection'
 script_author = 'petzku'
 script_namespace = "petzku.EncodeClip"
-script_version = '0.8.2'
+script_version = '0.8.5'
 
 
 local haveDepCtrl, DependencyControl, depctrl = pcall(require, "l0.DependencyControl")
@@ -45,7 +45,7 @@ if haveDepCtrl then
     depctrl = DependencyControl {
         feed="https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json",
         {
-            {"petzku.util", version="0.3.0", url="https://github.com/petzku/Aegisub-Scripts",
+            {"petzku.util", version="0.4.1", url="https://github.com/petzku/Aegisub-Scripts",
              feed="https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json"},
             {"a-mo.ConfigHandler", version="1.1.4", url="https://github.com/TypesettingTools/Aegisub-Motion",
              feed="https://raw.githubusercontent.com/TypesettingTools/Aegisub-Motion/DepCtrl/DependencyControl.json"}
@@ -259,10 +259,18 @@ function make_clip(subs, sel, hardsub, audio)
 
     local audio_opts
     if audio then
-        audio_opts = table.concat({
+        -- If audio is not loaded, this property is blank (an empty string).
+        -- We assume the user is more likely to want audio from the video file than none at all, if they requested a clip with audio.
+        local audiofile = props.audio_file ~= "" and props.audio_file or props.video_file
+
+        local _opts = {
             '--oac=' .. get_audio_encoder(),
             '--oacopts="b=256k,frame_size=1024"'
-        }, ' ')
+        }
+        if audiofile ~= vidfile then
+            table.insert(_opts, string.format('--audio-file="%s"', audiofile))
+        end
+        audio_opts = table.concat(_opts, ' ')
     else
         audio_opts = '--audio=no'
         postfix = postfix .. "_noaudio"
@@ -306,7 +314,7 @@ function make_audio_clip(subs, sel)
     local t1, t2 = calc_start_end(subs, sel)
 
     local props = aegisub.project_properties()
-    local vidfile = props.video_file
+    local audiofile = props.audio_file
 
     local outfile = get_base_outfile(t1, t2, 'm4a')
 
@@ -325,7 +333,7 @@ function make_audio_clip(subs, sel)
         user_opts.audio_command
     }
 
-    local cmd = table.concat(commands, ' '):format(t1, t2, vidfile, outfile)
+    local cmd = table.concat(commands, ' '):format(t1, t2, audiofile, outfile)
     run_cmd(cmd)
 end
 
