@@ -101,7 +101,7 @@ If you want to consistently select by language, just use --alang in the config s
         video_command = {
             class='textbox', value="", config=true,
             x=0, y=4, width=20, height=3,
-            hint=[[Custom command line options flags passed to mpv when encoding video.
+            hint=[[Custom command line options passed to mpv when encoding video.
 You can put options on separate lines, but all options must be prefixed with --. (e.g. "--aid=2" to pick the second audio track in the file)]]
         },
         audio_command_label = {
