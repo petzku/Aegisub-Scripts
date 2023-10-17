@@ -68,51 +68,50 @@ local config_diag = {
             hint=[[Path to the mpv executable.
 If left blank, searches system PATH.]]
         },
-        video_command_label = {
-            class='label', label='Custom mpv options for video clips:',
-            x=0, y=1, width=10, height=1
-        },
-        video_command = {
-            class='textbox', value="", config=true,
-            x=0, y=2, width=20, height=3,
-            hint=[[Custom command line options flags passed to mpv when encoding video.
-You can put options on separate lines, but all options must be prefixed with --. (e.g. "--aid=2" to pick the second audio track in the file)]]
-        },
         audio_encoder_label = {
             class='label', label='Audio encoder. Defaults to best available AAC.',
-            x=0, y=5, width=10, height=1
+            x=0, y=1, width=10, height=1
         },
         audio_encoder = {
             class='edit', value="", config=true,
-            x=10, y=5, width=10, height=1,
+            x=10, y=1, width=10, height=1,
             hint=[[Audio encoder to use.
 If left blank, automatically picks the best available AAC encoder.
 Note that you may need to change --oacopts if you use a non-AAC encoder.]]
         },
-        audio_command_label = {
-            class='label', label='Custom mpv options for audio-only clips:',
-            x=0, y=6, width=10, height=1
-        },
-        audio_command = {
-            class='textbox', value="", config=true,
-            x=0, y=7, width=20, height=3,
-            hint=[[Custom command line options passed to mpv when encoding only audio.]]
-        },
         use_aid = {
             class='checkbox', value=false, config=true,
             label='&Audio track to use (only applies if checkbox checked)',
-            -- x=0, y=10, width = 1, height = 1,
-            x=0, y=10, width = 15, height = 1,
+            x=0, y=2, width = 15, height = 1,
             hint=[[Enable forcing audio track.
 If unset, mpv will fallback to its defaults (which might decide based on user locale), unless the settings above override it.
 If set, the value given to the right will be supplied to --aid.]]
         },
         aid = {
             class='intedit', value=2, config=true, min=1, max=128,
-            x=15, y=10, width=5, height=1,
+            x=15, y=2, width=5, height=1,
             hint=[[Audio track ID to use.
 Supplied to mpv as --aid, so this is indexed starting from 1. Supplying an out-of-bounds track ID will cause no audio to be included.
 If you want to consistently select by language, just use --alang in the config sections above.]]
+        },
+        video_command_label = {
+            class='label', label='Custom mpv options for video clips:',
+            x=0, y=3, width=10, height=1
+        },
+        video_command = {
+            class='textbox', value="", config=true,
+            x=0, y=4, width=20, height=3,
+            hint=[[Custom command line options flags passed to mpv when encoding video.
+You can put options on separate lines, but all options must be prefixed with --. (e.g. "--aid=2" to pick the second audio track in the file)]]
+        },
+        audio_command_label = {
+            class='label', label='Custom mpv options for audio-only clips:',
+            x=0, y=7, width=10, height=1
+        },
+        audio_command = {
+            class='textbox', value="", config=true,
+            x=0, y=8, width=20, height=3,
+            hint=[[Custom command line options passed to mpv when encoding only audio.]]
         }
     }
 }
