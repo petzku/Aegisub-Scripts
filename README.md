@@ -113,6 +113,10 @@ If you're using a new-ish Aegisub build that includes the Lua GUI API (such as [
 
 Automatically splits any lines longer than a given threshold, retiming transforms and moves so rendering should be unaffected. `10 second chunks` has a threshold of 10 seconds, useful to account for player lookback buffers. `N frames` prompts for a length of frames, and uses that as the threshold.
 
+`On video frame` behaves slightly differently, emulating Aegisub's built-in "Split lines before current frame" function, but still accurately preserving transforms.
+
+It is good to note, though, that `\move` has the erratic behavior that treats negative start- and end-times as if neither had been passed—essentially "breaking" this macro. The simple fix is to make it simply a `\pos` in these cases. (I should address this soon-ish)
+
 ### Typewriter
 
 Takes a line and "writes" it character by character, making the characters appear one by one (using alphas) either frame-by-frame or evenly spaced over the line's duration. My first script, initially made before I even knew what the hell alpha-timing was and actually deleted characters from the string to make this work. Obviously this has been changed since.
