@@ -12,7 +12,7 @@ local util, re
 if haveDepCtrl
     depctrl = DependencyControl {
         name: 'petzkuLib',
-        version: '0.4.1',
+        version: '0.4.2',
         description: [[Various utility functions for use with petzku's Aegisub macros]],
         author: "petzku",
         url: "https://github.com/petzku/Aegisub-Scripts",
@@ -96,6 +96,10 @@ with lib
             p_sfade = "\\fade?%(("..n.."),("..n..")%)"
 
             str = str\gsub(p_t, rt_t)\gsub(p_at, rt_at)\gsub(p_st, rt_st)\gsub(p_move, rt_move)\gsub(p_smove, rt_smove)\gsub(p_fade, rt_fade)\gsub(p_sfade, rt_sfade)
+            -- if move has two negative times, it behaves as if the times were both omitted.
+            -- i.e. \move(x,y,xx,yy,-123,-456) is treated the same as \move(x,y,xx,yy).
+            -- it _should_ just act the same as `\pos(xx,yy)`, so replace it with that.
+            str = str\gsub "\\move%("..n..","..n..",("..n.."),("..n.."),%-%d+,%-%d+%)", "\\pos(%1,%2)"
 
             if type(line) == 'table'
                 line.text = str

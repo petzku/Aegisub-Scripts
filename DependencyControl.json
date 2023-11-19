@@ -499,14 +499,14 @@
       "description": "Various utility functions for use with petzku's Aegisub macros",
       "channels": {
         "stable": {
-          "version": "0.4.1",
-          "released": "2023-07-18",
+          "version": "0.4.2",
+          "released": "2023-11-19",
           "default": true,
           "files": [
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "2372f0905257d0c5531cbc6de56a9ed5eb08c561"
+              "sha1": "9e10a6a761efb2546c7cbc077a9d721ef7dd4dc9"
             },
             {
               "name": "/tee.exe",
@@ -521,7 +521,10 @@
         "0.2.0": ["Add IO functionality", "Add to DependencyControl"],
         "0.3.0": ["Add \\t, \\move, \\fad retiming"],
         "0.4.0": ["Upgrade run_cmd in a way that handles stderr"],
-        "0.4.1": ["Fix typo in run_cmd on Unix"]
+        "0.4.1": ["Fix typo in run_cmd on Unix"],
+        "0.4.2": [
+          "Transforms: change both-negative-times move to pos tag instead"
+        ]
       }
     }
   }
