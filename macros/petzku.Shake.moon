@@ -4,10 +4,13 @@ export script_name =        "Shake"
 export script_description = "Shakes text"
 export script_author =      "petzku"
 export script_namespace =   "petzku.Shake"
-export script_version =     "0.1.1"
+export script_version =     "0.1.2"
 
 DependencyControl = require "l0.DependencyControl"
-dep = DependencyControl{{"a-mo.LineCollection", "l0.ASSFoundation"}}
+dep = DependencyControl{
+  feed: "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json",
+  {"a-mo.LineCollection", "l0.ASSFoundation"}
+}
 LC, ASS = dep\requireModules!
 
 -- lua's trig works in radians, simplify to degrees

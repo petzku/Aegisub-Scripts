@@ -4,11 +4,11 @@ export script_name =        "New Clip Shape"
 export script_description = "Converts the last point of a vectorial clip into a new origin point"
 export script_author =      "petzku"
 export script_namespace =   "petzku.NewClipShape"
-export script_version =     "0.3.1"
+export script_version =     "0.3.2"
 
 havedc, DependencyControl, dep = pcall require, "l0.DependencyControl"
 if havedc
-    dep = DependencyControl{}
+    dep = DependencyControl{feed: "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json"}
 
 make_final_move = (clip) ->
     aegisub.log 4, "make_final_move('%s')\n", clip

@@ -12,10 +12,11 @@ local util, re
 if haveDepCtrl
     depctrl = DependencyControl {
         name: 'petzkuLib',
-        version: '0.4.2',
+        version: '0.4.3',
         description: [[Various utility functions for use with petzku's Aegisub macros]],
         author: "petzku",
         url: "https://github.com/petzku/Aegisub-Scripts",
+        feed: "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json",
         moduleName: 'petzku.util',
         {
             "aegisub.util", "aegisub.re"
