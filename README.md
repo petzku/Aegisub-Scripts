@@ -100,6 +100,15 @@ Handles positioning on both axes, and all bottom- or top-aligned alignments, spe
 
 Hotkeyable macro to turn the last point of the active line's vectorial clip into a new "origin point" (i.e. `m 0 0 l 50 50 100 100` into `m 0 0 l 50 50 m 100 100`). Works for `l` as well as `b` (though it relies on Aegisub to fix potentially malformed shapes).
 
+### Phantom
+
+Helps with messing with dialogue layout using `\alphaFF`, somewhat akin to LaTeX `\phantom`. Split the line into three parts with `{}` (an empty tag section) to signify which part should be "hidden", and which part should "replace" it. If using the `Align start` mode, this should be `common{}replace{}hidden`; for `Align end`, `hidden{}replace{}common`. To demonstrate this better, in the image below, the "common" part is `The quick br`, "replace" is `—` (the em dash), and the "hidden" part is `own fox`, i.e. `The quick br{}—{}own fox`.
+
+![Phantom text demonstration image](phantom.png)
+_Demonstration of the Phantom macro. The top and bottom lines are completely unmodified, the middle line is Phantomed to align exactly with the full line._
+
+If you're using a new-ish Aegisub build that includes the Lua GUI API (such as [arch1t3ct's](https://github.com/arch1t3cht/Aegisub)), there is a third macro, `By cursor`, that determines the sections and direction from the selection. Simply select the "replace" part (i.e. `—` in the example above), starting the selection from the direction that should remain aligned (i.e. left to right).
+
 ### Split Timer
 
 Automatically splits any lines longer than a given threshold, retiming transforms and moves so rendering should be unaffected. `10 second chunks` has a threshold of 10 seconds, useful to account for player lookback buffers. `N frames` prompts for a length of frames, and uses that as the threshold.
