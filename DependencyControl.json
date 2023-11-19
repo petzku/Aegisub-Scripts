@@ -263,6 +263,30 @@
         ]
       }
     },
+    "petzku.NewClipShape": {
+      "fileBaseUrl": "@{fileBaseUrl}/@{channel}/macros/@{namespace}",
+      "url": "@{baseUrl}#new-clip-shape",
+      "author": "petzku",
+      "name": "New Clip Shape",
+      "description": "Converts the last point of a vectorial clip into a new origin point",
+      "channels": {
+        "stable": {
+          "version": "0.3.1",
+          "released": "2023-11-19",
+          "default": true,
+          "files": [
+            {
+              "name": ".moon",
+              "url": "@{fileBaseUrl}@{fileName}",
+              "sha1": "b7ebc857b56a8c20cc9b93ab10954043074cb811"
+            }
+          ]
+        }
+      },
+      "changelog": {
+        "0.3.1": ["Initial release"]
+      }
+    },
     "petzku.Phantom": {
       "fileBaseUrl": "@{fileBaseUrl}/@{channel}/macros/@{namespace}",
       "url": "@{baseUrl}#phantom",
