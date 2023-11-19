@@ -115,7 +115,7 @@ Automatically splits any lines longer than a given threshold, retiming transform
 
 `On video frame` behaves slightly differently, emulating Aegisub's built-in "Split lines before current frame" function, but still accurately preserving transforms.
 
-It is good to note, though, that `\move` has the erratic behavior that treats negative start- and end-times as if neither had been passed—essentially "breaking" this macro. The simple fix is to make it simply a `\pos` in these cases. (I should address this soon-ish)
+It is good to note, though, that `\move` has the erratic behavior that treats negative start- and end-times as if neither had been passed. Because of this, the macro transforms a `\move` tag like this into an equivalent `\pos` tag, using only the final positions.
 
 ### Typewriter
 
