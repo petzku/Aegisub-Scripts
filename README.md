@@ -96,6 +96,10 @@ Handles positioning on both axes, and all bottom- or top-aligned alignments, spe
 
 **WARNING:** older versions of Aegisub (at the time of writing, this is most commonly used builds) do not handle opening files with negative margin values correctly (negative values are simply clamped to zero). If you use this macro, beware of those values being silently discarded.
 
+### New Clip Shape
+
+Hotkeyable macro to turn the last point of the active line's vectorial clip into a new "origin point" (i.e. `m 0 0 l 50 50 100 100` into `m 0 0 l 50 50 m 100 100`). Works for `l` as well as `b` (though it relies on Aegisub to fix potentially malformed shapes).
+
 ### Split Timer
 
 Automatically splits any lines longer than a given threshold, retiming transforms and moves so rendering should be unaffected. `10 second chunks` has a threshold of 10 seconds, useful to account for player lookback buffers. `N frames` prompts for a length of frames, and uses that as the threshold.
