@@ -178,9 +178,11 @@ Specifically, the macro expects the style defaults to be `\an4\fs50\fnPT Sans` a
 
 ### Resample
 
-Corrects 3D-rotations (`\frx\fry`) when resampling script resolutions. Uses trigonometry instead of the classic "multiply by the ratio of the resolutions" and also scales subtitle dimensions when necessary, so this handles even extreme rotations correctly, or at least very nearly so. Still kind of experimental, though I see little reason not to use this if you ever end up resampling scripts.
+Don't use this, use [arch1t3ct's one](https://github.com/TypesettingTools/arch1t3cht-Aegisub-Scripts#resample-perspective) instead. Consider this script deprecated, and likely to be removed from the repo soon.
 
-Somewhat WIP. Does not always handle in-line `bord` and `shad` tags correctly. Also, I've been told the math I've used relies on incorrect assumptions, but it seemed to work correctly in all my testing.
+~~Corrects 3D-rotations (`\frx\fry`) when resampling script resolutions. Uses trigonometry instead of the classic "multiply by the ratio of the resolutions" and also scales subtitle dimensions when necessary, so this handles even extreme rotations correctly, or at least very nearly so. Still kind of experimental, though I see little reason not to use this if you ever end up resampling scripts.~~
+
+~~Somewhat WIP. Does not always handle in-line `bord` and `shad` tags correctly. Also, I've been told the math I've used relies on incorrect assumptions, but it seemed to work correctly in all my testing.~~
 
 ### Shake
 
