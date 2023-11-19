@@ -13,10 +13,11 @@ local petzku
 if haveDepCtrl
     depctrl = DependencyControl {
         name: 'easings',
-        version: '0.5.0',
+        version: '0.5.1',
         description: [[A library of easy-to-use easing functions for transforms]],
         author: "petzku",
         url: "https://github.com/petzku/Aegisub-Scripts",
+        feed: "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json",
         moduleName: 'petzku.easings',
         {
             {'petzku.util', version: '0.3.0', url: "https://github.com/petzku/Aegisub-Scripts",

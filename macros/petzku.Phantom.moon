@@ -4,7 +4,7 @@ export script_name =        "Phantom"
 export script_description = "Align line content to match others by adding text and abusing transparency"
 export script_author =      "petzku"
 export script_namespace =   "petzku.Phantom"
-export script_version =     "1.1.0"
+export script_version =     "1.1.1"
 
 -- Currently uses {} as delimiters
 -- e.g. "foo{}bar{}baz" -> "<HIDE>bar<SHOW>foobar<HIDE>baz"
@@ -13,7 +13,7 @@ export script_version =     "1.1.0"
 -- using the selection (and direction of it) to determine the "desired" output.
 
 havedc, DependencyControl, dep = pcall require, "l0.DependencyControl"
-dep = DependencyControl{} if havedc
+dep = DependencyControl{feed: "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json"} if havedc
 
 HIDE = "{\\alpha&HFF&}"
 SHOW = "{\\alpha}"

@@ -4,11 +4,14 @@ export script_name =        "Margin Position"
 export script_description = "Transforms \\pos-based positioning into margin and vice versa"
 export script_author =      "petzku"
 export script_namespace =   "petzku.PosToMargin"
-export script_version =     "2.0.0"
+export script_version =     "2.0.1"
 
 havedc, DependencyControl, dep = pcall require, "l0.DependencyControl"
 if havedc
-    dep = DependencyControl{{'karaskel'}}
+    dep = DependencyControl{
+        feed: "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json",
+        {'karaskel'}
+    }
     dep\requireModules!
 else
     require 'karaskel'

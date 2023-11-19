@@ -3,11 +3,14 @@ export script_description = "Automatically set/unset \\q2 on lines with/without 
 export alt_description = "Automatically unset \\q2 on lines without manual linebreaks"
 export script_author = "petzku"
 export script_namespace = "petzku.Autowrapper"
-export script_version = "0.5.0"
+export script_version = "0.5.1"
 
 havedc, DependencyControl, dep = pcall require, "l0.DependencyControl"
 if havedc
-    dep = DependencyControl{{'karaskel'}}
+    dep = DependencyControl{
+        feed: "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json",
+        {'karaskel'}
+    }
     dep\requireModules!
 else
     require 'karaskel'

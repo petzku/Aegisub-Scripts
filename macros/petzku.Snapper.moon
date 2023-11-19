@@ -2,11 +2,13 @@ export script_name = "Snapper"
 export script_description = "Snaps line start and end times to keyframes"
 export script_author = "petzku"
 export script_namespace = "petzku.Snapper"
-export script_version = "1.0.0"
+export script_version = "1.0.1"
 
 havedc, DependencyControl, dep = pcall require, "l0.DependencyControl"
 if havedc
-    dep = DependencyControl{}
+    dep = DependencyControl{
+        feed: "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json",
+    }
 
 _snap_start = (subs, sel) ->
     kfs = aegisub.keyframes!

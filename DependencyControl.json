@@ -49,14 +49,14 @@
       "description": "Automatically set/unset \\q2 on lines with/without manual linebreaks",
       "channels": {
         "stable": {
-          "version": "0.5.0",
-          "released": "2022-11-12",
+          "version": "0.5.1",
+          "released": "2023-11-19",
           "default": true,
           "files": [
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "7ad3e14a87b3409f8693f2d866393106be6df4d2"
+              "sha1": "4858da3b774aa3c536e7553c5fc2312bb62e3ad0"
             }
           ]
         }
@@ -76,7 +76,8 @@
           "Add options to not add/remove tags in lines (for real this time)",
           "Add three-liner checking",
           "Skip normal checks on \\q2 lines, instead just warn of potential overwidth"
-        ]
+        ],
+        "0.5.1": ["Include feed URL for DepCtrl updating"]
       }
     },
     "petzku.ClipSize": {
@@ -271,20 +272,21 @@
       "description": "Converts the last point of a vectorial clip into a new origin point",
       "channels": {
         "stable": {
-          "version": "0.3.1",
+          "version": "0.3.2",
           "released": "2023-11-19",
           "default": true,
           "files": [
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "b7ebc857b56a8c20cc9b93ab10954043074cb811"
+              "sha1": "f6c4a4d912c30c0ab55bcb128c64e359f18d03a1"
             }
           ]
         }
       },
       "changelog": {
-        "0.3.1": ["Initial release"]
+        "0.3.1": ["Initial release"],
+        "0.3.2": ["Include feed URL for DepCtrl updating"]
       }
     },
     "petzku.Phantom": {
@@ -295,14 +297,14 @@
       "description": "Align line content to match others by adding text and abusing transparency",
       "channels": {
         "stable": {
-          "version": "1.1.0",
-          "released": "2023-10-17",
+          "version": "1.1.1",
+          "released": "2023-11-19",
           "default": true,
           "files": [
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "d44967267f1a6aff9150e630e5cf90897293b01f"
+              "sha1": "329d2f498869c1cd258bf931424267d3ac3a4a20"
             }
           ]
         }
@@ -312,7 +314,8 @@
         "1.0.1": ["Fix handling of newlines"],
         "1.1.0": [
           "Add DepCtrl support to script itself, allowing for auto-update and submenu configuration"
-        ]
+        ],
+        "1.1.1": ["Include feed URL for DepCtrl updating"]
       }
     },
     "petzku.PosToMargin": {
@@ -323,14 +326,14 @@
       "description": "Transforms \\pos-based positioning into margin and vice versa",
       "channels": {
         "stable": {
-          "version": "2.0.0",
-          "released": "2021-06-23",
+          "version": "2.0.1",
+          "released": "2023-11-19",
           "default": true,
           "files": [
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "8a750eb595f2e4355543e7664184ec54fc3490fb"
+              "sha1": "da47c05cddf7a517c8bceed4d483e768693120bd"
             }
           ]
         }
@@ -342,7 +345,8 @@
         "2.0.0": [
           "Added margin -> pos transform",
           "Renamed from 'Position to Margin'"
-        ]
+        ],
+        "2.0.1": ["Include feed URL for DepCtrl updating"]
       }
     },
     "petzku.Snapper": {
@@ -353,20 +357,21 @@
       "description": "Snaps line start and end times to keyframes",
       "channels": {
         "stable": {
-          "version": "1.0.0",
-          "released": "2022-05-16",
+          "version": "1.0.1",
+          "released": "2023-11-19",
           "default": true,
           "files": [
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "69ffcda6834fdf4e6bff576bf62b4ff9185e6ffd"
+              "sha1": "2a7c6aa2c74c12c6271d9ce79c7da2fa0767a9e5"
             }
           ]
         }
       },
       "changelog": {
-        "1.0.0": ["Add to DepCtrl"]
+        "1.0.0": ["Add to DepCtrl"],
+        "1.0.1": ["Include feed URL for DepCtrl updating"]
       }
     },
     "petzku.SplitTimer": {
@@ -377,14 +382,14 @@
       "description": "Split lines in selection to shorter segments, preserving any transforms",
       "channels": {
         "stable": {
-          "version": "1.2.1",
-          "released": "2023-07-21",
+          "version": "1.2.2",
+          "released": "2023-11-19",
           "default": true,
           "files": [
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "cb35840d7c066db15010529b9348530d507d6675"
+              "sha1": "41f1f3c2064f8c6a6272e5aa3f16f4e4df669aa7"
             }
           ],
           "requiredModules": [
@@ -409,7 +414,8 @@
           "Add 'split on video frame' mode",
           "Improve macro descriptions to mention preserving transforms"
         ],
-        "1.2.1": ["Fix infinite loop in 'split on video frame' mode"]
+        "1.2.1": ["Fix infinite loop in 'split on video frame' mode"],
+        "1.2.2": ["Include feed URL for DepCtrl updating"]
       }
     },
     "petzku.Typewriter": {
@@ -472,14 +478,14 @@
       "description": "A library of easy-to-use easing functions for transforms",
       "channels": {
         "stable": {
-          "version": "0.5.0",
-          "released": "2022-07-23",
+          "version": "0.5.1",
+          "released": "2023-11-19",
           "default": true,
           "files": [
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "84b5507844e193f9257baf8db3d85ff734048e6f"
+              "sha1": "ec6f820670073dfa50b6e2101d35ac1de841cbd0"
             }
           ]
         }
@@ -488,7 +494,8 @@
         "0.4.0": ["Add to DependencyControl"],
         "0.5.0": [
           "Expose internals and other convenience functions for direct easer manipulation in `easings.raw`"
-        ]
+        ],
+        "0.5.1": ["Include feed URL for DepCtrl updating"]
       }
     },
     "petzku.util": {
@@ -499,14 +506,14 @@
       "description": "Various utility functions for use with petzku's Aegisub macros",
       "channels": {
         "stable": {
-          "version": "0.4.2",
+          "version": "0.4.3",
           "released": "2023-11-19",
           "default": true,
           "files": [
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "9e10a6a761efb2546c7cbc077a9d721ef7dd4dc9"
+              "sha1": "1655512e006c654458a63ffad432309984b5a7dc"
             },
             {
               "name": "/tee.exe",
@@ -524,7 +531,8 @@
         "0.4.1": ["Fix typo in run_cmd on Unix"],
         "0.4.2": [
           "Transforms: change both-negative-times move to pos tag instead"
-        ]
+        ],
+        "0.4.3": ["Include feed URL for DepCtrl updating"]
       }
     }
   }
