@@ -147,14 +147,14 @@
       "description": "Encode a hardsubbed clip encompassing the current selection",
       "channels": {
         "stable": {
-          "version": "0.9.0",
+          "version": "1.0.0",
           "released": "2023-11-20",
           "default": true,
           "files": [
             {
               "name": ".lua",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "3540545a02e4ce427874a6796b064f0bd2ca31cd"
+              "sha1": "be8a4b972c4430e36d6750c8a1a2ce9be84f1f77"
             }
           ],
           "requiredModules": [
@@ -212,6 +212,10 @@
           "Fix some issues with default mpv options",
           "Change GUI Config and Cancel hotkeys (from G/C to C/N)",
           "Improve Config GUI order and labels"
+        ],
+        "1.0.0": [
+          "Proper 1.0 release finally! (it was about time)",
+          "Add dummy video encoding using lavfi (doesn't support checkerboard)"
         ]
       }
     },
