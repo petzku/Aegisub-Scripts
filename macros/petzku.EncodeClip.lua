@@ -234,6 +234,21 @@ local function calc_start_end(subs, sel)
     return t1/1000, t2/1000
 end
 
+local function gen_lavfi_cmd(dummystr)
+    -- sample dummy string: ?dummy:24000\1001:140000:640:480:47:163:254:c
+    -- syntax: ?dummy:<fps>:<duration>:<width>:<height>:<R:G:B>:<checkerboard?>
+    -- "c" if checker, "" if not. we ignore that entirely as lavfi can't nicely generate it.
+
+    local fps, w, h, r, g, b = dummystr:match("dummy:([^:]+):[^:]+:([^:]+):([^:]+):([^:]+):([^:]+):([^:]+):")
+
+    local color = string.format("0x%02x%02x%02x", r,g,b)
+
+    -- aegisub uses \ instead of / for the fps divisor on windows for the exact reason you would think
+    fps = fps:gsub("\\", "/")
+
+    return string.format("av://lavfi:color=c=%s:s=%dx%d:r=%s", color, w, h, fps)
+end
+
 local function is_ascii(str)
     for i=1, #str do
         if str:byte(i) > 128 then
@@ -304,6 +319,16 @@ function make_clip(subs, sel, hardsub, audio)
 
     local outfile, cant_hardsub = get_base_outfile(t1, t2, 'mp4')
     if cant_hardsub then hardsub = false end
+
+    -- if using dummy video, parse the props into a lavfi command
+    if vidfile:sub(1,7) == "?dummy:" then
+        -- if we have no sub file to work with, can't use video file as output name either
+        if cant_hardsub then
+            aegisub.log(2, "Cannot encode clip from dummy video and no subtitle file!\nExiting...\n")
+            return
+        end
+        vidfile = gen_lavfi_cmd(vidfile)
+    end
 
     if hardsub and aegisub.gui and aegisub.gui.is_modified and aegisub.gui.is_modified() then
         -- warn user about script not being saved
