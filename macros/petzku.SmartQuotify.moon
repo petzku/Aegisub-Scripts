@@ -14,16 +14,24 @@ main = =>
         continue unless line.text\find "['\"]"
         aegisub.log(5, "... has quotes\n")
 
-        -- apostrophes are always supposed to be right quotes. this makes converting them correctly impossible without NLP.
-        -- however, it's much simpler to just have the user check any lines that end up with left quotes themself.
-        lsquote = re.sub line.text, [[(?<!\w)'(?=['"]*\w)]], "‘"
-        rsquote = re.sub lsquote, "'", "’"
-        ldquote = re.sub rsquote, [[(?<!\w)"(?=[‘"]*\w)]], "“"
-        rdquote = re.sub ldquote, '"', "”"
-        line.text = rdquote
+        -- Apostrophes are always supposed to be right quotes, even at the start of a word.
+        -- This makes converting them correctly impossible without NLP, as this can't be distinguished from a starting single quote.
+        -- Instead, we leave the user a warning and have them check it themself.
+        text, apos_found = re.sub line.text, [[(?<!\w)'(?=['"]*\w)]], "’"
+        -- We can, however, assume that any cases where another quotation mark appears between the quote and the word, it's not an apostrophe.
+        text = re.sub text, [[(?<!\w)'(?=['"]+\w)]], "‘"
+        text = re.sub text, "'", "’"
 
-        if line.text\find "‘"
-            line.effect ..= "[check single quote -- possible apostrophe]"
+        -- First, we replace any pairs of double quotes. This _will_ break triply nested quotes, but those are very rare, so we can probably ignore that.
+        text = re.sub text, [["(.*)"]], [[“\1”]]
+        -- Then, we handle any remaining, unpaired double-quotes heuristically. This could be e.g. quotes extending over two (or more) lines.
+        -- Simply put, we assume any quote directly before a word is opening, and everything else is closing.
+        text = re.sub text, [[(?<!\w)"(?=[‘’"]*\w)]], "“"
+        text = re.sub text, '"', "”"
+        line.text = text
+
+        if apos_found > 0
+            line.effect ..= "[check possible starting single quote#{apos_found > 1 and 's' or ''} -- assumed apostrophe]"
 
         aegisub.log(5, "... is now %s\n", line.text)
         @[i] = line
