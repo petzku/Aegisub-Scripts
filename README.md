@@ -194,6 +194,11 @@ Don't use this, use [arch1t3ct's one](https://github.com/TypesettingTools/arch1t
 
 Typically, you would want the lines to be frame-by-frame, but the script doesn't actually enforce this at all. The positions before shaking don't have to be aligned either. So you could split the frames to match a lower-framerate animation, or run the script on an already-motiontracked sign.
 
+### Smart Quotify
+
+Changes your "straight quotes" into “smart ones”. Logic is kind of rudimentary for now, and prone to breaking on less trivial cases. This is, unfortunately, not a possible task to do reliably without NLP, which is extremely outside the scope of a small Aegisub script. If you want a more robust tool for this, https://github.com/jpenney/smartass might be better.
+This was rather meant as a proof of concept than something that really sees use... but that might change. Who knows.
+
 ### Snapper
 
 Hotkeyable macros to snap the current line's start time to the previous keyframe, and end time to the next keyframe. Both runnable individually. If the start/end time is already on a keyframe, nothing will change.
