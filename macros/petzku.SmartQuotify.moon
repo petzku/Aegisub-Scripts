@@ -14,11 +14,16 @@ main = =>
         continue unless line.text\find "['\"]"
         aegisub.log(5, "... has quotes\n")
 
+        -- apostrophes are always supposed to be right quotes. this makes converting them correctly impossible without NLP.
+        -- however, it's much simpler to just have the user check any lines that end up with left quotes themself.
         lsquote = re.sub line.text, [[(?<!\w)'(?=\w)]], "‘"
         rsquote = re.sub lsquote, "'", "’"
         ldquote = re.sub rsquote, [[(?<!\w)"(?=\w)]], "“"
         rdquote = re.sub ldquote, '"', "”"
         line.text = rdquote
+
+        if line.text\find "‘"
+            line.effect ..= "[check single quote -- possible apostrophe]"
 
         aegisub.log(5, "... is now %s\n", line.text)
         @[i] = line
