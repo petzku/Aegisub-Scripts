@@ -16,9 +16,9 @@ main = =>
 
         -- apostrophes are always supposed to be right quotes. this makes converting them correctly impossible without NLP.
         -- however, it's much simpler to just have the user check any lines that end up with left quotes themself.
-        lsquote = re.sub line.text, [[(?<!\w)'(?=\w)]], "‘"
+        lsquote = re.sub line.text, [[(?<!\w)'(?=['"]*\w)]], "‘"
         rsquote = re.sub lsquote, "'", "’"
-        ldquote = re.sub rsquote, [[(?<!\w)"(?=\w)]], "“"
+        ldquote = re.sub rsquote, [[(?<!\w)"(?=[‘"]*\w)]], "“"
         rdquote = re.sub ldquote, '"', "”"
         line.text = rdquote
 
