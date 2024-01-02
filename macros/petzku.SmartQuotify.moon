@@ -2,7 +2,7 @@ export script_name = "SmartQuotify"
 export script_description = [[Change all your "normal" quotes into “smart” ones]]
 export script_author = "petzku"
 export script_namespace = "petzku.SmartQuotify"
-export script_version = "0.0.1"
+export script_version = "0.1.0"
 
 re = require 'aegisub.re'
 
