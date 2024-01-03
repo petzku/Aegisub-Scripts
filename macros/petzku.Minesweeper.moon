@@ -4,13 +4,26 @@ export script_name =        "Minesweeper"
 export script_description = "Play Minesweeper. Why? Who knows."
 export script_author =      "petzku"
 export script_namespace =   "petzku.Minesweeper"
-export script_version =     "0.1.0"
+export script_version =     "0.2.0"
 
 WIDTH = 8
 HEIGHT = 8
 MAXMINES = 10
 
 math.randomseed(os.time())
+
+_rev = (field, x, y) ->
+    return unless field[x][y].hidden
+    field[x][y].hidden = false
+    if field[x][y].n == 0
+        -- cascade
+        for i = -1,1
+            for j = -1,1
+                continue if i == 0 and j == 0
+                xx = x + i
+                yy = y + j
+                continue if xx < 1 or yy < 1 or xx > WIDTH or yy > HEIGHT
+                _rev field, xx, yy
 
 build_field = ->
     t = {}
@@ -19,6 +32,7 @@ build_field = ->
         for j = 1,HEIGHT
             table.insert t[i], {hidden: true, mine: false, n: 0}
 
+    -- place mines
     m = 0
     while m < MAXMINES
         x = math.random 1, WIDTH
@@ -33,20 +47,15 @@ build_field = ->
                 yy = y + j
                 continue if xx < 1 or yy < 1 or xx > WIDTH or yy > HEIGHT
                 t[xx][yy].n += 1
-    t
 
-_rev = (field, x, y) ->
-    return unless field[x][y].hidden
-    field[x][y].hidden = false
-    if field[x][y].n == 0
-        -- cascade
-        for i = -1,1
-            for j = -1,1
-                continue if i == 0 and j == 0
-                xx = x + i
-                yy = y + j
-                continue if xx < 1 or yy < 1 or xx > WIDTH or yy > HEIGHT
-                _rev field, xx, yy
+    -- reveal starting square
+    while true
+        x = math.random 1, WIDTH
+        y = math.random 1, HEIGHT
+        continue if t[x][y].mine
+        _rev t, x, y
+        break
+    t
 
 build_gui = (field, reveal) ->
     t = unless reveal
