@@ -489,14 +489,14 @@
       "description": "A library of easy-to-use easing functions for transforms",
       "channels": {
         "stable": {
-          "version": "0.5.1",
-          "released": "2023-11-19",
+          "version": "0.5.2",
+          "released": "2024-03-26",
           "default": true,
           "files": [
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "ec6f820670073dfa50b6e2101d35ac1de841cbd0"
+              "sha1": "046bc692047d92df576dc07f755b928c12a840d7"
             }
           ]
         }
@@ -506,7 +506,8 @@
         "0.5.0": [
           "Expose internals and other convenience functions for direct easer manipulation in `easings.raw`"
         ],
-        "0.5.1": ["Include feed URL for DepCtrl updating"]
+        "0.5.1": ["Include feed URL for DepCtrl updating"],
+        "0.5.2": ["Fix multi-tag calls begin broken"]
       }
     },
     "petzku.util": {
