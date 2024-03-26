@@ -13,7 +13,7 @@ local petzku
 if haveDepCtrl
     depctrl = DependencyControl {
         name: 'easings',
-        version: '0.5.1',
+        version: '0.5.2',
         description: [[A library of easy-to-use easing functions for transforms]],
         author: "petzku",
         url: "https://github.com/petzku/Aegisub-Scripts",
@@ -34,7 +34,7 @@ get_framedur = () ->
 
 -- Ensure tags is a list-of-triples, not a single triple
 wrap_tags = (tags) ->
-    if type tags[1] != "table"
+    if "table" != type tags[1]
         {tags}
     else
         tags
