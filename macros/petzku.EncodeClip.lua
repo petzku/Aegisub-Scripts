@@ -36,7 +36,7 @@ script_name = tr'Encode Clip'
 script_description = tr'Encode various clips from the current selection'
 script_author = 'petzku'
 script_namespace = "petzku.EncodeClip"
-script_version = '1.0.0'
+script_version = '1.1.0'
 
 
 local haveDepCtrl, DependencyControl, depctrl = pcall(require, "l0.DependencyControl")
@@ -94,23 +94,32 @@ If set, the value given to the right will be supplied to --aid.]]
 Supplied to mpv as --aid, so this is indexed starting from 1. Supplying an out-of-bounds track ID will cause no audio to be included.
 If you want to consistently select by language, just use --alang in the config sections above.]]
         },
+        context_duration_label = {
+            class='label', label='Extra context duration for clips (in seconds):',
+            x=0, y=3, width=10, height=1
+        },
+        context_duration = {
+            class='floatedit', value=2, config=true, min=0, max=30,
+            x=10, y=3, width=10, height=1,
+            hint=[[Extra duration (in seconds) to add at the start and end of a clip. Limited to 30 seconds.]]
+        },
         video_command_label = {
             class='label', label='Custom mpv options for video clips:',
-            x=0, y=3, width=10, height=1
+            x=0, y=4, width=10, height=1
         },
         video_command = {
             class='textbox', value="", config=true,
-            x=0, y=4, width=20, height=3,
+            x=0, y=5, width=20, height=3,
             hint=[[Custom command line options passed to mpv when encoding video.
 You can put options on separate lines, but all options must be prefixed with --. (e.g. "--aid=2" to pick the second audio track in the file)]]
         },
         audio_command_label = {
             class='label', label='Custom mpv options for audio-only clips:',
-            x=0, y=7, width=10, height=1
+            x=0, y=8, width=10, height=1
         },
         audio_command = {
             class='textbox', value="", config=true,
-            x=0, y=8, width=20, height=3,
+            x=0, y=9, width=20, height=3,
             hint=[[Custom command line options passed to mpv when encoding only audio.
 Options here do NOT get applied when encoding video, whether it has audio or not.]]
         }
@@ -131,6 +140,11 @@ local GUI = {
             class='checkbox', label=tr"&Audio", value=true, name='audio',
             x=2, y=0,
             hint=tr[[Enable audio in output]]
+        },
+        context = {
+            class='checkbox', label=tr"Conte&xt", value=false, name='context',
+            x=3, y=0,
+            hint=tr[[Include a few seconds of context at the start and end of the clip]]
         }
     },
     -- constants for the buttons
@@ -225,11 +239,16 @@ local function get_base_outfile(t1, t2, ext)
     return outfile, cant_hardsub
 end
 
-local function calc_start_end(subs, sel)
+local function calc_start_end(subs, sel, ctx)
     local t1, t2 = math.huge, 0
     for _, i in ipairs(sel) do
         t1 = math.min(t1, subs[i].start_time)
         t2 = math.max(t2, subs[i].end_time)
+    end
+    if ctx then
+        local ctx_dur = math.floor(get_configuration().context_duration * 1000)
+        t1 = math.max(0, t1 - ctx_dur)
+        t2 = t2 + ctx_dur
     end
     return t1/1000, t2/1000
 end
@@ -308,10 +327,10 @@ local function build_cmd(user_opts, ...)
     return table.concat(cmd_table, ' ')
 end
 
-function make_clip(subs, sel, hardsub, audio)
+function make_clip(subs, sel, hardsub, audio, context)
     if audio == nil then audio = true end --encode with audio by default
 
-    local t1, t2 = calc_start_end(subs, sel)
+    local t1, t2 = calc_start_end(subs, sel, context)
 
     local props = aegisub.project_properties()
     local vidfile = props.video_file
@@ -387,8 +406,8 @@ Press Enter to proceed anyway, or Escape to cancel.]], "Encode &anyway") then
     run_cmd(cmd)
 end
 
-function make_audio_clip(subs, sel)
-    local t1, t2 = calc_start_end(subs, sel)
+function make_audio_clip(subs, sel, context)
+    local t1, t2 = calc_start_end(subs, sel, context)
 
     local props = aegisub.project_properties()
     local audiofile = props.audio_file
@@ -417,9 +436,9 @@ function show_dialog(subs, sel)
     local btn, values = aegisub.dialog.display(GUI.main, buttons, {ok=GUI.BUTTONS.VIDEO, cancel=GUI.BUTTONS.CANCEL})
 
     if btn == GUI.BUTTONS.AUDIO then
-        make_audio_clip(subs, sel)
+        make_audio_clip(subs, sel, values.context)
     elseif btn == GUI.BUTTONS.VIDEO then
-        make_clip(subs, sel, values.subs, values.audio)
+        make_clip(subs, sel, values.subs, values.audio, values.context)
     elseif btn == GUI.BUTTONS.CONFIG then
         show_config_dialog()
         -- once config is done, re-open this dialog
