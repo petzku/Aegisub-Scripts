@@ -10,15 +10,19 @@ util = require 'aegisub.util'
 
 
 EXTRA_KEY = script_namespace
-CLIP_SIZE = 40
+CLIP_COUNT = 10
+VIDEO_W = 1920
+VIDEO_H = 1080
+CLIP_SIZE_W = VIDEO_W / CLIP_COUNT
+CLIP_SIZE_H = VIDEO_H / CLIP_COUNT
 BUFFER_SIZE = 4
 
 add_clip = (line, buffer, x, y) ->
     buf = if buffer then BUFFER_SIZE else 0
-    x1 = (x-1) * CLIP_SIZE - buf
-    y1 = (y-1) * CLIP_SIZE - buf
-    x2 = x * CLIP_SIZE + buf
-    y2 = y * CLIP_SIZE + buf
+    x1 = (x-1) * CLIP_SIZE_W - buf
+    y1 = (y-1) * CLIP_SIZE_H - buf
+    x2 = x * CLIP_SIZE_W + buf
+    y2 = y * CLIP_SIZE_H + buf
     line.text = "{\\clip(#{x1},#{y1},#{x2},#{y2})}#{line.text}"
     return line
 
@@ -29,11 +33,9 @@ add_clips = (line, buffer) ->
         return {add_clip line, buffer, x, y}
     else
         -- TODO: get from karaskel or something
-        mx = 1920 / CLIP_SIZE
-        my = 1080 / CLIP_SIZE
         lines = {}
-        for x = 1, mx
-            for y = 1, my
+        for x = 1, CLIP_COUNT
+            for y = 1, CLIP_COUNT
                 ln = util.copy line
                 ln.extra = util.copy line.extra
                 ln.extra[EXTRA_KEY] = "#{x},#{y}"
