@@ -36,7 +36,7 @@ script_name = tr'Encode Clip'
 script_description = tr'Encode various clips from the current selection'
 script_author = 'petzku'
 script_namespace = "petzku.EncodeClip"
-script_version = '1.1.0'
+script_version = '1.1.1'
 
 
 local haveDepCtrl, DependencyControl, depctrl = pcall(require, "l0.DependencyControl")
@@ -391,8 +391,11 @@ Press Enter to proceed anyway, or Escape to cancel.]], "Encode &anyway") then
         postfix = postfix .. "_nosub"
     end
 
+    -- we force libx264 as this is generally the fastest and most reliable encoder available
+    -- to my knowledge, only some macos mpv builds do not come with bundled support
     local video_opts = {
         '--vf=format=yuv420p',
+        '--ovc=libx264',
         '--ovcopts="profile=main,level=4.1,crf=23"',
     }
 
