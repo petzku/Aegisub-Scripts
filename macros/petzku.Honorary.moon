@@ -4,7 +4,7 @@ export script_name =        "Honorary"
 export script_description = "Rightfully restore (or remove) honoraries easily by inserting autoswapper bits"
 export script_author =      "petzku"
 export script_namespace =   "petzku.Honorary"
-export script_version =     "0.1.0"
+export script_version =     "0.2.0"
 
 
 _add_swap = (line, idx) ->
@@ -20,8 +20,8 @@ _enable = (line) ->
     sel = line.text\sub ss, se-1
     den = line.text\sub se
     line.text = "#{beg}{*}#{sel}{*}#{den}"
-    -- at second {*_}
-    aegisub.gui.set_cursor #beg + #sel + 5
+    -- at second: mary{*}-tan{*_}
+    aegisub.gui.set_cursor #beg + #sel + 6
     line
 
 _disable = (line) ->
@@ -29,9 +29,9 @@ _disable = (line) ->
     beg = line.text\sub 1, ss-1
     sel = line.text\sub ss, se-1
     den = line.text\sub se
-    line.text = "#{beg}{**#{sel}}#{den}"
-    -- before swap: beg_{**sel}
-    aegisub.gui.set_cursor #beg
+    line.text = "#{beg}{*}{*#{sel}}#{den}"
+    -- at first: mary{*}_{*-tan}
+    aegisub.gui.set_cursor #beg + 4
     line
 
 
