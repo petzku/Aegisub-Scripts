@@ -26,7 +26,7 @@
 
 
 config = {
-    sep: ":",
+    sep: " ",
     rep_commas: true,
     read_flags: true,
 }
