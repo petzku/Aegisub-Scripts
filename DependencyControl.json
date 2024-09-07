@@ -492,6 +492,30 @@
         "0.5.2": ["Fix multi-tag calls begin broken"]
       }
     },
+    "petzku.tags": {
+      "fileBaseUrl": "@{fileBaseUrl}/@{namespace}-v@{version}/modules/@{namespacePath}",
+      "url": "https://github.com/petzku/Aegisub-Scripts",
+      "author": "petzku",
+      "name": "Tags",
+      "description": "Reads key-value pairs from lines",
+      "channels": {
+        "stable": {
+          "version": "0.3.0",
+          "released": "2024-09-08",
+          "default": true,
+          "files": [
+            {
+              "name": ".moon",
+              "url": "@{fileBaseUrl}@{fileName}",
+              "sha1": "238ed3564c97b256922455bd96830ccf7cb6f2ec"
+            }
+          ]
+        }
+      },
+      "changelog": {
+        "0.3.0": ["Add to DependencyControl"]
+      }
+    },
     "petzku.util": {
       "fileBaseUrl": "@{fileBaseUrl}/@{namespace}-v@{version}/modules/@{namespacePath}",
       "url": "https://github.com/petzku/Aegisub-Scripts",
