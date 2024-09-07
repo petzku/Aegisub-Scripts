@@ -25,6 +25,19 @@
 --                          Defaults to true.
 
 
+haveDepCtrl, DependencyControl, depctrl = pcall require, 'l0.DependencyControl'
+if haveDepCtrl
+    depctrl = DependencyControl {
+        name: 'Tags',
+        version: '0.3.0',
+        description: [[Read key-value pairs from lines]],
+        author: "petzku",
+        url: "https://github.com/petzku/Aegisub-Scripts",
+        feed: "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json",
+        moduleName: 'petzku.tags'
+    }
+
+
 config = {
     sep: " ",
     rep_commas: true,
@@ -90,8 +103,14 @@ wrap = (f) -> (line) ->
     f(str)
 
 
-return {
+loadtags = {
     table:  wrap tags_table,
     str:    wrap tag_string,
     config: configure,
 }
+
+if haveDepCtrl
+    loadtags.version = depctrl
+    depctrl\register loadtags
+else
+    return loadtags
