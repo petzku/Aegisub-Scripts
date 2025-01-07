@@ -4,7 +4,14 @@ export script_author = "petzku"
 export script_namespace = "petzku.SpeakersFromSheet"
 export script_version = "0.0.1"
 
+_odd_quotes = (line) ->
+    _, count = line.text\gsub '"', ''
+    count % 2 == 1
 
+_is_start_quote = (line) ->
+    return (line.text\sub 1,1) == '"' and _odd_quotes line
+_is_end_quote = (line) ->
+    return (line.text\sub -1) == '"' and _odd_quotes line
 
 main = (sub, sel) ->
     btn, res = aegisub.dialog.display {{class: "textbox", name: "content", x: 0, y: 0, width: 10, height: 4, text: ""}}
@@ -16,14 +23,14 @@ main = (sub, sel) ->
         -- check that this wasn't an empty line,
         continue if name == ""
         -- and assign them to corresponding lines
-        if '"' == sub[i].text\sub 1,1
+        if _is_start_quote sub[i]
             -- if this line started with a quotation mark, it is from a multiline cell
             -- and we should keep assigning this name to the following cells as well
             while true
                 line = sub[i]
                 line.actor = name
                 sub[i] = line
-                break if '"' == line.text\sub -1
+                break if _is_end_quote line
                 i += 1
         else
             -- single line
