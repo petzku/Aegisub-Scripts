@@ -12,7 +12,7 @@ local util, re
 if haveDepCtrl
     depctrl = DependencyControl {
         name: 'petzkuLib',
-        version: '0.4.3',
+        version: '0.4.4',
         description: [[Various utility functions for use with petzku's Aegisub macros]],
         author: "petzku",
         url: "https://github.com/petzku/Aegisub-Scripts",
@@ -119,8 +119,8 @@ with lib
             if pathsep == '\\'
                 -- windows
                 -- command lines over 256 bytes don't get run correctly, make a temporary file as a workaround
-                runner_path = aegisub.decode_path('?temp' .. pathsep .. 'petzku.bat')
-                wrapper_path = aegisub.decode_path('?temp' .. pathsep .. 'petzku-wrapper.bat')
+                runner_path = aegisub.decode_path('?temp/petzku.bat')
+                wrapper_path = aegisub.decode_path('?temp/petzku-wrapper.bat')
                 exit_code_path = os.tmpname()
                 -- provided by https://sourceforge.net/projects/unxutils/
                 tee_path = "#{re.match(debug.getinfo(1).source, '@?(.*[/\\\\])')[1].str}util/tee"
@@ -138,7 +138,7 @@ with lib
                 f\write "exit /b %errorlevel%\n"
                 f\close!
             else
-                runner_path = aegisub.decode_path('?temp' .. pathsep .. 'petzku.sh')
+                runner_path = aegisub.decode_path('?temp/petzku.sh')
                 pipe_path = os.tmpname()
                 -- create shell script
                 f = io.open runner_path, 'w'
