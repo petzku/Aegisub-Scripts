@@ -36,7 +36,7 @@ script_name = tr'Encode Clip'
 script_description = tr'Encode various clips from the current selection'
 script_author = 'petzku'
 script_namespace = "petzku.EncodeClip"
-script_version = '1.1.1'
+script_version = '1.1.2'
 
 
 local haveDepCtrl, DependencyControl, depctrl = pcall(require, "l0.DependencyControl")
@@ -381,9 +381,6 @@ Press Enter to proceed anyway, or Escape to cancel.]], "Encode &anyway") then
     local sub_opts
     if hardsub then
         sub_opts = {
-            '--slang=',
-            '--no-sub-auto',
-            '--subs-with-matching-audio=yes',
             string.format('--sub-file="%s"', subfile)
         }
     else
