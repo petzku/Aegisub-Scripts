@@ -147,14 +147,14 @@
       "description": "Encode a hardsubbed clip encompassing the current selection",
       "channels": {
         "stable": {
-          "version": "1.1.1",
-          "released": "2024-06-25",
+          "version": "1.1.2",
+          "released": "2025-01-30",
           "default": true,
           "files": [
             {
               "name": ".lua",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "8f40bac891ee02d107520b69080712c2323f872a"
+              "sha1": "d5f7621268efb4b548a02ca38b0da403b17dfb50"
             }
           ],
           "requiredModules": [
@@ -173,7 +173,8 @@
           "Add dummy video encoding using lavfi (doesn't support checkerboard)"
         ],
         "1.1.0": ["Option for adding short context to clips"],
-        "1.1.1": ["Force --ovc=libx264"]
+        "1.1.1": ["Force --ovc=libx264"],
+        "1.1.2": ["Remove legacy --slang settings"]
       }
     },
     "petzku.ExtrapolateMove": {
