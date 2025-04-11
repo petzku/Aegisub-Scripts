@@ -1,14 +1,14 @@
-script_name = "Toggle Templates"
-script_description = "Toggle disabled state for selected auto4 ktemplate components"
-script_author = "petzku"
-script_version = "0.3.1"
-script_namespace = "petzku.ToggleTemplates"
+export script_name = "Toggle Templates"
+export script_description = "Toggle disabled state for selected auto4 ktemplate components"
+export script_author = "petzku"
+export script_version = "0.3.2"
+export script_namespace = "petzku.ToggleTemplates"
 
 is_component = (line) ->
     return false unless line.class == "dialogue" and line.comment
     cls = line.effect\match "(%l+) "
     -- assume anything marked "disabled" is also fair game
-    return cls == 'disabled' or cls == 'template' or cls == 'code' or cls == 'mixin'
+    return cls == 'disabled' or cls == 'template' or cls == 'code' or cls == 'mixin' or line.effect == 'kara'
 
 is_disabled = (line) ->
     return 'disabled' == line.effect\sub 1, 8
