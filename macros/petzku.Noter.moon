@@ -7,10 +7,10 @@ export script_namespace =   "petzku.Noter"
 export script_version =     "0.3.0"
 
 -- TODO: arbitrary pre/postfix support
-PRE = ""
+PRE = "@ED "
 POST = " -p"
 
-MARKERS = {"ED", "TM", "TS", "ST"}
+MARKERS = {"ED", "TM", "TLC", "TS", "ST", "QC"}
 
 add_note = (line, pre, post, idx = #line.text+1) ->
     beg, den = line.text\sub(1, idx-1), line.text\sub(idx)
