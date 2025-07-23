@@ -30,6 +30,16 @@ _iof = (k) ->
         if v == k then return i
     return 0
 
+_filter_dupes = (tbl) ->
+    -- filter out duplicates—this is kinda hacky
+    tmp = {}
+    for p in *tbl
+        tmp[p] = p
+    ret = {}
+    for k, _ in pairs tmp
+        table.insert(ret, k)
+    ret
+
 cycle_marker = (sub, sel) ->
     for i in *sel
         line = sub[i]
@@ -47,13 +57,7 @@ copy_marker = (sub, sel) ->
         if #pings == 0
             cycle_marker sub, sel
         else
-            -- filter out duplicates—this is kinda hacky
-            t = {}
-            for p in *pings
-                t[p] = p
-            pings = {}
-            for k, _ in pairs t
-                table.insert(pings, k)
+            pings = _filter_dupes(pings)
             line.effect = table.concat(pings, '/')
             sub[i] = line
 
