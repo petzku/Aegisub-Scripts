@@ -18,6 +18,10 @@ export script_description = "Copy script text in plaintext format"
 export script_version = "0.2.0"
 export script_namespace = "petzku.PlainText"
 
+havedc, DependencyControl, dep = pcall require, "l0.DependencyControl"
+dep = DependencyControl{feed: "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json"} if havedc
+
+
 get_text = (subs) ->
     text = {}
 
@@ -38,4 +42,7 @@ main = (subs) ->
     }
     aegisub.dialog.display dialog
 
-aegisub.register_macro script_name, script_description, main
+if havedc
+    dep\registerMacro main
+else
+    aegisub.register_macro script_name, script_description, main
