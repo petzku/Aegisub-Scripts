@@ -147,14 +147,14 @@
       "description": "Encode a hardsubbed clip encompassing the current selection",
       "channels": {
         "stable": {
-          "version": "1.1.2",
-          "released": "2025-01-30",
+          "version": "1.2.0",
+          "released": "2025-09-16",
           "default": true,
           "files": [
             {
               "name": ".lua",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "d5f7621268efb4b548a02ca38b0da403b17dfb50"
+              "sha1": "1ab4b6405955353f826df3bfe4baec49f61a58ad"
             }
           ],
           "requiredModules": [
@@ -174,7 +174,8 @@
         ],
         "1.1.0": ["Option for adding short context to clips"],
         "1.1.1": ["Force --ovc=libx264"],
-        "1.1.2": ["Remove legacy --slang settings"]
+        "1.1.2": ["Remove legacy --slang settings"],
+        "1.2.0": ["Check and warn if user missing libx264"]
       }
     },
     "petzku.ExtrapolateMove": {
