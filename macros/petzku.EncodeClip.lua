@@ -36,7 +36,7 @@ script_name = tr'Encode Clip'
 script_description = tr'Encode various clips from the current selection'
 script_author = 'petzku'
 script_namespace = "petzku.EncodeClip"
-script_version = '1.1.2'
+script_version = '1.2.0'
 
 
 local haveDepCtrl, DependencyControl, depctrl = pcall(require, "l0.DependencyControl")
@@ -236,6 +236,25 @@ local function get_audio_encoder()
     return best
 end
 
+local _should_encode_libx264 = nil
+local function check_libx264_support()
+    if _should_encode_libx264 then return _should_encode_libx264 end
+    for line in get_help_lines("ovc") do
+        if line:match("--ovc=libx264") then
+            _should_encode_libx264 = true
+            return _should_encode_libx264
+        end
+    end
+
+    btn, _ = GUI.show_user_warning("Warning: libx264 not found!", [[Encoded clips will likely be broken.
+Please install a version of mpv that supports libx264.]], "Encode &anyway")
+    if btn then
+        _should_encode_libx264 = true
+    end
+
+    return _should_encode_libx264
+end
+
 local function get_base_outfile(t1, t2, ext)
     local outfile, cant_hardsub
     if aegisub.decode_path("?script") == "?script" then
@@ -341,6 +360,9 @@ end
 function make_clip(subs, sel, hardsub, audio, context)
     if audio == nil then audio = true end --encode with audio by default
 
+    -- check user's libx264 support. only happens once if the user says to proceed, but reminds on every restart
+    if not check_libx264_support() then return end
+
     local t1, t2 = calc_start_end(subs, sel, context)
 
     local props = aegisub.project_properties()
@@ -401,6 +423,7 @@ Press Enter to proceed anyway, or Escape to cancel.]], "Encode &anyway") then
 
     -- we force libx264 as this is generally the fastest and most reliable encoder available
     -- to my knowledge, only some macos mpv builds do not come with bundled support
+    -- user gets warned at the start of make_clip if they do not have mpv with support
     local video_opts = {
         '--vf=format=yuv420p',
         '--ovc=libx264',
