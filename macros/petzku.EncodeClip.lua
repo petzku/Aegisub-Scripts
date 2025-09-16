@@ -154,13 +154,14 @@ local GUI = {
         CONFIG = tr"&Config",
         CANCEL = tr"Ca&ncel"
     },
-    show_user_warning = function(title, desc, proceed)
+    -- varargs to add potential other buttons. OK (`proceed`) is still the default in the displayed box
+    show_user_warning = function(title, desc, proceed, ...)
         return aegisub.dialog.display(
             {
                 {class="label", label=title, x=0, y=0},
                 {class="label", label=desc, x=0, y=1}
             },
-            {proceed, "Ca&ncel"},
+            {proceed, ..., "Ca&ncel"},
             {ok = proceed, cancel = "Ca&ncel"}
         )
     end
