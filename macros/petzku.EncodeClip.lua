@@ -207,7 +207,12 @@ local function get_help_lines(option)
     for line in petzku.io.run_cmd(mpv .. " --"..option.."=help", true):gmatch("[^\r\n]+") do
         table.insert(t, line)
     end
-    return t
+    -- return an iterator because it's nicer
+    local i = 0
+    return function()
+        i = i + 1
+        if i < #t then return t[i] end
+    end
 end
 
 -- Use user-specified encoder, if one exists.
