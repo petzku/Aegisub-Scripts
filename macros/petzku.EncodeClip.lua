@@ -185,6 +185,31 @@ local function get_configuration()
     return opts
 end
 
+local function get_mpv()
+    local user_opts = get_configuration()
+    local mpv_exe
+    if user_opts.mpv_exe and user_opts.mpv_exe ~= '' then
+        mpv_exe = user_opts.mpv_exe
+        if mpv_exe:match(" ") and not mpv_exe:match("['\"]") then
+            -- spaces but no quotes
+            mpv_exe = '"'..mpv_exe..'"'
+        end
+    else
+        mpv_exe = 'mpv'
+    end
+    return mpv_exe
+end
+
+-- query mpv for `mpv --<option>=help`. makes no attempt to sanitize option, being an internal function
+local function get_help_lines(option)
+    local t = {}
+    local mpv = get_mpv()
+    for line in petzku.io.run_cmd(mpv .. " --"..option.."=help", true):gmatch("[^\r\n]+") do
+        table.insert(t, line)
+    end
+    return t
+end
+
 -- Use user-specified encoder, if one exists.
 -- Otherwise, find the best AAC encoder available to us, since ffmpeg-internal is Bad
 -- mpv *should* support --oac="aac_at,aac_mf,libfdk_aac,aac", but it doesn't so we do this
@@ -201,7 +226,7 @@ local function get_audio_encoder()
 
     local priorities = {aac = 0, libfdk_aac = 1, aac_mf = 2, aac_at = 3}
     local best = "aac"
-    for line in petzku.io.run_cmd("mpv --oac=help", true):gmatch("[^\r\n]+") do
+    for line in get_help_lines("oac") do
         local enc = line:match("--oac=(%S*aac%S*)")
         if enc and priorities[enc] and priorities[enc] > priorities[best] then
             best = enc
@@ -209,21 +234,6 @@ local function get_audio_encoder()
     end
     audio_encoder = best
     return best
-end
-
-local function get_mpv()
-    local user_opts = get_configuration()
-    local mpv_exe
-    if user_opts.mpv_exe and user_opts.mpv_exe ~= '' then
-        mpv_exe = user_opts.mpv_exe
-        if mpv_exe:match(" ") and not mpv_exe:match("['\"]") then
-            -- spaces but no quotes
-            mpv_exe = '"'..mpv_exe..'"'
-        end
-    else
-        mpv_exe = 'mpv'
-    end
-    return mpv_exe
 end
 
 local function get_base_outfile(t1, t2, ext)
