@@ -15,7 +15,7 @@
 export script_name = "PlainText"
 export script_author = "petzku"
 export script_description = "Copy script text in plaintext format"
-export script_version = "0.2.0"
+export script_version = "0.2.1"
 export script_namespace = "petzku.PlainText"
 
 havedc, DependencyControl, dep = pcall require, "l0.DependencyControl"
@@ -28,6 +28,7 @@ get_text = (subs) ->
     for line in *subs
         continue unless line.class == 'dialogue'
         continue if line.comment
+        continue if line.text:match("{[^}]*\\p%d[^}]*}") --drawing commands
         t = line.text\gsub("%b{}", "")\gsub("%s*\\[Nn]%s*", " ")
         table.insert(text, t) unless text[#text] == t
 
