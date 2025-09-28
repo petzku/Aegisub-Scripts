@@ -139,13 +139,10 @@ with lib
                 f\close!
             else
                 runner_path = aegisub.decode_path('?temp/petzku.sh')
-                pipe_path = os.tmpname()
                 -- create shell script
                 f = io.open runner_path, 'w'
                 f\write "#!/bin/sh\n"
-                f\write "mkfifo \"#{pipe_path}\"\n"
-                f\write "tee \"#{output_path}\" <\"#{pipe_path}\" &\n"
-                f\write "#{cmd} >\"#{pipe_path}\" 2>&1\n"
+                f\write "#{cmd} >\"#{output_path}\" 2>&1\n"
                 f\write "exit $?\n"
                 f\close!
                 -- make the script executable
