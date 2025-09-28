@@ -112,10 +112,14 @@ with lib
     .io = {
         :pathsep,
         run_cmd: (cmd, quiet) ->
-            aegisub.log 5, 'Running: %s\n', cmd unless quiet
+            -- if quiet, we want to silence debug logs
+            -- but trace output is always good to have
+            LOG = quiet and .io.trace or .io.debug
+            LOG 'Running: %s', cmd
 
             local runner_path
             output_path = os.tmpname()
+            .io.trace "Using output file: %s", output_path
             if pathsep == '\\'
                 -- windows
                 -- command lines over 256 bytes don't get run correctly, make a temporary file as a workaround
@@ -148,6 +152,7 @@ with lib
                 -- make the script executable
                 os.execute "chmod +x \"#{runner_path}\""
 
+            .io.trace "Using runner file: %s", runner_path
             
             status, reason, exit_code = os.execute runner_path
 
@@ -155,22 +160,18 @@ with lib
             output = f\read '*a'
             f\close!
 
-            unless quiet
-                local log_level
-                if status
-                    log_level = 5
-                else
-                    log_level = 1
-                aegisub.log log_level, "Command Logs: \n\n"
-                aegisub.log log_level, output
-                aegisub.log log_level, "\n\nStatus: "
-                if status
-                    aegisub.log log_level, "success\n"
-                else
-                    aegisub.log log_level, "failed\n"
-                    aegisub.log log_level, "Reason: #{reason}\n"
-                    aegisub.log log_level, "Exit Code: #{exit_code}\n"
-                aegisub.log log_level, '\nFinished: %s\n', cmd
+            LOG = .io.error if status
+            LOG "Command Logs:"
+            LOG
+            LOG output
+            if status
+                LOG "Status: success"
+            else
+                LOG "Status: failed"
+                LOG "Reason: #{reason}"
+                LOG "Exit Code: #{exit_code}"
+                LOG
+            LOG 'Finished: %s', cmd
 
             output, status, reason, exit_code
 
