@@ -551,13 +551,13 @@
       "channels": {
         "stable": {
           "version": "0.5.0",
-          "released": "2025-01-21",
+          "released": "2025-09-28",
           "default": true,
           "files": [
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "6df807118a7c0a9d841b2fd4afd2f9118e456972"
+              "sha1": "f3af4867bc19e4096dcd163aedc276789d24e54c"
             },
             {
               "name": "/tee.exe",
@@ -578,7 +578,11 @@
         ],
         "0.4.3": ["Include feed URL for DepCtrl updating"],
         "0.4.4": ["Fix decode_path breaking on Windows with Aegisub 3.4.2"],
-        "0.5.0": ["Add logging functions"]
+        "0.5.0": [
+          "Add logging functions under io",
+          "Fix run_cmd not collecting output on POSIX",
+          "Improve trace logging"
+        ]
       }
     }
   }

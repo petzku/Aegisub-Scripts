@@ -59,6 +59,7 @@ with lib
         calc_accel: (val0, valhalf, val1) ->
             accel = .math.log_n 0.5, math.abs (valhalf - val0) / (val1 - val0)
             -- clamp to a sensible interval just in case
+            .io.trace "Raw computed accel value for %s,%s,%s: %s", val0, valhalf, val1, accel
             .math.clamp accel, 0.01, 100
 
         -- Retime transforms, move tags and fades
@@ -73,9 +74,13 @@ with lib
         retime: (line, delta, duration) ->
             str = line
             if type(line) == 'table'
+                .io.trace "Given line table, reading properties from line"
                 line = util.copy line
                 duration = line.end_time - line.start_time
                 str = line.text
+                .io.trace "Duration: %s", duration
+            elseif not duration
+                .io.warn "Duration not given for string input, simple tags cannot be shifted"
 
             -- rt = retime, s = simple, a = accel
             rt_t = (t1, t2) -> string.format "\\t(%d,%d,", t1+delta, t2+delta
@@ -96,16 +101,27 @@ with lib
             p_fade  = "\\fade?%(("..n.."),("..n.."),("..n.."),("..n.."),("..n.."),("..n.."),("..n..")%)"
             p_sfade = "\\fade?%(("..n.."),("..n..")%)"
 
-            str = str\gsub(p_t, rt_t)\gsub(p_at, rt_at)\gsub(p_st, rt_st)\gsub(p_move, rt_move)\gsub(p_smove, rt_smove)\gsub(p_fade, rt_fade)\gsub(p_sfade, rt_sfade)
+            .io.trace "Shifting: %s", str
+            str = str\gsub(p_t, rt_t)\gsub(p_move, rt_move)\gsub(p_fade, rt_fade)
+            if duration
+                .io.trace "Shifting simple tags: %s", str
+                str = str\gsub(p_at, rt_at)\gsub(p_st, rt_st)\gsub(p_smove, rt_smove)\gsub(p_sfade, rt_sfade)
+
             -- if move has two negative times, it behaves as if the times were both omitted.
             -- i.e. \move(x,y,xx,yy,-123,-456) is treated the same as \move(x,y,xx,yy).
             -- it _should_ just act the same as `\pos(xx,yy)`, so replace it with that.
-            str = str\gsub "\\move%("..n..","..n..",("..n.."),("..n.."),%-%d+,%-%d+%)", "\\pos(%1,%2)"
+            if str\match "\\move%([^)]+%-%d+,%-%d+%)"
+                .io.trace "Replacing negative-times move with pos: %s", str
+                str = str\gsub "\\move%("..n..","..n..",("..n.."),("..n.."),%-%d+,%-%d+%)", "\\pos(%1,%2)"
+
+            .io.trace "Result: %s", str
 
             if type(line) == 'table'
+                .io.trace "Returning modified line"
                 line.text = str
                 line
             else
+                .io.trace "Returning line text only"
                 str
     }
 
