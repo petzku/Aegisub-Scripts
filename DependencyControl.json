@@ -550,14 +550,14 @@
       "description": "Various utility functions for use with petzku's Aegisub macros",
       "channels": {
         "stable": {
-          "version": "0.5.0",
-          "released": "2025-09-28",
+          "version": "0.5.1",
+          "released": "2025-10-16",
           "default": true,
           "files": [
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "f3af4867bc19e4096dcd163aedc276789d24e54c"
+              "sha1": "0755d4c089ac064cb42948247933799b7155ff6e"
             },
             {
               "name": "/tee.exe",
@@ -582,7 +582,8 @@
           "Add logging functions under io",
           "Fix run_cmd not collecting output on POSIX",
           "Improve trace logging"
-        ]
+        ],
+        "0.5.1": ["Fix run_cmd always outputting logs on success"]
       }
     }
   }

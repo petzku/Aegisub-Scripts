@@ -12,7 +12,7 @@ local util, re
 if haveDepCtrl
     depctrl = DependencyControl {
         name: 'petzkuLib',
-        version: '0.5.0',
+        version: '0.5.1',
         description: [[Various utility functions for use with petzku's Aegisub macros]],
         author: "petzku",
         url: "https://github.com/petzku/Aegisub-Scripts",
@@ -170,13 +170,14 @@ with lib
 
             .io.trace "Using runner file: %s", runner_path
             
+            -- status is true if **successful**, unlike with system(3)
             status, reason, exit_code = os.execute runner_path
 
             f = io.open output_path
             output = f\read '*a'
             f\close!
 
-            LOG = .io.error if status
+            LOG = .io.error unless status
             LOG "Command Logs:"
             LOG
             LOG output
