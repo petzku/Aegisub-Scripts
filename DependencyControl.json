@@ -561,7 +561,7 @@
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "0755d4c089ac064cb42948247933799b7155ff6e"
+              "sha1": "39bc5733bdc12c4ff4c812781f6272d9be6c48f0"
             },
             {
               "name": "/tee.exe",
@@ -587,7 +587,10 @@
           "Fix run_cmd not collecting output on POSIX",
           "Improve trace logging"
         ],
-        "0.5.1": ["Fix run_cmd always outputting logs on success"]
+        "0.5.1": [
+          "Fix run_cmd always outputting logs on success",
+          "Fix lack of blank lines in command logs output"
+        ]
       }
     }
   }

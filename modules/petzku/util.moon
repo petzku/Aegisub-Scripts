@@ -179,7 +179,7 @@ with lib
 
             LOG = .io.error unless status
             LOG "Command Logs:"
-            LOG
+            LOG!
             LOG output
             if status
                 LOG "Status: success"
@@ -187,7 +187,7 @@ with lib
                 LOG "Status: failed"
                 LOG "Reason: #{reason}"
                 LOG "Exit Code: #{exit_code}"
-                LOG
+                LOG!
             LOG 'Finished: %s', cmd
 
             output, status, reason, exit_code
