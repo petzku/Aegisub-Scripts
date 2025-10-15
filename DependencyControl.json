@@ -147,14 +147,14 @@
       "description": "Encode a hardsubbed clip encompassing the current selection",
       "channels": {
         "stable": {
-          "version": "1.2.0",
-          "released": "2025-09-16",
+          "version": "1.2.1",
+          "released": "2025-10-16",
           "default": true,
           "files": [
             {
               "name": ".lua",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "573739aabddd587a9506b412f29d089467532081"
+              "sha1": "89979d6232e12f866498989e25acbf6099a15865"
             }
           ],
           "requiredModules": [
@@ -162,7 +162,7 @@
               "moduleName": "petzku.util",
               "name": "petzkuLib",
               "url": "https://github.com/petzku/Aegisub-Scripts",
-              "version": "0.4.4"
+              "version": "0.5.1"
             }
           ]
         }
@@ -175,7 +175,11 @@
         "1.1.0": ["Option for adding short context to clips"],
         "1.1.1": ["Force --ovc=libx264"],
         "1.1.2": ["Remove legacy --slang settings"],
-        "1.2.0": ["Check and warn if user missing libx264"]
+        "1.2.0": ["Check and warn if user missing libx264"],
+        "1.2.1": [
+          "Improve logging",
+          "Bump util dependency (fixes some issues on POSIX)"
+        ]
       }
     },
     "petzku.ExtrapolateMove": {
