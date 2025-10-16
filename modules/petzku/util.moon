@@ -12,7 +12,7 @@ local util, re
 if haveDepCtrl
     depctrl = DependencyControl {
         name: 'petzkuLib',
-        version: '0.5.1',
+        version: '0.5.2',
         description: [[Various utility functions for use with petzku's Aegisub macros]],
         author: "petzku",
         url: "https://github.com/petzku/Aegisub-Scripts",
@@ -179,7 +179,7 @@ with lib
 
             LOG = .io.error unless status
             LOG "Command Logs:"
-            LOG!
+            LOG ""
             LOG output
             if status
                 LOG "Status: success"
@@ -187,7 +187,7 @@ with lib
                 LOG "Status: failed"
                 LOG "Reason: #{reason}"
                 LOG "Exit Code: #{exit_code}"
-                LOG!
+                LOG ""
             LOG 'Finished: %s', cmd
 
             output, status, reason, exit_code

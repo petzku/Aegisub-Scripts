@@ -147,14 +147,14 @@
       "description": "Encode a hardsubbed clip encompassing the current selection",
       "channels": {
         "stable": {
-          "version": "1.2.1",
+          "version": "1.2.2",
           "released": "2025-10-16",
           "default": true,
           "files": [
             {
               "name": ".lua",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "89979d6232e12f866498989e25acbf6099a15865"
+              "sha1": "b90b1ea17b2b3e6c058c7f09289f4faf0914691c"
             }
           ],
           "requiredModules": [
@@ -162,7 +162,7 @@
               "moduleName": "petzku.util",
               "name": "petzkuLib",
               "url": "https://github.com/petzku/Aegisub-Scripts",
-              "version": "0.5.1"
+              "version": "0.5.2"
             }
           ]
         }
@@ -179,7 +179,8 @@
         "1.2.1": [
           "Improve logging",
           "Bump util dependency (fixes some issues on POSIX)"
-        ]
+        ],
+        "1.2.2": ["Fix crash caused by logging"]
       }
     },
     "petzku.ExtrapolateMove": {
@@ -554,14 +555,14 @@
       "description": "Various utility functions for use with petzku's Aegisub macros",
       "channels": {
         "stable": {
-          "version": "0.5.1",
+          "version": "0.5.2",
           "released": "2025-10-16",
           "default": true,
           "files": [
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "39bc5733bdc12c4ff4c812781f6272d9be6c48f0"
+              "sha1": "9ffd8cd60144cd6027cec5d2b2ba70af0755f68b"
             },
             {
               "name": "/tee.exe",
@@ -590,7 +591,8 @@
         "0.5.1": [
           "Fix run_cmd always outputting logs on success",
           "Fix lack of blank lines in command logs output"
-        ]
+        ],
+        "0.5.2": ["Fix crash caused by above"]
       }
     }
   }
