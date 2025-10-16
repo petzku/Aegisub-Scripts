@@ -36,7 +36,7 @@ script_name = tr'Encode Clip'
 script_description = tr'Encode various clips from the current selection'
 script_author = 'petzku'
 script_namespace = "petzku.EncodeClip"
-script_version = '1.2.1'
+script_version = '1.2.2'
 
 
 local haveDepCtrl, DependencyControl, depctrl = pcall(require, "l0.DependencyControl")
@@ -45,7 +45,7 @@ if haveDepCtrl then
     depctrl = DependencyControl {
         feed="https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json",
         {
-            {"petzku.util", version="0.5.1", url="https://github.com/petzku/Aegisub-Scripts",
+            {"petzku.util", version="0.5.2", url="https://github.com/petzku/Aegisub-Scripts",
              feed="https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json"},
             {"a-mo.ConfigHandler", version="1.1.4", url="https://github.com/TypesettingTools/Aegisub-Motion",
              feed="https://raw.githubusercontent.com/TypesettingTools/Aegisub-Motion/DepCtrl/DependencyControl.json"}
@@ -339,10 +339,10 @@ local function run_cmd(cmd)
 
     local WINDOWS_ASCII_ERROR_TEXT = "No such file or directory"
     if output:find(WINDOWS_ASCII_ERROR_TEXT) and not is_ascii(cmd) then
-        LOGGER.warn()
+        LOGGER.warn("")
         LOGGER.warn("It looks like some of your input or output file names contain non-ASCII characters, which can break on some systems.")
         LOGGER.warn("Setting your system to use UTF-8 codepages may solve this issue; see https://superuser.com/a/1451686.")
-        LOGGER.warn()
+        LOGGER.warn("")
     end
 end
 
