@@ -11,10 +11,11 @@ main = (sub, sel) ->
         prev = sub[pi]
         i = sel[si]
         line = sub[i]
-        if line.start_time == prev.start_time and line.end_time == prev.start_time
+        if line.start_time == prev.start_time and line.end_time == prev.end_time
             -- join lines, remove pos tags from later
             line.text = line.text .. "\\N" .. prev.text\gsub("{\\an%d\\pos%b()}", "", 1)
             sub.delete(pi)
             sub[i] = line
+        pi = i
 
 aegisub.register_macro script_name, script_description, main
