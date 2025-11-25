@@ -85,7 +85,7 @@ with lib
             -- \t and \move treat t2=0 as "end-of-line" rather than start
             -- no other values get special handling like this (except double-negative \move mentioned below)
             fix_zero_t2 = (t2) ->
-                if t2 == 0
+                if t2 == "0"
                     duration
                 else
                     t2
