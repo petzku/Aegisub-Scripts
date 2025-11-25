@@ -406,14 +406,14 @@
       "description": "Split lines in selection to shorter segments, preserving any transforms",
       "channels": {
         "stable": {
-          "version": "1.2.2",
-          "released": "2023-11-19",
+          "version": "1.2.3",
+          "released": "2025-11-25",
           "default": true,
           "files": [
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "41f1f3c2064f8c6a6272e5aa3f16f4e4df669aa7"
+              "sha1": "76e44ec5e8cd3079c6408b7f434128d34356bdb2"
             }
           ],
           "requiredModules": [
@@ -421,7 +421,7 @@
               "moduleName": "petzku.util",
               "name": "petzkuLib",
               "url": "https://github.com/petzku/Aegisub-Scripts",
-              "version": "0.4.2"
+              "version": "0.5.3"
             }
           ]
         }
@@ -439,7 +439,10 @@
           "Improve macro descriptions to mention preserving transforms"
         ],
         "1.2.1": ["Fix infinite loop in 'split on video frame' mode"],
-        "1.2.2": ["Include feed URL for DepCtrl updating"]
+        "1.2.2": ["Include feed URL for DepCtrl updating"],
+        "1.2.3": [
+          "Bump petzku.util dependency to 0.5.3 (fixes zero-end-time transforms breaking)"
+        ]
       }
     },
     "petzku.Typewriter": {
@@ -555,14 +558,14 @@
       "description": "Various utility functions for use with petzku's Aegisub macros",
       "channels": {
         "stable": {
-          "version": "0.5.2",
-          "released": "2025-10-16",
+          "version": "0.5.3",
+          "released": "2025-11-25",
           "default": true,
           "files": [
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "9ffd8cd60144cd6027cec5d2b2ba70af0755f68b"
+              "sha1": "d2f5754ac42173096d55f55b046856a27a05e0c3"
             },
             {
               "name": "/tee.exe",
@@ -592,7 +595,8 @@
           "Fix run_cmd always outputting logs on success",
           "Fix lack of blank lines in command logs output"
         ],
-        "0.5.2": ["Fix crash caused by above"]
+        "0.5.2": ["Fix crash caused by above"],
+        "0.5.3": ["Fix transform.retime not handling zero-end-time correctly"]
       }
     }
   }
