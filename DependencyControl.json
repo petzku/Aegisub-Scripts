@@ -565,7 +565,7 @@
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "d2f5754ac42173096d55f55b046856a27a05e0c3"
+              "sha1": "07b7c81c3fca04809b658025526d7597add3f8ae"
             },
             {
               "name": "/tee.exe",
@@ -596,7 +596,10 @@
           "Fix lack of blank lines in command logs output"
         ],
         "0.5.2": ["Fix crash caused by above"],
-        "0.5.3": ["Fix transform.retime not handling zero-end-time correctly"]
+        "0.5.3": [
+          "Fix transform.retime not handling zero-end-time correctly",
+          "Add proper print-like function"
+        ]
       }
     }
   }
