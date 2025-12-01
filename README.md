@@ -177,6 +177,10 @@ Written to automatically generate the infoboxes in Cells at Work season 2, becau
 
 Specifically, the macro expects the style defaults to be `\an4\fs50\fnPT Sans` and the sign to be in one ASS event, with lines split by `\N`. The lines are split into separate events and positioned accordingly, and a box is drawn around them. Fades are accounted for (border layer is \1aFF for the duration of the fade).
 
+### Minesweeper
+
+Who _hasn't_ always wanted to play classic minesweeper inside Aegisub? Well, now you can!
+
 ### Resample
 
 Don't use this, use [arch1t3ct's one](https://github.com/TypesettingTools/arch1t3cht-Aegisub-Scripts#resample-perspective) instead. Consider this script deprecated, and likely to be removed from the repo soon.
