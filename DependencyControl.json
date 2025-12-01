@@ -297,14 +297,14 @@
       "description": "Align line content to match others by adding text and abusing transparency",
       "channels": {
         "stable": {
-          "version": "1.1.1",
-          "released": "2023-11-19",
+          "version": "1.1.2",
+          "released": "2025-12-01",
           "default": true,
           "files": [
             {
               "name": ".moon",
               "url": "@{fileBaseUrl}@{fileName}",
-              "sha1": "329d2f498869c1cd258bf931424267d3ac3a4a20"
+              "sha1": "8a90c085a0571aee00fbae326b9128e4f699c3f1"
             }
           ]
         }
@@ -315,7 +315,10 @@
         "1.1.0": [
           "Add DepCtrl support to script itself, allowing for auto-update and submenu configuration"
         ],
-        "1.1.1": ["Include feed URL for DepCtrl updating"]
+        "1.1.1": ["Include feed URL for DepCtrl updating"],
+        "1.1.2": [
+          "Fix doubled-up name when using depctrl (was Phantom/Phantom/...)"
+        ]
       }
     },
     "petzku.PlainText": {
