@@ -67,14 +67,14 @@ build_gui = (field, reveal) ->
     for c, col in ipairs field
         for r, cell in ipairs col
             x = if cell.flag
-                {x: c, y: r, height: 1, width: 1, class: "label", label: "🚩"}
+                {x: c-1, y: r, height: 1, width: 1, class: "label", label: "🚩"}
             elseif cell.hidden
                 unless reveal
-                    {x: c, y: r, height: 1, width: 1, class: "checkbox", value: false, name: "#{c}-#{r}", hint: "#{c}-#{r}"}
+                    {x: c-1, y: r, height: 1, width: 1, class: "checkbox", value: false, name: "#{c}-#{r}", hint: "#{c}-#{r}"}
                 else
-                    {x: c, y: r, height: 1, width: 1, class: "label", label: cell.mine and "💣" or " - "}
+                    {x: c-1, y: r, height: 1, width: 1, class: "label", label: cell.mine and "💣" or " - "}
             else
-                {x: c, y: r, height: 1, width: 1, class: "label", label: cell.mine and "💥" or "#{cell.n == 0 and '  ' or string.format "%2d ", cell.n}"}
+                {x: c-1, y: r, height: 1, width: 1, class: "label", label: cell.mine and "💥" or "#{cell.n == 0 and '  ' or string.format "%2d ", cell.n}"}
             table.insert t, x
     t
 
