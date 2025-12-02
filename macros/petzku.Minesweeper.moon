@@ -6,9 +6,9 @@ export script_author =      "petzku"
 export script_namespace =   "petzku.Minesweeper"
 export script_version =     "0.3.0"
 
-WIDTH = 8
-HEIGHT = 8
-MAXMINES = 10
+WIDTH = 9
+HEIGHT = 9
+MINES = 10
 
 math.randomseed(os.time())
 
@@ -26,6 +26,21 @@ _rev = (field, x, y) ->
                 continue if xx < 1 or yy < 1 or xx > WIDTH or yy > HEIGHT
                 _rev field, xx, yy
 
+select_diff = ->
+    btn = aegisub.dialog.display {
+        {x: 0, y: 0, height: 1, width: 10, class: "label", label: "Choose your difficulty:"}
+    }, {"Beginner", "Intermediate", "Expert"}
+    export WIDTH, HEIGHT, MINES = if btn == "Beginner"
+        9, 9, 10
+    elseif btn == "Intermediate"
+        16, 16, 40
+    elseif btn == "Expert"
+        30, 16, 99
+    else
+        -- user clicked X or something
+        return false
+    true
+
 build_field = ->
     t = {}
     for i = 1,WIDTH
@@ -35,7 +50,7 @@ build_field = ->
 
     -- place mines
     free_tiles = [{x,y} for x=1,WIDTH for y=1,HEIGHT]
-    for m = 1, MAXMINES
+    for m = 1, MINES
         i = math.random 1, #free_tiles
         x, y = unpack free_tiles[i]
         continue if t[x][y].mine
@@ -125,7 +140,7 @@ check_win = (field) ->
             return false if x.hidden and not x.mine
     return true
 
-main = () ->
+main = ->
     f = build_field!
     win = false
     while not win
@@ -146,4 +161,8 @@ main = () ->
         win = check_win f
     aegisub.dialog.display (build_gui f, win and "You won!" or "You lost!"), {"&Close"}
 
-aegisub.register_macro script_name, script_description, main
+start = ->
+    -- select difficulty and play; if user presses X, quit immediately
+    main! if select_diff!
+
+aegisub.register_macro script_name, script_description, start
