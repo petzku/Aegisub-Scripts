@@ -4,13 +4,19 @@ export script_name =        "Minesweeper"
 export script_description = "Play Minesweeper. Why? Who knows."
 export script_author =      "petzku"
 export script_namespace =   "petzku.Minesweeper"
-export script_version =     "0.3.0"
+export script_version =     "0.4.0"
+
+DIFFICULTIES = {
+    "&Beginner":        {w:  9, h:  9, m: 10}
+    "&Intermediate":    {w: 16, h: 16, m: 40}
+    "&Expert":          {w: 30, h: 16, m: 99}
+}
 
 WIDTH = 9
 HEIGHT = 9
 MINES = 10
 
-math.randomseed(os.time())
+math.randomseed os.time!
 
 _rev = (field, x, y) ->
     tile = field[x][y]
@@ -29,13 +35,10 @@ _rev = (field, x, y) ->
 select_diff = ->
     btn = aegisub.dialog.display {
         {x: 0, y: 0, height: 1, width: 10, class: "label", label: "Choose your difficulty:"}
-    }, {"Beginner", "Intermediate", "Expert"}
-    export WIDTH, HEIGHT, MINES = if btn == "Beginner"
-        9, 9, 10
-    elseif btn == "Intermediate"
-        16, 16, 40
-    elseif btn == "Expert"
-        30, 16, 99
+    }, [name for name, v in pairs DIFFICULTIES]
+    diff = DIFFICULTIES[btn]
+    export WIDTH, HEIGHT, MINES = if diff
+        diff.w, diff.h, diff.m
     else
         -- user clicked X or something
         return false
