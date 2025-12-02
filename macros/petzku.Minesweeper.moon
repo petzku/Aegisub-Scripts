@@ -13,9 +13,10 @@ MAXMINES = 10
 math.randomseed(os.time())
 
 _rev = (field, x, y) ->
-    return unless field[x][y].hidden
-    field[x][y].hidden = false
-    if field[x][y].n == 0
+    tile = field[x][y]
+    return unless tile.hidden
+    tile.hidden = false
+    if tile.n == 0 and not tile.mine
         -- cascade
         for i = -1,1
             for j = -1,1
