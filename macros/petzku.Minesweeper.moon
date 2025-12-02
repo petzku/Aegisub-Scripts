@@ -7,6 +7,7 @@ export script_namespace =   "petzku.Minesweeper"
 export script_version =     "0.4.0"
 
 DIFFICULTIES = {
+    "&Trivial":         {w:  4, h:  4, m:  3}
     "&Beginner":        {w:  9, h:  9, m: 10}
     "&Intermediate":    {w: 16, h: 16, m: 40}
     "&Expert":          {w: 30, h: 16, m: 99}
