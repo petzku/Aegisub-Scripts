@@ -113,6 +113,12 @@ flag = (field, res) ->
         field[x][y].flag = true
     field
 
+remove_flags = (field) ->
+    for row in *field
+        for tile in *row
+            tile.flag = false
+    field
+
 check_win = (field) ->
     for col in *field
         for x in *col
@@ -123,13 +129,15 @@ main = () ->
     f = build_field!
     win = false
     while not win
-        btn, res = aegisub.dialog.display (build_gui f), {"&Reveal", "&Flag", "&Cancel"}, {ok: "&Reveal", cancel: "&Cancel"}
+        btn, res = aegisub.dialog.display (build_gui f), {"&Reveal", "&Flag", "&Clear flags", "&Quit"}, {ok: "&Reveal", cancel: "&Quit"}
         -- cancel = quit game
         break unless btn
         f, quit, msg = if btn == "&Reveal"
             reveal f, res
         elseif btn == "&Flag"
             flag f, res
+        elseif btn == "&Clear flags"
+            remove_flags f
         else
             f
         aegisub.log 3, msg if msg
