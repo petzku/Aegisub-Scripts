@@ -34,12 +34,11 @@ build_field = ->
             table.insert t[i], {hidden: true, mine: false, n: 0}
 
     -- place mines
-    m = 0
-    while m < MAXMINES
-        x = math.random 1, WIDTH
-        y = math.random 1, HEIGHT
+    free_tiles = [{x,y} for x=1,WIDTH for y=1,HEIGHT]
+    for m = 1, MAXMINES
+        i = math.random 1, #free_tiles
+        x, y = unpack free_tiles[i]
         continue if t[x][y].mine
-        m += 1
         t[x][y].mine = true
         for i = -1,1
             for j = -1,1
@@ -50,12 +49,14 @@ build_field = ->
                 t[xx][yy].n += 1
 
     -- reveal starting square
-    while true
-        x = math.random 1, WIDTH
-        y = math.random 1, HEIGHT
-        continue if t[x][y].mine
+    do
+        -- prioritize picking an empty square, if possible
+        zeros = [{x,y} for x=1,WIDTH for y=1,HEIGHT when t[x][y].n == 0]
+        starts = if #zeros > 0 then zeros else
+            [{x,y} for x=1,WIDTH for y=1,HEIGHT when not t[x][y].mine]
+        i = math.random 1, #starts
+        x, y = unpack starts[i]
         _rev t, x, y
-        break
     t
 
 build_gui = (field, reveal) ->
