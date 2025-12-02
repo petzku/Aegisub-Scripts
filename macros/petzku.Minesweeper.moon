@@ -51,7 +51,7 @@ build_field = ->
     -- reveal starting square
     do
         -- prioritize picking an empty square, if possible
-        zeros = [{x,y} for x=1,WIDTH for y=1,HEIGHT when t[x][y].n == 0]
+        zeros = [{x,y} for x=1,WIDTH for y=1,HEIGHT when t[x][y].n == 0 and not t[x][y].mine]
         starts = if #zeros > 0 then zeros else
             [{x,y} for x=1,WIDTH for y=1,HEIGHT when not t[x][y].mine]
         i = math.random 1, #starts
