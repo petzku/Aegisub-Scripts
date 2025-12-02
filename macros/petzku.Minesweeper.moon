@@ -53,7 +53,6 @@ build_field = ->
     for m = 1, MINES
         i = math.random 1, #free_tiles
         x, y = unpack free_tiles[i]
-        continue if t[x][y].mine
         t[x][y].mine = true
         for i = -1,1
             for j = -1,1
@@ -62,6 +61,8 @@ build_field = ->
                 yy = y + j
                 continue if xx < 1 or yy < 1 or xx > WIDTH or yy > HEIGHT
                 t[xx][yy].n += 1
+        -- prevent double selection
+        table.remove free_tiles, i
 
     -- reveal starting square
     do
