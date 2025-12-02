@@ -75,11 +75,23 @@ build_field = ->
         _rev t, x, y
     t
 
+_count_flags = (field) ->
+    flags = 0
+    for row in *field
+        for tile in *row
+            flags += 1 if tile.flag
+    flags
+
 build_gui = (field, reveal) ->
-    t = unless reveal
-        {{x: 0, y: 0, height: 1, width: 10, class: "label", label: "Let's play minesweeper!"}}
-    else
-        {{x: 0, y: 0, height: 1, width: 10, class: "label", label: reveal}}
+    flags = _count_flags field
+    t = {{
+        x: 0, y: 0, height: 1, width: 10, class: "label",
+        label: if reveal
+            reveal
+        elseif flags == 0
+            "Let's play minesweeper!"
+        else "Mines left: #{MINES-flags} / #{MINES}"
+    }}
     for c, col in ipairs field
         for r, cell in ipairs col
             x = if cell.flag
