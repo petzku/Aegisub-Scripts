@@ -4,7 +4,7 @@ export script_name =        "Minesweeper"
 export script_description = "Play Minesweeper. Why? Who knows."
 export script_author =      "petzku"
 export script_namespace =   "petzku.Minesweeper"
-export script_version =     "0.2.0"
+export script_version =     "0.3.0"
 
 WIDTH = 8
 HEIGHT = 8
@@ -31,7 +31,7 @@ build_field = ->
     for i = 1,WIDTH
         table.insert t, {}
         for j = 1,HEIGHT
-            table.insert t[i], {hidden: true, mine: false, n: 0}
+            table.insert t[i], {hidden: true, mine: false, n: 0, flag: false}
 
     -- place mines
     free_tiles = [{x,y} for x=1,WIDTH for y=1,HEIGHT]
@@ -66,7 +66,9 @@ build_gui = (field, reveal) ->
         {{x: 0, y: 0, height: 1, width: 10, class: "label", label: reveal}}
     for c, col in ipairs field
         for r, cell in ipairs col
-            x = if cell.hidden
+            x = if cell.flag
+                {x: c, y: r, height: 1, width: 1, class: "label", label: "🚩"}
+            elseif cell.hidden
                 unless reveal
                     {x: c, y: r, height: 1, width: 1, class: "checkbox", value: false, name: "#{c}-#{r}", hint: "#{c}-#{r}"}
                 else
@@ -81,7 +83,7 @@ reveal = (field, res) ->
     for k, v in pairs res
         if v
             table.insert cells, k
-    return field, true, "Open at least once cell!" unless #cells > 0
+    return field, true, "Open at least one cell!" unless #cells > 0
     -- try to open cell
     boom = false
     for cell in *cells
@@ -96,7 +98,20 @@ reveal = (field, res) ->
         -- reveal, cascading if this is zero
         _rev field, x, y
         boom or= field[x][y].mine
-    field, not boom
+    field, boom
+
+flag = (field, res) ->
+    cells = {}
+    for k, v in pairs res
+        if v
+            table.insert cells, k
+    return field, true, "Flag at least one cell!" unless #cells > 0
+    for cell in *cells
+        x, y = cell\match "(%d+)%-(%d+)"
+        x = tonumber x
+        y = tonumber y
+        field[x][y].flag = true
+    field
 
 check_win = (field) ->
     for col in *field
@@ -108,14 +123,19 @@ main = () ->
     f = build_field!
     win = false
     while not win
-        btn, res = aegisub.dialog.display build_gui f
+        btn, res = aegisub.dialog.display (build_gui f), {"&Reveal", "&Flag", "&Cancel"}, {ok: "&Reveal", cancel: "&Cancel"}
         -- cancel = quit game
         break unless btn
-        f, cont, msg = reveal f, res
+        f, quit, msg = if btn == "&Reveal"
+            reveal f, res
+        elseif btn == "&Flag"
+            flag f, res
+        else
+            f
         aegisub.log 3, msg if msg
-        break unless cont
+        break if quit
 
         win = check_win f
-    aegisub.dialog.display build_gui f, win and "You won!" or "You lost!"
+    aegisub.dialog.display (build_gui f, win and "You won!" or "You lost!"), {"&Close"}
 
 aegisub.register_macro script_name, script_description, main
