@@ -8,11 +8,12 @@ round = (x) -> math.floor x + 0.5
 -- bpm (quarter notes)
 bpm = 120
 
--- ms duration of 16th (triplets dont exist)
+-- ms duration of 16th
 quant16 = -> 60 * 1000 / bpm / 4
+-- ms duration of 24th (16th triplets)
+quant24 = -> 60 * 1000 / bpm / 6
 
-main = (sub, sel) ->
-    quant = quant16!
+quantize = (quant, sub, sel) ->
     for i in *sel
         line = sub[i]
         -- karaskel internal function, but it's documented, so...
@@ -49,6 +50,9 @@ main = (sub, sel) ->
             line.text ..= newtag .. syl.text
         sub[i] = line
 
+quantize_16th = (...) -> quantize quant16!, ...
+quantize_24th = (...) -> quantize quant24!, ...
+
 -- try to calculate bpm from k tags
 -- assume each is a quarter note, round to integer bpm
 calc_bpm = (sub, sel, act) ->
@@ -74,6 +78,7 @@ set_bpm = () ->
     }
     bpm = res.bpm if btn
 
-aegisub.register_macro "#{script_name}/Quantize", script_description, main
+aegisub.register_macro "#{script_name}/Quantize to 16th notes", script_description, quantize_16th
+aegisub.register_macro "#{script_name}/Quantize to 16th triplets", script_description, quantize_24th
 aegisub.register_macro "#{script_name}/Derive BPM from k-tags", "Determine BPM from k-timed quarter notes", calc_bpm
 aegisub.register_macro "#{script_name}/Set BPM...", "Set BPM for quantization", set_bpm
