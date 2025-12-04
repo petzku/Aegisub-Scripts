@@ -6,17 +6,17 @@ require 'karaskel'
 round = (x) -> math.floor x + 0.5
 
 -- bpm (quarter notes)
-bpm = 156 / 2
+bpm = 120
 
 -- ms duration of 16th (triplets dont exist)
 quant16 = -> 60 * 1000 / bpm / 4
 
 main = (sub, sel) ->
     quant = quant16!
-    meta, style = karaskel.collect_head sub, false
     for i in *sel
         line = sub[i]
-        karaskel.preproc_line sub, meta, style, line
+        -- karaskel internal function, but it's documented, so...
+        karaskel.preproc_line_text nil, nil, line
 
         line.text = ""
         local last_offset
@@ -49,4 +49,31 @@ main = (sub, sel) ->
             line.text ..= newtag .. syl.text
         sub[i] = line
 
-aegisub.register_macro script_name, script_description, main
+-- try to calculate bpm from k tags
+-- assume each is a quarter note, round to integer bpm
+calc_bpm = (sub, sel, act) ->
+    line = sub[act]
+    karaskel.preproc_line_text nil, nil, line
+    -- treat first and last syls as buffers (last syl's start should be placed on the final beat)
+    first_time = line.kara[1].end_time
+    last_time = line.kara[#line.kara].start_time
+    beat_count = #line.kara - 1
+    aegisub.log 5, "%d beats from %d to %d", beat_count, first_time, last_time
+
+    -- in ms
+    beatdur = (last_time - first_time) / (beat_count - 1)
+    _bpm = 60 * 1000 / beatdur
+    export bpm = round _bpm
+    aegisub.log 5, " -> %.2f bpm (%.2f ms) => %d\n", _bpm, beatdur, bpm
+    aegisub.log 3, "Determined BPM: %d\n", bpm
+
+set_bpm = () ->
+    btn, res = aegisub.dialog.display {
+        { x: 0, y: 0, class: 'label', label: "BPM: " }
+        { x: 1, y: 0, class: 'intedit', value: bpm, name: 'bpm' }
+    }
+    bpm = res.bpm if btn
+
+aegisub.register_macro "#{script_name}/Quantize", script_description, main
+aegisub.register_macro "#{script_name}/Derive BPM from k-tags", "Determine BPM from k-timed quarter notes", calc_bpm
+aegisub.register_macro "#{script_name}/Set BPM...", "Set BPM for quantization", set_bpm
