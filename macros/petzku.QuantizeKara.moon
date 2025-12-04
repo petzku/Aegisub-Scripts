@@ -33,16 +33,16 @@ main = (sub, sel) ->
                     continue
 
             dur16ths = (last_offset + syl.duration) / quant
-            aegisub.log "%s + %s = %s", last_offset, syl.duration, last_offset+syl.duration
+            aegisub.log 5, "%s + %s = %s", last_offset, syl.duration, last_offset+syl.duration
             -- round to nearest 16th
             newdur = quant * round dur16ths
             -- round to cs and replace into text
             newkdur = round newdur / 10
-            aegisub.log " -> %s (%s) ~ %s", newdur, dur16ths, (newkdur * 10)
+            aegisub.log 5, " -> %s (%s) ~ %s", newdur, dur16ths, (newkdur * 10)
 
             last_offset = (last_offset + syl.duration) - (10 * newkdur)
             newtag = "{#{syl.tag}#{newkdur}}"
-            aegisub.log " (%s)\n", last_offset
+            aegisub.log 5, " (%s)\n", last_offset
 
             -- we might *want to* use gsub, but since we must do replacements one at a time, it's better to rebuild the line ourself
             -- this also means we get to avoid other kinds of dumb shit
