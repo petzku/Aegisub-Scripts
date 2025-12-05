@@ -11,14 +11,14 @@ require 'karaskel'
 round = (x) -> math.floor x + 0.5
 
 -- bpm (quarter notes)
-bpm = nil
+BPM = nil
 
 -- ms duration of 16th
-quant16 = -> 60 * 1000 / bpm / 4
+notedur16 = -> 60 * 1000 / BPM / 4
 -- ms duration of 24th (16th triplets)
-quant24 = -> 60 * 1000 / bpm / 6
+notedur24 = -> 60 * 1000 / BPM / 6
 
-quantize = (quant, sub, sel) ->
+quantize = (quantum, sub, sel) ->
     for i in *sel
         line = sub[i]
         -- karaskel internal function, but it's documented, so...
@@ -38,10 +38,10 @@ quantize = (quant, sub, sel) ->
                     last_offset
                     continue
 
-            dur16ths = (last_offset + syl.duration) / quant
+            dur16ths = (last_offset + syl.duration) / quantum
             aegisub.log 5, "%s + %s = %s", last_offset, syl.duration, last_offset+syl.duration
             -- round to nearest 16th
-            newdur = quant * round dur16ths
+            newdur = quantum * round dur16ths
             -- round to cs and replace into text
             newkdur = round newdur / 10
             aegisub.log 5, " -> %s (%s) ~ %s", newdur, dur16ths, (newkdur * 10)
@@ -55,8 +55,8 @@ quantize = (quant, sub, sel) ->
             line.text ..= newtag .. syl.text
         sub[i] = line
 
-quantize_16th = (...) -> quantize quant16!, ...
-quantize_24th = (...) -> quantize quant24!, ...
+quantize_16th = (...) -> quantize notedur16!, ...
+quantize_24th = (...) -> quantize notedur24!, ...
 
 -- try to calculate bpm from k tags
 -- assume each is a quarter note, round to integer bpm
@@ -72,21 +72,21 @@ calc_bpm = (sub, sel, act) ->
     -- in ms
     beatdur = (last_time - first_time) / (beat_count - 1)
     _bpm = 60 * 1000 / beatdur
-    export bpm = round _bpm
-    aegisub.log 5, " -> %.2f bpm (%.2f ms) => %d\n", _bpm, beatdur, bpm
-    aegisub.log 3, "Determined BPM: %d\n", bpm
+    export BPM = round _bpm
+    aegisub.log 5, " -> %.2f bpm (%.2f ms) => %d\n", _bpm, beatdur, BPM
+    aegisub.log 3, "Determined BPM: %d\n", BPM
 
 set_bpm = () ->
     btn, res = aegisub.dialog.display {
         { x: 0, y: 0, class: 'label', label: "BPM: " }
-        { x: 1, y: 0, class: 'intedit', value: bpm or 120, name: 'bpm' }
+        { x: 1, y: 0, class: 'intedit', value: BPM or 120, name: 'bpm' }
     }
-    bpm = res.bpm if btn
+    BPM = res.bpm if btn
 
 
 can_quantize = (sub, sel) ->
     -- require BPM to be set before running
-    return false unless bpm
+    return false unless BPM
     -- check for at least some karaoke tags, hopefully
     for i in *sel
         return true if sub[i].text\match "\\[kK]"
