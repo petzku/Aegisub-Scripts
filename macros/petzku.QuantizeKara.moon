@@ -1,5 +1,10 @@
-script_name = "Quantize K-timing"
-script_description = "Quantize \\k-tags to discrete beats"
+-- Copyright (c) 2025 petzku <petzku@zku.fi>
+
+export script_name =        "Quantize K-timing"
+export script_description = "Quantize \\k-tags to discrete beats"
+export script_author =      "petzku"
+export script_namespace =   "petzku.QuantizeKara"
+export script_version =     "1.0.0"
 
 require 'karaskel'
 
@@ -78,7 +83,20 @@ set_bpm = () ->
     }
     bpm = res.bpm if btn
 
-aegisub.register_macro "#{script_name}/Quantize to 16th notes", script_description, quantize_16th
-aegisub.register_macro "#{script_name}/Quantize to 16th triplets", script_description, quantize_24th
-aegisub.register_macro "#{script_name}/Derive BPM from k-tags", "Determine BPM from k-timed quarter notes", calc_bpm
-aegisub.register_macro "#{script_name}/Set BPM...", "Set BPM for quantization", set_bpm
+
+macros = {
+    {"Quantize to 16th notes", script_description, quantize_16th}
+    {"Quantize to 16th triplets", script_description, quantize_24th}
+    {"Derive BPM from k-tags", "Determine BPM from k-timed quarter notes", calc_bpm}
+    {"Set BPM...", "Set BPM for quantization", set_bpm}
+}
+
+havedc, DependencyControl, dep = pcall require, "l0.DependencyControl"
+if havedc
+    dep = DependencyControl
+        feed: "https://raw.githubusercontent.com/petzku/Aegisub-Scripts/stable/DependencyControl.json"
+    dep\registerMacros macros
+else
+    for macro in *macros
+        macro[1] = "#{script_name}/#{macro[1]}"
+        aegisub.register_macro unpack macro
