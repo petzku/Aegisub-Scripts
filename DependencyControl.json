@@ -376,6 +376,30 @@
         "2.0.1": ["Include feed URL for DepCtrl updating"]
       }
     },
+    "petzku.QuantizeKara": {
+      "fileBaseUrl": "@{fileBaseUrl}/@{channel}/macros/@{namespace}",
+      "url": "@{baseUrl}",
+      "author": "petzku",
+      "name": "Quantize K-timing",
+      "description": "Quantize \\k-tags to discrete beats",
+      "channels": {
+        "stable": {
+          "version": "1.0.0",
+          "released": "2025-12-05",
+          "default": true,
+          "files": [
+            {
+              "name": ".moon",
+              "url": "@{fileBaseUrl}@{fileName}",
+              "sha1": "887af7b55ec7e6e29c3a9641def8e74f75c86c85"
+            }
+          ]
+        }
+      },
+      "changelog": {
+        "1.0.0": ["Initial release"]
+      }
+    },
     "petzku.Snapper": {
       "fileBaseUrl": "@{fileBaseUrl}/@{channel}/macros/@{namespace}",
       "url": "@{baseUrl}#@{namespace}",
