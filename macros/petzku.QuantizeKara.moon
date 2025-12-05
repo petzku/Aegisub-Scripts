@@ -11,7 +11,7 @@ require 'karaskel'
 round = (x) -> math.floor x + 0.5
 
 -- bpm (quarter notes)
-bpm = 120
+bpm = nil
 
 -- ms duration of 16th
 quant16 = -> 60 * 1000 / bpm / 4
@@ -79,15 +79,29 @@ calc_bpm = (sub, sel, act) ->
 set_bpm = () ->
     btn, res = aegisub.dialog.display {
         { x: 0, y: 0, class: 'label', label: "BPM: " }
-        { x: 1, y: 0, class: 'intedit', value: bpm, name: 'bpm' }
+        { x: 1, y: 0, class: 'intedit', value: bpm or 120, name: 'bpm' }
     }
     bpm = res.bpm if btn
 
 
+can_quantize = (sub, sel) ->
+    -- require BPM to be set before running
+    return false unless bpm
+    -- check for at least some karaoke tags, hopefully
+    for i in *sel
+        return true if sub[i].text\match "\\[kK]"
+    false
+
+can_derive = (sub, sel, act) ->
+    -- current line should have at least two k tags
+    _, n = sub[act].text\gsub "\\[kK]", '', 2
+    n > 1
+
+
 macros = {
-    {"Quantize to 16th notes", script_description, quantize_16th}
-    {"Quantize to 16th triplets", script_description, quantize_24th}
-    {"Derive BPM from k-tags", "Determine BPM from k-timed quarter notes", calc_bpm}
+    {"Quantize to 16th notes", script_description, quantize_16th, can_quantize}
+    {"Quantize to 16th triplets", script_description, quantize_24th, can_quantize}
+    {"Derive BPM from k-tags", "Determine BPM from k-timed quarter notes", calc_bpm, can_derive}
     {"Set BPM...", "Set BPM for quantization", set_bpm}
 }
 
