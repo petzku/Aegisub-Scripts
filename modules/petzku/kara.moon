@@ -15,5 +15,8 @@ lib = with {}
             tenv.line.end_time = tenv.orgline.next.start_time + leadin
             tenv.line.duration = tenv.line.end_time - tenv.line.start_time
     }
+    .multilayer = (n, offset=0) ->
+        tenv.maxloop 'layer', n
+        tenv.relayer tenv.loopctx.state.layer + offset
 
 lib
