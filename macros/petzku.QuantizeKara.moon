@@ -4,7 +4,7 @@ export script_name =        "Quantize K-timing"
 export script_description = "Quantize \\k-tags to discrete beats"
 export script_author =      "petzku"
 export script_namespace =   "petzku.QuantizeKara"
-export script_version =     "1.0.0"
+export script_version =     "1.0.1"
 
 require 'karaskel'
 
@@ -35,7 +35,12 @@ quantize = (quantum, sub, sel) ->
                 if syl.text_stripped == ""
                     -- ignore this syl. assume its end time is accurate; only adjust all following syls
                     line.text ..= "{#{syl.tag}#{syl.duration/10}}"
-                    last_offset
+                    continue
+                -- non-blank first syl
+                else
+                    -- we still don't want to adjust the timing of this syl,
+                    -- since the first syl's start time is less malleable (being the start time of the line)
+                    line.text ..= "{#{syl.tag}#{syl.duration/10}}#{syl.text}"
                     continue
 
             dur16ths = (last_offset + syl.duration) / quantum
