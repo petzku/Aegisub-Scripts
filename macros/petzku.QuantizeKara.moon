@@ -25,7 +25,10 @@ quantize = (quantum, sub, sel) ->
         karaskel.preproc_line_text nil, nil, line
 
         line.text = ""
+        -- cumulative start_time offset caused by shifting syl durations
         local last_offset
+        -- cumulative kdur offset caused by centisecond precision. in milliseconds despite its name
+        cs_offset = 0
 
         for syl in *line.kara
             -- first syl
@@ -48,12 +51,13 @@ quantize = (quantum, sub, sel) ->
             -- round to nearest 16th
             newdur = quantum * round dur16ths
             -- round to cs and replace into text
-            newkdur = round newdur / 10
+            newkdur = round (cs_offset + newdur) / 10
             aegisub.log 5, " -> %s (%s) ~ %s", newdur, dur16ths, (newkdur * 10)
 
             last_offset = (last_offset + syl.duration) - (10 * newkdur)
+            cs_offset = cs_offset + newdur - (10 * newkdur)
             newtag = "{#{syl.tag}#{newkdur}}"
-            aegisub.log 5, " (%s)\n", last_offset
+            aegisub.log 5, " (%s + %s)\n", last_offset, cs_offset
 
             -- we might *want to* use gsub, but since we must do replacements one at a time, it's better to rebuild the line ourself
             -- this also means we get to avoid other kinds of dumb shit
