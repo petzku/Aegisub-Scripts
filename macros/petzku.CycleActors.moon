@@ -52,7 +52,7 @@ set_actors = (newact, sub, sel) ->
         line.actor = newact
         sub[i] = line
 
-cycle_forward = (sub, sel) ->
+cycle_up = (sub, sel) ->
     actors, index = collect_actors sub, sel[1], sel[#sel]
     firstline = sub[sel[1]]
     idx = index[firstline.actor] or 0
@@ -64,7 +64,7 @@ cycle_forward = (sub, sel) ->
     trace "Using next actor '%s' at index %d", newact, (idx % #actors)+1
     set_actors newact, sub, sel
 
-cycle_back = (sub, sel) ->
+cycle_down = (sub, sel) ->
     actors, index = collect_actors sub, sel[1], sel[#sel]
     firstline = sub[sel[1]]
     idx = index[firstline.actor]
@@ -78,5 +78,5 @@ cycle_back = (sub, sel) ->
     set_actors newact, sub, sel
 
 
-aegisub.register_macro "#{script_name}/Forward", "", cycle_forward
-aegisub.register_macro "#{script_name}/Backward", "", cycle_back
+aegisub.register_macro "#{script_name}/Upward", "", cycle_up
+aegisub.register_macro "#{script_name}/Downward", "", cycle_down
