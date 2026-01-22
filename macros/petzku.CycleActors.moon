@@ -4,21 +4,46 @@ export script_name = "Cycle actor field"
 export script_namespace = "petzku.CycleActors"
 export script_version = "0.1.4"
 
+
 trace = (s, ...) -> aegisub.log 5, s .. "\n", ...
 
 
-collect_actors = (sub, idx) ->
-    act = {}
-    foundacts = {}
-    for i = idx, 1, -1
+collect_actors = (sub, first, last) ->
+    actors = {}
+    lookup = {}
+
+    -- first, look backwards
+    trace "Searching backwards from line %d", first-1
+    for i = first-1, 1, -1
         line = sub[i]
         continue unless line.class == 'dialogue' and not line.comment and line.actor != ''
-        continue if foundacts[line.actor]
+        continue if lookup[line.actor]
         trace "Found actor '%s' on line %d", line.actor, i
-        table.insert act, line.actor
-        foundacts[line.actor] = #act
-    trace "Found %d total actors", #act
-    return act, foundacts
+        table.insert actors, line.actor
+        lookup[line.actor] = #actors
+    trace "Found %d actors before", #actors
+
+    tempacts = {}
+    tempinv = {}
+    -- next, forwards
+    trace "Searching forwards line %d", last+1
+    for i = last+1, #sub
+        line = sub[i]
+        continue unless line.class == 'dialogue' and not line.comment and line.actor != ''
+        continue if lookup[line.actor] or tempinv[line.actor]
+        trace "Found actor '%s' on line %d", line.actor, i
+        table.insert tempacts, line.actor
+        tempinv[line.actor] = true
+    trace "Found %d actors after", #tempacts
+
+    -- insert temp list in reverse order
+    for i = #tempacts, 1, -1
+        table.insert actors, tempacts[i]
+        lookup[tempacts[i]] = #actors
+
+    trace "Found %d total actors", #actors
+    return actors, lookup
+
 
 set_actors = (newact, sub, sel) ->
     for i in *sel
@@ -28,7 +53,7 @@ set_actors = (newact, sub, sel) ->
         sub[i] = line
 
 cycle_forward = (sub, sel) ->
-    actors, index = collect_actors sub, sel[1]-1
+    actors, index = collect_actors sub, sel[1], sel[#sel]
     firstline = sub[sel[1]]
     idx = index[firstline.actor] or 0
     if idx == 0
@@ -40,7 +65,7 @@ cycle_forward = (sub, sel) ->
     set_actors newact, sub, sel
 
 cycle_back = (sub, sel) ->
-    actors, index = collect_actors sub, sel[1]-1
+    actors, index = collect_actors sub, sel[1], sel[#sel]
     firstline = sub[sel[1]]
     idx = index[firstline.actor]
     if idx == nil
