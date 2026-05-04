@@ -2,7 +2,7 @@ export script_name = "SmartQuotify"
 export script_description = [[Change all your "normal" quotes into “smart” ones]]
 export script_author = "petzku"
 export script_namespace = "petzku.SmartQuotify"
-export script_version = "0.1.0"
+export script_version = "0.2.0"
 
 re = require 'aegisub.re'
 
@@ -24,7 +24,7 @@ main = =>
         text = re.sub text, "'", "’"
 
         -- First, we replace any pairs of double quotes. This _will_ break triply nested quotes, but those are very rare, so we can probably ignore that.
-        text = re.sub text, [["(.-)"]], [[“\1”]]
+        text = re.sub text, [["(.+?)"]], [[“\1”]]
         -- Then, we handle any remaining, unpaired double-quotes heuristically. This could be e.g. quotes extending over two (or more) lines.
         -- Simply put, we assume any quote directly before a word is opening, and everything else is closing.
         text = re.sub text, [[(?<!\w)"(?=[‘’"]*\w)]], "“"
