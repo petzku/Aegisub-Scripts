@@ -2,7 +2,7 @@ export script_name = "SmartQuotify"
 export script_description = [[Change all your "normal" quotes into “smart” ones]]
 export script_author = "petzku"
 export script_namespace = "petzku.SmartQuotify"
-export script_version = "0.2.0"
+export script_version = "0.2.1"
 
 re = require 'aegisub.re'
 
@@ -14,20 +14,30 @@ main = =>
         continue unless line.text\find "['\"]"
         aegisub.log(5, "... has quotes\n")
 
+        -- to explain the regex, most importantly *this mess*
+        --      (?:(?<!\w)|(?<=\\[Nnh]))
+        -- it basically checks "is there whitespace before this quote":
+        --      (?:                    )        non-capturing group
+        --                |                       which accepts either
+        --         (?<!  )                          a negative lookbehind
+        --             \w                             declining any word characters
+        --                 (?<=       )             a positive lookbehind
+        --                     \\[Nnh]                accepting any of \N, \n, \h
+
         -- Apostrophes are always supposed to be right quotes, even at the start of a word.
         -- This makes converting them correctly impossible without NLP, as this can't be distinguished from a starting single quote.
         -- Instead, we leave the user a warning and have them check it themself.
-        text = re.sub line.text, [[(?<!\w)'(?=\w)]], "’"
+        text = re.sub line.text, [[(?:(?<!\w)|(?<=\\[Nnh]))'(?=\w)]], "’"
         apos_found = line.text != text and #re.find text, "’"
         -- We can, however, assume that any cases where another quotation mark appears between the quote and the word, it's not an apostrophe.
-        text = re.sub text, [[(?<!\w)'(?=['"]+\w)]], "‘"
+        text = re.sub text, [[(?:(?<!\w)|(?<=\\[Nnh]))'(?=['"]+\w)]], "‘"
         text = re.sub text, "'", "’"
 
         -- First, we replace any pairs of double quotes. This _will_ break triply nested quotes, but those are very rare, so we can probably ignore that.
         text = re.sub text, [["(.+?)"]], [[“\1”]]
         -- Then, we handle any remaining, unpaired double-quotes heuristically. This could be e.g. quotes extending over two (or more) lines.
         -- Simply put, we assume any quote directly before a word is opening, and everything else is closing.
-        text = re.sub text, [[(?<!\w)"(?=[‘’"]*\w)]], "“"
+        text = re.sub text, [[(?:(?<!\w)|(?<=\\[Nnh]))"(?=[‘’"]*\w)]], "“"
         text = re.sub text, '"', "”"
         line.text = text
 
